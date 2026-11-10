@@ -1,39 +1,30 @@
-# makOS · Deepin/Treeland development
+# makOS · Cutefish experiment
 
-makOS is a Linux desktop and distribution project based on Deepin, with Treeland
-for window composition and DDE services behind an independently implemented
-Tahoe-style Dock, menu bar, Finder, Settings and applications. This branch is
-under development: a bootable makOS ISO and Tahoe animation parity are not yet
-validated. The inspected Deepin base ISO is pinned and checksum verified.
+This branch connects our Tahoe-style Finder and System Settings to the Cutefish
+compositor, Dock and menu bar. The desktop remains an experimental integration;
+visual and animation parity with macOS Tahoe has not been established.
 
-## Current development mode
+The client bridge exports native app menus, requests compositor glass behind
+translucent sidebars, follows fullscreen chrome reveal events, and delegates
+window transitions to Cutefish. Finder and Settings have separate desktop IDs
+and processes. The existing Deepin/Treeland experiment remains on `makos-deepin`.
+
+## Run in Cutefish
+
+Inside the pinned Cutefish Debian 13 live/install environment:
 
 ```sh
-./run.sh --makos --settings
+bash cutefish/setup.sh
+./cutefish/run-app finder
+./cutefish/run-app settings
 ```
 
-Finder, Settings and the 19 suite applications now open in separate native Qt
-windows. Window movement, resizing, focus, minimizing and full screen are sent
-to the platform window system. On Linux, `--makos` also opts into the DDE audio
-adapter; it controls the default system output when the existing Audio1 service
-is available. Preview mode remains available without that flag.
+See [Cutefish setup, integration details and limits](cutefish/README.md).
+The setup uses distribution Qt/PySide6 and builds the native plugin locally.
+The commands below refer to the shared standalone Qt preview and its earlier
+verification history, not a makOS installer or completed Cutefish desktop.
 
-The experimental `--wayland-shell` entry point creates separate Desktop, Dock
-and menu-bar layer surfaces. A headless test with Deepin's Treeland 0.8.13 passed,
-including Finder and Settings as native Wayland windows. This mode needs the
-distribution's Qt and LayerShellQt runtime; see the [tested environment](distro/README.md).
-Plain native mode keeps the Dock and menu bar in the preview shell window.
-Compositor blur, cross-window drag/drop, external-app global menus and Treeland
-minimize targets remain integration work. Native mode uses compositor window
-transitions; the original in-scene Genie animation remains in preview mode.
-Native-window backdrop sampling currently uses the wallpaper and does not
-claim live blur of other applications.
-
-See [the makOS base, verified inventory and app reuse decisions](distro/README.md).
-The previous Ubuntu/Openbox prototype is preserved in the repository history and
-[legacy session documentation](linux/README.md); it is no longer the product target.
-
-## Run
+## Shared Qt preview
 
 On this Mac, open `Tahoe Desktop.app`, double-click `Launch.command`, or run `./run.sh`. The local `.app` contains the camera usage declaration for Photo Booth. It embeds the prepared Python environment and references this checkout; rebuild it with `python build_macos_launcher.py` after moving the project or environment. The source ZIP excludes this machine-specific launcher.
 
@@ -181,14 +172,14 @@ After the Mac was unlocked, live native Finder and Appearance Settings were insp
 
 `main.py` bridges Qt to the confined file workspace. `suite.py` provides SQLite records/preferences and Chess integration. `browser_downloads.py`, `photo_effects.py`, `calculator_engine.py`, `chess_engine.py` and `terminal_session.py` implement the corresponding local services. `qml/` contains the shell and application views; `shaders/` includes source and precompiled Qt packages. `build_shaders.py` rebuilds every shader with the pinned Qt compiler.
 
-The selected Linux stack is Deepin, Treeland/Waylib and selected DDE services.
+The previous `makos-deepin` branch uses Deepin, Treeland/Waylib and selected DDE services.
 Our shell and application views remain project code, with native client windows
 in development mode. The earlier 0.7 Openbox/picom session is a historical
 prototype. No makOS VM has been booted or makOS installer ISO produced yet.
 
 To create a source package without user data or local runtimes, run `python package_release.py`. The ZIP contains a SHA-256 manifest and seeds a fresh workspace on first launch. Existing release archives are never overwritten by this command.
 
-## Deepin integration direction
+## Previous Deepin integration reference
 
 The [base and integration notes](distro/README.md) record the pinned Deepin ISO,
 shipped component versions, app reuse decisions and runtime constraints.

@@ -61,6 +61,8 @@ apt-get "${apt_args[@]}" install -y --no-install-recommends \
   qml6-module-qtquick-dialogs qml6-module-qtquick-effects qml6-module-qtquick-controls \
   qml6-module-qtmultimedia qml6-module-qtwebengine
 mkdir -p /tmp/makos/results /run/dbus
+# Live images leave an empty ID for first boot. This private rootfs is not booted.
+if [[ ! -s /etc/machine-id ]]; then rm -f /etc/machine-id; fi
 dbus-uuidgen --ensure=/etc/machine-id
 dbus-daemon --system --fork --nopidfile
 useradd --create-home --shell /bin/bash makos-test
