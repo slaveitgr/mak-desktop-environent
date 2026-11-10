@@ -11,6 +11,7 @@ from datetime import datetime
 from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl, QFileSystemWatcher, QTimer, Qt, QProcess, QEventLoop
 from PySide6.QtGui import QGuiApplication, QFont, QFontDatabase
 from PySide6.QtQml import QQmlApplicationEngine, QQmlEngine
+from PySide6.QtMultimedia import QImageCapture
 from filesystem import Workspace, FileError, seed_workspace
 from applications import ApplicationLauncher
 from suite import Suite, ChessGame
@@ -278,6 +279,16 @@ class Bridge(QObject):
     @Slot(str)
     def copyText(self, text):
         QGuiApplication.clipboard().setText(text)
+
+    @Slot(QObject, result=bool)
+    def configurePhotoCapture(self, capture):
+        # Qt 6.8.0 accidentally declares these QML properties without WRITE.
+        # The public C++/Python setters work on the Deepin base and newer Qt.
+        if not isinstance(capture, QImageCapture):
+            return False
+        capture.setFileFormat(QImageCapture.FileFormat.JPEG)
+        capture.setQuality(QImageCapture.Quality.VeryHighQuality)
+        return True
 
     @Slot()
     def requestCameraPermission(self):

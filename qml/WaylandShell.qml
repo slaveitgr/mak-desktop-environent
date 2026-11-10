@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Window
 import org.kde.layershell 1.0 as LayerShell
 
-// Loaded only by --wayland-shell after the Qt/runtime readiness check.
+// Loaded only by --wayland-shell; requires an ABI-compatible LayerShellQt plugin.
 // Desktop, menu bar and Dock are independent Wayland layer surfaces.
 Main {
     id: shell

@@ -45,7 +45,15 @@ def report():
         result['qt'] = {'pyside': PySide6.__version__, 'runtime': qVersion(),
                         'libraries': QLibraryInfo.path(QLibraryInfo.LibrariesPath),
                         'qml_imports': QLibraryInfo.path(QLibraryInfo.QmlImportsPath)}
-        if 'site-packages' in result['qt']['libraries']:
+        maps = Path('/proc/self/maps')
+        loaded = []
+        if result['platform'] == 'Linux' and maps.is_file():
+            loaded = sorted({line.split(maxsplit=5)[5].strip() for line in maps.read_text().splitlines()
+                             if len(line.split(maxsplit=5)) == 6 and '/libQt6' in line.split(maxsplit=5)[5]})
+            result['qt']['loaded_libraries'] = loaded
+        # PySide's qt.conf changes QLibraryInfo even if the loader selected
+        # distribution libraries. On Linux the process mappings are evidence.
+        if any('site-packages' in path for path in loaded) or (not loaded and 'site-packages' in result['qt']['libraries']):
             result['warnings'].append('Bundled Qt: system DDE/LayerShell QML plugins must not be loaded without an ABI check.')
     except ImportError:
         result['warnings'].append('PySide6 is not available in this Python environment.')

@@ -707,6 +707,10 @@ Item {
                     root.status = "No camera is available. Connect a camera and try again.";
                     return;
                 }
+                if (!Bridge.configurePhotoCapture(imageCapture)) {
+                    root.status = "The camera capture format could not be configured.";
+                    return;
+                }
                 camera.start();
             }
             MediaDevices {
@@ -731,8 +735,6 @@ Item {
                 camera: camera
                 imageCapture: ImageCapture {
                     id: imageCapture
-                    quality: ImageCapture.VeryHighQuality
-                    fileFormat: ImageCapture.JPEG
                     onImageCaptured: flashAnimation.restart()
                     onImageSaved: function (id, fileName) {
                         root.savedCapture(fileName);

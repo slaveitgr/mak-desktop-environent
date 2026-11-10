@@ -64,10 +64,21 @@ runuser -u makos-test -- /bin/bash -se <<'USER'
 cd /tmp/makos/source
 export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
 export QML_IMPORT_PATH=/usr/lib/x86_64-linux-gnu/qt6/qml
+export QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt6/plugins
 export QTWEBENGINE_DISABLE_SANDBOX=1
 export QT_QUICK_CONTROLS_STYLE=Basic
 /tmp/makos/venv/bin/python distro/probe.py > /tmp/makos/results/readiness.json
-QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software /tmp/makos/venv/bin/python tests/smoke_ui.py --native-windows > /tmp/makos/results/native-apps.log 2>&1
-dbus-run-session -- /tmp/makos/venv/bin/python distro/ci_treeland.py > /tmp/makos/results/treeland-check.log 2>&1
+/tmp/makos/venv/bin/python - <<'CHECK'
+import json
+qt=json.load(open('/tmp/makos/results/readiness.json'))['qt']
+assert qt['runtime'] == '6.8.0', qt
+assert qt.get('loaded_libraries') and all(p.startswith('/usr/lib/') for p in qt['loaded_libraries']), qt
+CHECK
+native_status=0
+QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software /tmp/makos/venv/bin/python tests/smoke_ui.py --native-windows > /tmp/makos/results/native-apps.log 2>&1 || native_status=$?
+treeland_status=0
+dbus-run-session -- /tmp/makos/venv/bin/python distro/ci_treeland.py > /tmp/makos/results/treeland-check.log 2>&1 || treeland_status=$?
+echo "Native apps: $native_status; Treeland surfaces: $treeland_status"
+[[ "$native_status" == 0 && "$treeland_status" == 0 ]]
 USER
 SH
