@@ -8,3 +8,13 @@
              {"title", window->title()},
              {"popup", window->isPopup()},
              {"role", wm::toString(window->role())},
+--- a/src/wm/shell_surface.cpp
++++ b/src/wm/shell_surface.cpp
+@@ -963,6 +963,7 @@
+     }
+     m_popupMapped = true;
+     WindowInit init;
++    init.processId = m_processId;
+     init.type = WindowType::Popup;
+     init.origin = absoluteOrigin();
+     init.requestedSize = visibleBounds().size();

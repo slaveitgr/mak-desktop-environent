@@ -84,6 +84,21 @@
         "Branding fixture used XDG_CONFIG_HOME but pinned toolkit uses getpwuid(uid).pw_dir/.config"
       ],
       "result": "Required release gate failed; ISO not assembled."
+    },
+    {
+      "kind": "native popup capture and branding follow-up",
+      "commit": "5ae308b4387895b6a2772c9140e619bab0ce557a",
+      "run": 42861052357,
+      "artifact": 13785897282,
+      "artifact_zip_sha256": "4aba9438f8569b93ba0f718c6c2227e4c5de60d35c7e2194afcf692ee2592a74",
+      "passed": [
+        "All independent gates including stock-shell SVG branding and 20 native apps",
+        "Actual Apps popup is visible at 844x576 with compositor blur"
+      ],
+      "failed": [
+        "Popup WindowInit omitted its ShellSurface processId, so the strict peer ownership assertion sees zero"
+      ],
+      "result": "One required external-shell gate failed; ISO not assembled."
     }
   ],
   "fullscreen_followup": {
@@ -115,7 +130,7 @@
     "validation": "f7feeb native Linux log confirms popup surface glass attachment with no protocol disconnect; Apps probe needs peer process ownership instead of toplevel-only appId."
   },
   "fixture_followup": {
-    "popup_identity": "WindowDebug reports the actual Wayland peer process ID; require a newly created popup owned by the trusted shell with unchanged 844x576 bounds and native blur.",
+    "popup_identity": "WindowDebug reports the actual Wayland peer process ID; preserve ShellSurface processId in mapPopup just as mapToplevel already does. Require a new popup with the trusted shell owner, 844x576 bounds and native blur.",
     "branding": "Only the disposable /home/makos-test account is temporarily configured at the actual pinned toolkit path; preserve and restore its original settings.",
     "diagnostics": "On native failure retain current window inventory and actual compositor screenshot."
   }
