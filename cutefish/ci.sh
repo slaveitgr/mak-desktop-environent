@@ -113,32 +113,55 @@ if [[ "${MAKOS_BROWSER_ONLY:-0}" == 1 ]]; then
 fi
 cmake -S cutefish -B cutefish/build -G Ninja -DCMAKE_BUILD_TYPE=Debug > /tmp/makos/results/build.log 2>&1
 cmake --build cutefish/build -j2 >> /tmp/makos/results/build.log 2>&1
+# Continue independent required fixtures after a failure so one build exposes
+# all actionable errors. Any failed check still prevents image assembly.
+MAKOS_VALIDATION_FAILURES=0
+run_required() {
+  local result_name="$1"
+  shift
+  if "$@" > "/tmp/makos/results/$result_name" 2>&1; then
+    printf 'PASS: %s\n' "$result_name"
+  else
+    local check_status=$?
+    printf 'FAIL: %s (exit %s)\n' "$result_name" "$check_status" >&2
+    MAKOS_VALIDATION_FAILURES=$((MAKOS_VALIDATION_FAILURES+1))
+  fi
+}
 # Exercise the actual native shell first; all fixture/browser gates below
 # remain required before image assembly. This avoids hiding protocol failures
 # behind an unrelated later fixture after a costly compositor build.
-dbus-run-session -- env MAKOS_EXTERNAL_SHELL_TEST=1 python3 cutefish/branding/probe_external.py --output /tmp/makos/results > /tmp/makos/results/external-shell-check.log 2>&1
-python3 -m unittest discover -s tests -p 'test_cutefish*.py' -v > /tmp/makos/results/client-tests.log 2>&1
-python3 -m unittest discover -s tests -p 'test_recovery*.py' -v > /tmp/makos/results/recovery-tests.log 2>&1
-python3 -m unittest discover -s tests -p 'test_finder*.py' -v > /tmp/makos/results/finder-tests.log 2>&1
-python3 -m unittest -v tests.test_browser tests.test_linux_settings tests.test_native_applications tests.test_linux_session tests.test_makos_installer tests.test_downloads tests.test_system_info tests.test_terminal > /tmp/makos/results/functional-contract-tests.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_linux_settings_ui.py > /tmp/makos/results/settings-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_control_linux.py > /tmp/makos/results/control-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_control_tahoe.py > /tmp/makos/results/control-tahoe-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_apps_overlay.py > /tmp/makos/results/apps-overlay-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_shared_appearance.py > /tmp/makos/results/shared-appearance-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_makos_installer_ui.py > /tmp/makos/results/installer-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_about_system_info.py > /tmp/makos/results/about-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_appstore.py > /tmp/makos/results/appstore-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_terminal_ui.py > /tmp/makos/results/terminal-ui-fixtures.log 2>&1
-QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --smoke-test > /tmp/makos/results/recovery-preview.log 2>&1
-QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --disk-utility --smoke-test > /tmp/makos/results/disk-preview.log 2>&1
-python3 tests/smoke_recovery.py > /tmp/makos/results/recovery-interaction.log 2>&1
-python3 cutefish/install_preview.py
-python3 distro/probe.py > /tmp/makos/results/readiness.json
-QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 tests/smoke_ui.py --native-windows > /tmp/makos/results/native-apps.log 2>&1
-dbus-run-session -- python3 cutefish/ci_session.py > /tmp/makos/results/cutefish-check.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_web_page.py > /tmp/makos/results/browser-page.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_web_downloads.py > /tmp/makos/results/browser-downloads.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_browser_profiles.py > /tmp/makos/results/browser-profiles.log 2>&1
+run_required external-shell-check.log dbus-run-session -- env MAKOS_EXTERNAL_SHELL_TEST=1 python3 cutefish/branding/probe_external.py --output /tmp/makos/results
+# Isolated authorization protocol/process/UI fixtures; never a real policy or PAM prompt.
+run_required auth-protocol.log cutefish/build/auth/makos-auth-protocol-test
+run_required auth-session.log cutefish/build/auth/makos-auth-session-test
+run_required auth-dialog.log cutefish/build/auth/makos-auth-dialog-test /tmp/makos/source/cutefish/auth/authentication.svg /tmp/makos/results/authentication-fixture.png
+run_required client-tests.log python3 -m unittest discover -s tests -p 'test_cutefish*.py' -v
+run_required recovery-tests.log python3 -m unittest discover -s tests -p 'test_recovery*.py' -v
+run_required finder-tests.log python3 -m unittest discover -s tests -p 'test_finder*.py' -v
+run_required functional-contract-tests.log python3 -m unittest -v tests.test_browser tests.test_linux_settings tests.test_native_applications tests.test_linux_session tests.test_makos_installer tests.test_downloads tests.test_system_info tests.test_terminal tests.test_fullscreen
+run_required settings-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_linux_settings_ui.py
+run_required control-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_control_linux.py
+run_required control-tahoe-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_control_tahoe.py
+run_required apps-overlay-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_apps_overlay.py
+run_required shared-appearance-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_shared_appearance.py
+run_required installer-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_makos_installer_ui.py
+run_required about-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_about_system_info.py
+run_required appstore-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_appstore.py
+run_required terminal-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_terminal_ui.py
+run_required recovery-preview.log env QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --smoke-test
+run_required disk-preview.log env QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --disk-utility --smoke-test
+run_required recovery-interaction.log python3 tests/smoke_recovery.py
+run_required launcher-install.log python3 cutefish/install_preview.py
+run_required readiness.json python3 distro/probe.py
+run_required native-apps.log env QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 tests/smoke_ui.py --native-windows
+run_required cutefish-check.log dbus-run-session -- python3 cutefish/ci_session.py
+run_required browser-page.log env QT_QUICK_BACKEND=software python3 tests/verify_web_page.py
+run_required browser-downloads.log env QT_QUICK_BACKEND=software python3 tests/verify_web_downloads.py
+run_required browser-profiles.log env QT_QUICK_BACKEND=software python3 tests/verify_browser_profiles.py
+if (( MAKOS_VALIDATION_FAILURES > 0 )); then
+  printf '%s required validation checks failed; image assembly is blocked.\n' "$MAKOS_VALIDATION_FAILURES" >&2
+  exit 1
+fi
+
 USER
 SH

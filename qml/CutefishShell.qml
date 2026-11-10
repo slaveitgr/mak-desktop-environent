@@ -22,11 +22,25 @@ Main {
         transientParent: null
         visible: true
         color: "transparent"
-        width: shell.width; height: 30
+        width: shell.width
+        // Cutefish's DockLayoutManager owns fullscreen edge tracking and slides.
+        // Keep its native surface/content intact; QML sensors handle only the
+        // separate desktop auto-hide preference.
+        readonly property bool revealed: shell.controller.presentation.active || !shell.controller.desktopMenuAutoHide || shell.controller.menuBarRevealed
+        height: revealed || collapseDelay.running ? 30 : 2
+        onRevealedChanged: { if (revealed) collapseDelay.stop(); else collapseDelay.restart(); }
+        Timer { id: collapseDelay; interval: shell.controller.reduceMotion ? 0 : 180 }
+        HoverHandler {
+            onHoveredChanged: {
+                shell.controller.layerTopHovered = hovered;
+                shell.controller.updateMenuBarVisibility();
+            }
+        }
         flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowDoesNotAcceptFocus
         title: "makOS Menu Bar"
         CutefishShellSurface {
-            window: bar; role: 1; edge: 0; exclusiveZone: 30
+            window: bar; role: 1; edge: 0
+            exclusiveZone: shell.controller.presentation.active || shell.controller.desktopMenuAutoHide ? 0 : 30
             position: Qt.point(Screen.virtualX, Screen.virtualY)
         }
     }
@@ -37,12 +51,21 @@ Main {
         visible: true
         color: "transparent"
         width: Math.ceil(shell.dockView.width + 64)
-        height: Math.ceil(shell.dockView.baseIconSize * 2 + 70)
+        readonly property bool revealed: shell.controller.presentation.active || !shell.controller.dockAutoHide || shell.controller.dockRevealed
+        height: revealed || dockCollapseDelay.running ? Math.ceil(shell.dockView.baseIconSize * 2 + 70) : 2
+        onRevealedChanged: { if (revealed) dockCollapseDelay.stop(); else dockCollapseDelay.restart(); }
+        Timer { id: dockCollapseDelay; interval: shell.controller.reduceMotion ? 0 : 220 }
+        HoverHandler {
+            onHoveredChanged: {
+                shell.controller.layerBottomHovered = hovered;
+                shell.controller.updateDockVisibility();
+            }
+        }
         flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowDoesNotAcceptFocus
         title: "makOS Dock"
         CutefishShellSurface {
             window: dockWindow; role: 2; edge: 1
-            exclusiveZone: shell.controller.dockAutoHide ? 0 : Math.ceil(shell.dockView.height + 18)
+            exclusiveZone: shell.controller.presentation.active || shell.controller.dockAutoHide ? 0 : Math.ceil(shell.dockView.height + 18)
             position: Qt.point(Screen.virtualX + Math.round((shell.width-dockWindow.width)/2), Screen.virtualY+shell.height-dockWindow.height)
         }
         CutefishWindow {

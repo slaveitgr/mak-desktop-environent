@@ -71,7 +71,9 @@ Item {
     height: baseIconSize + 26
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: (desktop.presentation.active ? !desktop.presentation.dockVisible : desktop.dockAutoHide && !desktop.dockRevealed) ? -height - 45 : 9
+    // The native compositor slides the entire Dock in fullscreen; applying a
+    // second item slide would desynchronize its edge tracking and animation.
+    anchors.bottomMargin: (desktop.presentation.active ? !desktop.externalShellMode && !desktop.presentation.dockVisible : desktop.dockAutoHide && !desktop.dockRevealed) ? -height - 45 : 9
     Behavior on anchors.bottomMargin {
         NumberAnimation {
             duration: desktop.reduceMotion ? 0 : 220

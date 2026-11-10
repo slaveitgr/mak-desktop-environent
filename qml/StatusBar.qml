@@ -4,6 +4,7 @@ import QtQuick.Controls
 Item {
     id: bar
     required property var desktop
+    readonly property alias controlItem: controlButton
     property real availableWidth: desktop.width - 450
     property real clockWidth: clockContent.implicitWidth + 16
     readonly property var items: desktop.controls.visibleItems

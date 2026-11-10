@@ -32,6 +32,15 @@ def main():
     installed_helper.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(helper,installed_helper)
     installed_helper.chmod(0o755)
+    auth=root/'tmp/makos/source/cutefish/build/auth/makos-polkit-agent'
+    if not auth.is_file() or not os.access(auth,os.X_OK):
+        raise SystemExit('The compiled makOS authentication agent is missing.')
+    installed_auth=target/'cutefish/build/auth/makos-polkit-agent'
+    installed_auth.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(auth,installed_auth);installed_auth.chmod(0o755)
+    auth_icon=root/'usr/share/icons/hicolor/scalable/apps/org.makos.Authentication.svg'
+    auth_icon.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(source/'cutefish/auth/authentication.svg',auth_icon)
     fetch=root/'usr/bin/makos-fetch'
     fetch.write_text('#!/bin/sh\nexec /usr/bin/python3 /opt/makos/makos_fetch.py "$@"\n')
     fetch.chmod(0o755)

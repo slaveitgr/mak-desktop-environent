@@ -82,14 +82,18 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--headless', action='store_true', help='Isolated development display, no DRM/seat acquisition')
+    parser.add_argument('--headless-render', action='store_true', help='Render the development display with software EGL')
     parser.add_argument('--smoke-test', action='store_true', help='Headless only: require one desktop/bar/Dock, then exit')
     args = parser.parse_args()
     if sys.platform != 'linux' or os.getuid() == 0:
         parser.error('Run as an ordinary Linux user from the makOS login session.')
     if args.smoke_test and not args.headless: parser.error('--smoke-test requires --headless')
-    required = ['cutefish-compositor', 'dbus-run-session', 'cutefish-appruntime', 'cutefish-services', 'cutefish-polkit-agent']
+    if args.headless_render and not args.headless: parser.error('--headless-render requires --headless')
+    required = ['cutefish-compositor', 'dbus-run-session', 'cutefish-appruntime', 'cutefish-services']
     missing = [name for name in required if not shutil.which(name)]
     if missing: parser.error('Missing session programs: '+', '.join(missing))
+    auth_agent=ROOT/'cutefish/build/auth/makos-polkit-agent'
+    if not auth_agent.is_file() or not os.access(auth_agent,os.X_OK): parser.error('The makOS authentication agent is missing or not executable.')
     if not (ROOT/'qml/CutefishShell.qml').is_file(): parser.error('The makOS shell QML is missing')
     capabilities = subprocess.check_output(['cutefish-compositor', '--help'], text=True, timeout=5)
     if '--external-shell' not in capabilities: parser.error('The compositor lacks the makOS external-shell patch')
@@ -174,6 +178,7 @@ def main():
                        '--shell-control-socket',str(directory/'shell.control'),'--ready-fd',str(write_fd)]
             xwayland = directory/'xwayland.json'
             command += ['--no-drm','--no-xwayland'] if args.headless else ['--xwayland-ready-file',str(xwayland)]
+            if args.headless_render: command.append('--headless-render')
             compositor = start(command, pass_fds=(write_fd,)); os.close(write_fd)
             try:
                 with selectors.DefaultSelector() as selector:
@@ -191,7 +196,7 @@ def main():
                                 'WAYLAND_DISPLAY','DISPLAY','XAUTHORITY','XDG_CURRENT_DESKTOP',
                                 'XDG_SESSION_DESKTOP','XDG_SESSION_TYPE','GSETTINGS_BACKEND'],
                                env=env, stdout=log, stderr=log, timeout=5, check=False)
-                for program in ('cutefish-appruntime','cutefish-services','cutefish-polkit-agent'): critical.append(start([program]))
+                for program in ('cutefish-appruntime','cutefish-services',str(auth_agent)): critical.append(start([program]))
                 if shutil.which('xdg-user-dirs-update'):
                     subprocess.run(['xdg-user-dirs-update'],env=env,stdout=log,stderr=log,timeout=5,check=False)
             control, client = trusted_connection(directory/'shell.control')

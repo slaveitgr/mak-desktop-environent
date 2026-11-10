@@ -1,0 +1,171 @@
+--- a/src/core/compositor_options.h
++++ b/src/core/compositor_options.h
+@@ -23,6 +23,7 @@
+     std::string socketName;
+     std::string drmDevice;
+     bool noDrm = false;
++    bool headlessRender = false;
+     int headlessOutputs = 1;
+     bool wmDemo = false;
+     bool wmDemoScript = false;
+--- a/src/core/compositor_options.cpp
++++ b/src/core/compositor_options.cpp
+@@ -22,6 +22,7 @@
+     parser.addOption({"socket", "Wayland socket name to listen on.", "name"});
+     parser.addOption({"drm-device", "DRM device to drive, e.g. /dev/dri/card0.", "path"});
+     parser.addOption({"no-drm", "Run the Wayland server only, without acquiring a display."});
++    parser.addOption({"headless-render", "Development only: render one headless output using surfaceless EGL; requires --no-drm."});
+     parser.addOption({"headless-outputs", "Number of deterministic virtual outputs in --no-drm mode.",
+                       "count", "1"});
+     parser.addOption({"wm-demo", "Enable development-only F1–F9 WM shortcuts."});
+@@ -107,6 +108,11 @@
+         options.headlessOutputs = *count;
+     }
+ 
++    options.headlessRender = parser.isSet("headless-render");
++    if (options.headlessRender && (!options.noDrm || options.headlessOutputs != 1)) {
++        CF_CRITICAL(base::LogCategory::defaultCategory()) << "--headless-render requires --no-drm and one output";
++        return std::nullopt;
++    }
+     options.socketName = parser.value("socket");
+     options.drmDevice = parser.value("drm-device");
+     options.wmDemo = parser.isSet("wm-demo");
+--- a/src/render/egl_renderer.h
++++ b/src/render/egl_renderer.h
+@@ -44,6 +44,8 @@
+     // `format` is the DRM fourcc the GBM surfaces will use; the EGL config is
+     // matched against it through EGL_NATIVE_VISUAL_ID.
+     static std::unique_ptr<EglRenderer> create(gbm_device *device, uint32_t format);
++    // Same shaders/uploads as DRM; only context and target acquisition differ.
++    static std::unique_ptr<EglRenderer> createSurfaceless();
+ 
+     std::unique_ptr<EglRenderTarget> createTarget(gbm_surface *surface, const base::Size &size);
+ 
+--- a/src/render/egl_renderer.cpp
++++ b/src/render/egl_renderer.cpp
+@@ -56,6 +56,17 @@
+     if (!context)
+         return nullptr;
+     return std::unique_ptr<EglRenderer>(new EglRenderer(std::move(context), device));
++}
++
++std::unique_ptr<EglRenderer> EglRenderer::createSurfaceless()
++{
++    auto context = EglContext::createSurfaceless();
++    if (!context)
++        return nullptr;
++    auto renderer = std::unique_ptr<EglRenderer>(new EglRenderer(std::move(context)));
++    if (!renderer->initPrograms())
++        return nullptr;
++    return renderer;
+ }
+ 
+ std::unique_ptr<EglRenderTarget> EglRenderer::createTarget(gbm_surface *surface, const base::Size &size)
+--- a/src/core/compositor_shell.h
++++ b/src/core/compositor_shell.h
+@@ -48,6 +48,11 @@
+ struct wl_global;
+ 
+ namespace cutefish {
++
++namespace render {
++class EglRenderer;
++class EglRenderTarget;
++}
+ 
+ namespace backend {
+ class DrmBackend;
+@@ -359,6 +364,9 @@
+     std::unique_ptr<xwayland::XwaylandServer> m_xwayland;
+     std::unique_ptr<wayland::ShellControlChannel> m_shellControl;
+     std::unique_ptr<backend::HeadlessBackend> m_headless;
++    std::unique_ptr<render::EglRenderer> m_headlessRenderer;
++    std::unique_ptr<render::EglRenderTarget> m_headlessTarget;
++    uint64_t m_headlessFrame = 0;
+ 
+     std::unique_ptr<display::DisplayRuntime> m_displayRuntime;
+     std::unique_ptr<display::DisplayTopologyCoordinator> m_topologyCoordinator;
+--- a/src/core/compositor_shell.cpp
++++ b/src/core/compositor_shell.cpp
+@@ -7,6 +7,8 @@
+ #include <unistd.h>
+ 
+ #include <algorithm>
++#include <chrono>
++#include <GLES2/gl2.h>
+ #include <cctype>
+ #include <utility>
+ 
+@@ -1159,10 +1161,49 @@
+ {
+     m_headless =
+             std::make_unique<backend::HeadlessBackend>(&m_compositor, m_options.headlessOutputs);
++    m_additionalOutputModels = m_headless->createOutputs(&m_outputModel);
++    if (m_options.headlessRender) {
++        m_headlessRenderer = render::EglRenderer::createSurfaceless();
++        if (!m_headlessRenderer) {
++            CF_CRITICAL(cfWayland) << "Cannot create the requested headless EGL renderer";
++            return false;
++        }
++        m_headlessTarget = render::EglRenderTarget::createPbuffer(m_headlessRenderer->eglDisplay(),
++                m_headlessRenderer->eglConfig(), m_outputModel.pixelSize);
++        if (!m_headlessTarget) {
++            CF_CRITICAL(cfWayland) << "Cannot create the requested headless render target";
++            return false;
++        }
++        m_globals->imageCapture()->setRenderer(m_headlessRenderer.get());
++        CF_INFO(cfWayland) << "makOS headless renderer: real EGL scene composition and capture enabled";
++    }
+     m_backendSubscriptions.push_back(m_headless->aboutToPresent.connect([this] {
++        if (m_headlessRenderer) {
++            auto &renderer = *m_headlessRenderer;
++            const uint64_t generation = ++m_headlessFrame;
++            const auto now = std::chrono::steady_clock::now().time_since_epoch();
++            renderer.frameTime = std::chrono::duration<double, std::milli>(now).count();
++            m_compositor.frameStarted(renderer.frameTime);
++            renderer.setOutputContext({m_outputModel.name, base::Rect(base::Point(), m_outputModel.pixelSize),
++                                       m_outputModel.pixelSize, 1, 0, generation});
++            renderer.invalidateFrame();
++            if (!renderer.beginFrame(m_headlessTarget.get()))
++                CF_FATAL(cfWayland) << "Headless EGL frame could not begin";
++            m_compositor.updateTextures(renderer);
++            m_scene.render(renderer);
++            m_compositor.outputRendered(renderer);
++            if (!renderer.endFrame())
++                CF_FATAL(cfWayland) << "Headless EGL frame could not finish";
++            // A completed software/Pbuffer frame is real render completion,
++            // not a DRM scanout or a physical display presentation claim.
++            glFinish();
++            const auto completed = std::chrono::steady_clock::now().time_since_epoch();
++            const uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(completed).count();
++            m_compositor.outputDrawn(generation, ns);
++            m_compositor.outputPresented(generation, ns);
++        }
+         m_sessionController.notifyFramePresented();
+     }));
+-    m_additionalOutputModels = m_headless->createOutputs(&m_outputModel);
+     m_headless->startClock();
+ 
+     for (auto *model : outputModels()) {
+@@ -1400,6 +1441,7 @@
+     // Input stops before the clients do: a pointer or keyboard must not be
+     // dispatched to while its client is being torn down.
+     m_inputBackend.reset();
++    m_headless.reset();
+     m_topologyCoordinator.reset();
+     m_displayService.reset();
+     m_nightLight.reset();
+@@ -1467,6 +1509,13 @@
+     // Outside the scene, so released by hand: a texture outliving the backend
+     // keeps its EGL display up while the GBM device under it is destroyed.
+     m_decorationTheme.clearTextures();
++    if (m_headlessRenderer) {
++        if (m_globals)
++            m_globals->imageCapture()->setRenderer(nullptr);
++        m_headlessRenderer->releaseTarget(m_headlessTarget.get());
++        m_headlessTarget.reset();
++        m_headlessRenderer.reset();
++    }
+     m_backend.reset();
+     m_session.reset();
+ }

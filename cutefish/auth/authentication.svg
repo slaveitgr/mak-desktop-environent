@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+ <defs><linearGradient id="metal" x2="0" y2="1"><stop stop-color="#f2f5fa"/><stop offset="1" stop-color="#9daab9"/></linearGradient><linearGradient id="body" x2="0" y2="1"><stop stop-color="#e8bc6b"/><stop offset="1" stop-color="#bf872c"/></linearGradient></defs>
+ <path d="M37 61V42a27 27 0 0 1 54 0v19" fill="none" stroke="#56616d" stroke-width="15"/>
+ <path d="M37 61V42a27 27 0 0 1 54 0v19" fill="none" stroke="url(#metal)" stroke-width="10"/>
+ <rect x="22" y="54" width="84" height="64" rx="12" fill="url(#body)" stroke="#956326" stroke-width="2"/>
+ <path d="M64 73a8 8 0 0 0-4 15l-2 13h12l-2-13a8 8 0 0 0-4-15" fill="#77551f"/>
+</svg>

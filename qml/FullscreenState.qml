@@ -6,7 +6,16 @@ QtObject {
     property real viewportWidth: 1360
     property real viewportHeight: 850
     property var window: null
-    readonly property bool active: window !== null
+    // The shell observes foreign clients; their geometry belongs to the
+    // compositor. Keep chrome state separate from a local preview window.
+    property bool externalActive: false
+    readonly property bool active: window !== null || externalActive
+    onExternalActiveChanged: {
+        chromeDelay.stop(); dockDelay.stop(); dockHideDelay.stop();
+        chromeVisible = externalActive && (alwaysShowChrome || pointerAtTop);
+        dockVisible = false;
+        if (externalActive && pointerAtBottom) dockDelay.restart();
+    }
     property bool chromeVisible: false
     property bool alwaysShowChrome: false
     onAlwaysShowChromeChanged: updateChrome()

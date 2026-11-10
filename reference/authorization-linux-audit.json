@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-10",
+  "source": {
+    "repository": "https://github.com/cutefishos/cutefish-core",
+    "commit": "98b846f1d6848cc2ddb983d4b8c75fbc5107f2cc",
+    "iso_package": "1.0~git20261107203419.98b846f-1",
+    "license": "BSD-3-Clause",
+    "original_files_sha256": {
+      "main.cpp": "9e5169fe6470e6bacf685efa23ac20f1df806c3719504d4f95321eb69a0afff8",
+      "polkitagentlistener.cpp": "f71655a12a77293994b0e808d0d25d01eae932816ef68376beca2487b30a736e",
+      "polkitagentlistener.h": "130638270f139c28558d48997265cf82929af71e910490bd0cd76f2f2b55c4f1",
+      "authsession.cpp": "188eeb2fdef747deb110cce24262b9d21287b1f6bc42f1ad0f22c8f8a9d4978e",
+      "authsession.h": "e74002e3ec9497c819f3c98f1fd7440e1a4d0256ebdc2943ae82adeb9973f3c5",
+      "dialog.cpp": "fa761364543287a8904946a4afab78548e7064e882e5a404b49316795c79acc9",
+      "dialog.h": "a05f91ec6f8ec981fcca3e44e463495f80066415f66cb0553d13476f26262a06"
+    },
+    "method": "Vendored polkit-agent subtree; local changes documented in README.md."
+  },
+  "apple_reference": {
+    "path": "/System/Library/Frameworks/Security.framework/Versions/A/MachServices/SecurityAgent.bundle",
+    "version": "9.0",
+    "build": "55600.160.6.700.2",
+    "platform": "26.7.2",
+    "plist_evidence": "ev_73de67765e1c26301dd81963ae174a710223156a9a073554767127a632e52e49",
+    "nib_evidence": "ev_7930551276ecf156d648bd074620031d0d7d0a37def8b303ab9b440579a84089",
+    "node_view_evidence": "ev_d62cde76a79682bde1c225c63a0a4b0bde1218d8ca0886a5c62c4b0db804b50e",
+    "resource": "Contents/Resources/Base.lproj/Authentication.nib",
+    "resource_sha256": "b632deda7bdb163163116b1d918ca123b63d92cec40faee8f3403223815c39e5",
+    "archived_class": "AuthenticationViewLegacy",
+    "archived_window_size": [
+      443,
+      210
+    ],
+    "archived_icon_size": [
+      64,
+      64
+    ],
+    "archived_labels": [
+      "User Name:",
+      "Password:",
+      "Cancel",
+      "OK",
+      "Use Password\u2026"
+    ],
+    "limitations": [
+      "Static archive describes a legacy resource, not proof it is the active Tahoe runtime layout.",
+      "XPC helper nib resources omitted by bounded document selection.",
+      "No authorization request, password input, privileged action, UI capture or CUA interaction occurred."
+    ]
+  },
+  "implementation": {
+    "agent": "cutefish/build/auth/makos-polkit-agent",
+    "app_id": "org.makos.Authentication",
+    "object_path": "/org/makos/PolicyKit1/AuthenticationAgent",
+    "bus": "system",
+    "interface": "org.freedesktop.PolicyKit1.AuthenticationAgent",
+    "authority": "org.freedesktop.PolicyKit1",
+    "helper": "Original polkit helper socket or /usr/lib/polkit-1/polkit-agent-helper-1",
+    "startup": "Replaces stock agent only in makOS session startup",
+    "policies_or_pam_modified": false,
+    "icon": "Original makOS lock SVG, not an extracted Apple asset"
+  },
+  "security_properties": [
+    "Begin and Cancel requests must match current authority unique bus owner",
+    "No missing/invalid uid implicitly selects root",
+    "Password field and undo state cleared immediately after submission/cancel; owned response buffers overwritten after handoff",
+    "No credentials in argv, files, settings or logs; raw PAM/helper diagnostics are not forwarded",
+    "Exact success/failure records and successful helper exit required; completion never grants privileges by itself",
+    "No fake success UI or independent privilege bypass"
+  ],
+  "validation": {
+    "local": "Portable C++ protocol test passed; C++ syntax checks for modified source and test files; Python session/staging compile passed.",
+    "pending": "Linux linking, real headless Toolkit dialog, fixture-helper process tests and installed-session registration/authorization remain pending CI/VM.",
+    "ci_commands": [
+      "cutefish/build/auth/makos-auth-protocol-test",
+      "cutefish/build/auth/makos-auth-session-test",
+      "cutefish/build/auth/makos-auth-dialog-test /tmp/makos/source/cutefish/auth/authentication.svg /tmp/makos/results/authentication-fixture.png"
+    ]
+  },
+  "remaining_limits": [
+    "Real user authorization must be tested in an installed Linux session; fixtures never authenticate an account.",
+    "Pixel parity with the current Tahoe authentication window has not been observed.",
+    "Original agent selects one allowed administrator (prefers current user); no administrator picker was added.",
+    "All password-copy erasure across toolkit, allocator and kernel memory cannot be guaranteed.",
+    "Fingerprint and other platform-specific native authorization UI are not implemented."
+  ]
+}

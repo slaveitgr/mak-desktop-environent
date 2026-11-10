@@ -19,3 +19,4 @@ install(TARGETS makoscutefish LIBRARY DESTINATION lib/makos/qml/MakOS/Cutefish)
 install(FILES qmldir DESTINATION lib/makos/qml/MakOS/Cutefish)
 
 add_subdirectory(settings)
+add_subdirectory(auth)

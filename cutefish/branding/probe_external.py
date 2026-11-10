@@ -39,7 +39,7 @@ def main():
                  MAKOS_SHELL_TEST_GEOMETRY=str(geometry))
         for key in ('DISPLAY','WAYLAND_DISPLAY','WAYLAND_SOCKET','XAUTHORITY'):env.pop(key,None)
         with (output/'external-session.log').open('w') as session_log, (output/'external-finder.log').open('w') as finder_log:
-            session=subprocess.Popen([sys.executable,str(ROOT/'cutefish/session.py'),'--headless'],env=env,stdout=session_log,stderr=session_log,start_new_session=True)
+            session=subprocess.Popen([sys.executable,str(ROOT/'cutefish/session.py'),'--headless','--headless-render'],env=env,stdout=session_log,stderr=session_log,start_new_session=True)
             processes.append(session)
             env.update(WAYLAND_DISPLAY='makos-'+str(session.pid),QT_QPA_PLATFORM='wayland',QT_QUICK_BACKEND='software',LIBGL_ALWAYS_SOFTWARE='1',EGL_PLATFORM='surfaceless')
             def call(method,signature='',*arguments):
@@ -67,7 +67,9 @@ def main():
                 return roles
             def snapshot(name):
                 path=output/(name+'.png')
-                subprocess.run(['cutefish-screenshot',str(path)],env=env,capture_output=True,text=True,timeout=35,check=True)
+                result=subprocess.run(['cutefish-screenshot',str(path)],env=env,capture_output=True,text=True,timeout=35)
+                (output/(name+'-capture.log')).write_text(result.stdout+result.stderr)
+                if result.returncode:raise RuntimeError('Compositor capture failed: '+result.stderr.strip())
                 image=QImage(str(path));assert not image.isNull() and image.width()>=800 and image.height()>=600
                 colors={image.pixel(x,y) for y in range(0,image.height(),13) for x in range(0,image.width(),13)}
                 assert len(colors)>20,('Blank compositor capture',name,len(colors))
@@ -82,6 +84,16 @@ def main():
                 bounds=areas[0]['bounds'];work=areas[0]['workArea']
                 assert work[1]>=bounds[1]+30 and work[1]+work[3]<bounds[1]+bounds[3],areas
                 report['checks']['reserved_work_area']=areas
+                def rendered_shell():
+                    current=role_set()
+                    if not current:return None
+                    for role in current.values():
+                        if not any(surface.get('visible') and len(surface.get('bufferSize',[]))==2
+                            and surface['bounds'][0]<bounds[0]+bounds[2] and surface['bounds'][1]<bounds[1]+bounds[3]
+                            and surface['bounds'][0]+surface['bounds'][2]>bounds[0] and surface['bounds'][1]+surface['bounds'][3]>bounds[1]
+                            for surface in role[0].get('surfaces',[])):return None
+                    return current
+                report['checks']['rendered_shell']=wait_for(rendered_shell,'real shell textures and on-screen scene placement',30)
                 report['checks']['desktop_capture']=snapshot('external-desktop')
                 finder=subprocess.Popen([sys.executable,str(ROOT/'main.py'),'--cutefish-app','finder','--root',str(home)],env=env,stdout=finder_log,stderr=finder_log,start_new_session=True)
                 processes.append(finder)
@@ -120,15 +132,35 @@ def main():
                 report['checks']['minimize_restore']={'target_before_minimize':target,'minimized':minimized['state'],'restored':restored['state']}
                 time.sleep(.5)  # Capture the restored surface after its transition.
                 report['checks']['restored_capture']=snapshot('external-finder-restored')
+                center=(bounds[0]+bounds[2]/2,bounds[1]+bounds[3]/2)
+                assert call('PointerMotion','dd',*center)
                 assert call('SetWindowFullscreen','tb',identity,True)
                 wait_for(lambda:any(int(w['id'])==identity and w['state']=='fullscreen' for w in finder_windows()),'Finder fullscreen')
-                time.sleep(.4)
+                def drawn(window):return any(surface.get('visible') for surface in window.get('surfaces',[]))
+                hidden=wait_for(lambda:(lambda r:r if r and not drawn(r['panel'][0]) and not drawn(r['dock'][0]) else None)(role_set()),'compositor hides fullscreen menu and Dock scene surfaces')
+                assert hidden['panel'][0]['bounds'][3]==30 and hidden['dock'][0]['bounds'][3]>30,hidden
+                wait_for(lambda:json.loads(call('WorkAreas'))[0]['workArea']==bounds,'fullscreen releases shell reservations')
                 report['checks']['fullscreen_capture']=snapshot('external-finder-fullscreen')
+                assert call('PointerMotion','dd',bounds[0]+bounds[2]/2,bounds[1]+1)
+                revealed=wait_for(lambda:(lambda r:r if r and drawn(r['panel'][0]) else None)(role_set()),'compositor top edge reveals native menu bar')
+                time.sleep(.3)  # Capture after the compositor's 200 ms slide-in.
+                report['checks']['fullscreen_revealed_capture']=snapshot('external-fullscreen-menu-revealed')
+                frame=QImage(str(output/'external-fullscreen-menu-revealed.png'))
+                pixel=frame.pixelColor(frame.width()//2,15)
+                assert max(pixel.red(),pixel.green(),pixel.blue())<12,('Fullscreen bar must be black',pixel.name())
+                assert call('PointerMotion','dd',*center)
+                wait_for(lambda:not drawn(role_set()['panel'][0]),'fullscreen menu hides after leaving edge')
+                assert call('PointerMotion','dd',bounds[0]+bounds[2]/2,bounds[1]+bounds[3]-1)
+                wait_for(lambda:drawn(role_set()['dock'][0]),'compositor bottom edge dwell reveals native Dock')
+                time.sleep(.3)
+                report['checks']['fullscreen_dock_capture']=snapshot('external-fullscreen-dock-revealed')
+                assert call('PointerMotion','dd',*center)
+                wait_for(lambda:not drawn(role_set()['dock'][0]),'fullscreen Dock hides after leaving edge')
+                report['checks']['fullscreen_chrome']={'animation_owner':'compositor DockLayoutManager','scene_visibility_verified':True,'black_revealed_menu':True,'pointer_reveal_and_hide':True,'reservations_released':True}
                 assert call('SetWindowFullscreen','tb',identity,False)
                 wait_for(lambda:any(int(w['id'])==identity and w['state']=='normal' for w in finder_windows()),'Finder exits fullscreen')
-                # The shell observes state on its asynchronous 300 ms poll; do
-                # not click the menu while its fullscreen transition is ending.
-                time.sleep(.6)
+                wait_for(lambda:drawn(role_set()['panel'][0]) and drawn(role_set()['dock'][0]),'normal shell chrome returns')
+                wait_for(lambda:json.loads(call('WorkAreas'))[0]['workArea']==work,'normal shell reservations return')
                 controls=wait_for(lambda:json.loads(geometry.read_text()).get('controls') if geometry.is_file() else None,'QML control geometry')
                 for name in ('apple','control'):
                     control=controls[name]

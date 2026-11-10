@@ -90,6 +90,11 @@ with tempfile.TemporaryDirectory() as temporary:
         image=root.grabWindow();scale=image.width()/root.width()
         image.copy(round(panel.property('x')*scale),round(panel.property('y')*scale),round(panel.property('width')*scale),round(panel.property('height')*scale)).save('/tmp/makos-controls-'+name+'.png')
     controls.reset();show('control')
+    geometry=root.shellControlGeometry().toVariant()
+    for name,object_name in [('control','statusButton_control'),('apple','topMenuItem_apple')]:
+        item=get(object_name)
+        center=item.mapToScene(QPointF(item.width()/2,item.height()/2))
+        assert geometry['controls'][name]=={'windowTitle':root.title(),'x':center.x(),'y':center.y()}
     positions={'wifi':(0,0,138,62),'nowplaying':(152,0,138,138),'bluetooth':(0,76,138,62),'airdrop':(0,152,138,62),'stagemanager':(152,152,62,62),'mirroring':(228,152,62,62),'darkmode':(0,228,62,62),'capture':(76,228,62,62),'focus':(152,228,138,62),'display':(0,304,290,62),'sound':(0,380,290,62)}
     for name,wanted in positions.items():
         tile=get('controlTile_'+name);actual=(tile.x(),tile.y(),tile.width(),tile.height())

@@ -18,6 +18,19 @@ ApplicationWindow {
     property alias topbarView: topChrome
     property alias dockView: dock
     readonly property bool appsOverlayVisible: appsOverlay.visible
+    // Keep visual/window traversal in QML: PySide 6.8 can expose delegates
+    // as QObject and give temporary window wrappers the wrong ownership.
+    function shellControlGeometry() {
+        let result = {controls: {}, appsOverlayVisible: appsOverlay.visible};
+        let items = {control: statusItems.controlItem, apple: topMenuItems.itemAt(0)};
+        for (let name of Object.keys(items)) {
+            let item = items[name];
+            if (!item || !item.Window.window) continue;
+            let center = item.mapToItem(null, item.width / 2, item.height / 2);
+            result.controls[name] = {windowTitle: item.Window.window.title, x: center.x, y: center.y};
+        }
+        return result;
+    }
     function toggleAppsLauncher() { desktop.toggleApps(); }
     readonly property bool cutefishMode: typeof cutefishApp !== "undefined" && cutefishApp !== ""
     visible: !cutefishMode
@@ -323,6 +336,9 @@ ApplicationWindow {
             id: fullscreenState
             viewportWidth: desktop.width
             viewportHeight: desktop.height
+            externalActive: desktop.externalShellMode && !!desktop.shellState && desktop.shellState.windows.some(function(w) {
+                return w.state === "fullscreen" && w.visible;
+            })
             pointerAtTop: topEdge.hovered || desktop.layerTopHovered || desktop.nativeTopHovered
             alwaysShowChrome: desktop.menuBarHideMode === "Never" || desktop.menuBarHideMode === "On Desktop Only"
             pointerInChrome: chromeHover.hovered || desktop.layerTopHovered || desktop.nativeChromeHovered
@@ -943,8 +959,8 @@ ApplicationWindow {
             z: 11000
             width: parent.width
             height: 30
-            y: fullscreenState.active ? (fullscreenState.chromeVisible ? 0 : -30) : desktop.desktopMenuAutoHide && !desktop.menuBarRevealed ? -30 : 0
-            enabled: fullscreenState.active ? fullscreenState.chromeVisible : !desktop.desktopMenuAutoHide || desktop.menuBarRevealed
+            y: fullscreenState.active ? (desktop.externalShellMode || fullscreenState.chromeVisible ? 0 : -30) : desktop.desktopMenuAutoHide && !desktop.menuBarRevealed ? -30 : 0
+            enabled: fullscreenState.active ? desktop.externalShellMode || fullscreenState.chromeVisible : !desktop.desktopMenuAutoHide || desktop.menuBarRevealed
             HoverHandler { id: normalMenuHover; onHoveredChanged: desktop.updateMenuBarVisibility() }
             Behavior on y {
                 NumberAnimation {

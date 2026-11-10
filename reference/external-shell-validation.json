@@ -1,0 +1,72 @@
+{
+  "scope": "Native external-shell integration and fullscreen chrome; development validation only",
+  "pinned_compositor_commit": "0e709136bd7056136e74e981acffc4b88d659e0b",
+  "evidence": [
+    {
+      "kind": "actual Linux compilation",
+      "commit": "6cce9c5e2bf339e79dba519edb325d9ceb3f7eed",
+      "run": 42837758840,
+      "result": "Patched compositor and Qt Wayland bridge built on the pinned Cutefish rootfs; later browser gate failed."
+    },
+    {
+      "kind": "actual Linux browser regression",
+      "commit": "d895b24801509547af661789322381d0ba7bb4a9",
+      "run": 42842835564,
+      "artifact": 13776464201,
+      "artifact_zip_sha256": "79c2e7f73dc3b68149e0452d676d0f60e3919415efc82e0c33de2680a62e2a90",
+      "result": "All three real WebEngine integrations passed, including duplicate same-ID interrupted download cleanup."
+    },
+    {
+      "kind": "last completed full native gate",
+      "commit": "d895b24801509547af661789322381d0ba7bb4a9",
+      "run": 42842835165,
+      "artifact": 13777880582,
+      "result": "Installer QtDBus marshalling failed before native session probes. No native-shell pass is implied."
+    },
+    {
+      "kind": "next native validation",
+      "commit": "9ed1cee85c23667bcfec6cfdd6cd3fdd88e84616",
+      "runs": [
+        42847561186,
+        42847561051
+      ],
+      "changes": "Typed Gio installer transport, native shell first after build, Dock/OSD/Apps compositor glass, actual native app menu assertions.",
+      "result": "Installer typed Gio wire test and native compilation passed. Actual trusted shell had one desktop/panel/Dock, blur requests and work-area reservations; capture failed because the upstream state-only headless backend has no renderer. The probe did not pass.",
+      "artifact_zip_sha256": "90563aad73edfaec1f532e91703d3ea6c819fae25b4980428ba9be209beefedf"
+    },
+    {
+      "kind": "local QML state regression",
+      "test": "tests/test_fullscreen.py",
+      "result": "6 tests pass, including external fullscreen chrome state, edge reveal, menu preference and unchanged foreign client geometry."
+    },
+    {
+      "kind": "local general UI regression",
+      "test": "tests/smoke_ui.py --native-windows",
+      "result": "18 suite windows, Apps overlay, 32 Settings categories and fullscreen/minimize/close behavior passed on software/offscreen Qt; not the Linux compositor."
+    }
+  ],
+  "fullscreen_followup": {
+    "cause": "Preview FullscreenState followed only local windows, so native foreign fullscreen did not select the black shell menu. Source inspection confirms pinned DockLayoutManager already hides/reveals native panel/Dock surfaces and reports client titlebar offsets.",
+    "source": "cutefish-compositor 0e709136bd7056136e74e981acffc4b88d659e0b src/wm/dock_layout_manager.cpp computeVisibility, computeAutoHideState, updateReveal, present, advance",
+    "implementation": "Observe foreign fullscreen for black menu/background and zero shell reservations. Preserve full-size native hosts/content so the compositor remains the only fullscreen slide/reveal owner. QML 2px edge sensors apply only to ordinary desktop auto-hide.",
+    "native_probe": "cutefish/branding/probe_external.py checks actual scene visibility, global pointer top/bottom edge events, black menu screenshot pixel and reservation restoration. Follow-up has not yet passed a native run."
+  },
+  "limits": [
+    "No physical USB boot or HP AMD GPU test.",
+    "No Secure Boot support claim.",
+    "No pixel/animation 1:1 Tahoe certification.",
+    "Global Spotlight multi-capsule native glass is not verified.",
+    "Native compositor currently forces fullscreen auto-hide; the menu preference Never does not override this upstream policy yet."
+  ],
+  "headless_render_followup": {
+    "pinned_source_evidence": [
+      "src/backend/headless/headless_backend.cpp startClock emits callbacks only",
+      "tests/egl_test_util.h uses EglContext::createSurfaceless and real EglRenderer programs",
+      "src/render/egl_render_target.cpp createPbuffer",
+      "src/display/display_runtime.cpp render callbacks upload textures, render scene and notify capture"
+    ],
+    "implementation": "Explicit --no-drm --headless-render option constructs the actual EGL renderer and Pbuffer target, advances frameStarted, uploads client buffers, renders the scene and completes capture only after glFinish. No DRM seat or display is acquired.",
+    "validation": "Patch applies with zero fuzz to the pinned source plus the three existing patches. Native compile and rendered integration test pending.",
+    "probe": "Requires uploaded surface textures and on-screen scene positions before capturing; keeps capture stdout/stderr in artifacts. A render/capture failure still fails the required release gate."
+  }
+}

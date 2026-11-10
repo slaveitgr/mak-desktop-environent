@@ -72,7 +72,7 @@ MaterialPopup {
     contentItem: Item {
         Loader {
             id:nativeGlassLoader
-            source:typeof useCutefishShell!=="undefined"&&useCutefishShell?"CutefishPopupGlass.qml":""
+            source:typeof useCutefishShell!=="undefined"&&useCutefishShell&&Bridge.nativeWayland?"CutefishPopupGlass.qml":""
             onLoaded:item.popup=launcher
         }
         ApplicationsLauncher { id:library;anchors.fill:parent;host:launcherHost;visible:launcher.mode==="apps" }

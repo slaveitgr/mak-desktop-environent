@@ -1,0 +1,16 @@
+{
+  "repository": "https://github.com/cutefishos/cutefish-core",
+  "commit": "98b846f1d6848cc2ddb983d4b8c75fbc5107f2cc",
+  "iso_package": "1.0~git20261107203419.98b846f-1",
+  "license": "BSD-3-Clause",
+  "original_files_sha256": {
+    "main.cpp": "9e5169fe6470e6bacf685efa23ac20f1df806c3719504d4f95321eb69a0afff8",
+    "polkitagentlistener.cpp": "f71655a12a77293994b0e808d0d25d01eae932816ef68376beca2487b30a736e",
+    "polkitagentlistener.h": "130638270f139c28558d48997265cf82929af71e910490bd0cd76f2f2b55c4f1",
+    "authsession.cpp": "188eeb2fdef747deb110cce24262b9d21287b1f6bc42f1ad0f22c8f8a9d4978e",
+    "authsession.h": "e74002e3ec9497c819f3c98f1fd7440e1a4d0256ebdc2943ae82adeb9973f3c5",
+    "dialog.cpp": "fa761364543287a8904946a4afab78548e7064e882e5a404b49316795c79acc9",
+    "dialog.h": "a05f91ec6f8ec981fcca3e44e463495f80066415f66cb0553d13476f26262a06"
+  },
+  "method": "Vendored polkit-agent subtree; local changes documented in README.md."
+}

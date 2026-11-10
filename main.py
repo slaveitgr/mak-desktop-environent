@@ -427,6 +427,9 @@ class Bridge(QObject):
     @Property(bool, constant=True)
     def isMac(self): return sys.platform == 'darwin'
 
+    @Property(bool, constant=True)
+    def nativeWayland(self): return QGuiApplication.platformName() == 'wayland'
+
     @Property(str, notify=stateChanged)
     def undoTitle(self): return self.workspace.undo_title
 
@@ -739,14 +742,7 @@ def main():
         app.aboutToQuit.connect(shell_launcher.stop)
     if args.cutefish_shell and os.environ.get('MAKOS_SHELL_TEST_GEOMETRY'):
         def export_shell_geometry():
-            from PySide6.QtCore import QPointF
-            root_object=engine.rootObjects()[0]
-            result={'controls':{},'appsOverlayVisible':bool(root_object.property('appsOverlayVisible'))}
-            for name,object_name in [('control','statusButton_control'),('apple','topMenuItem_apple')]:
-                item=root_object.findChild(QObject,object_name)
-                if item is None or item.window() is None: continue
-                position=item.mapToScene(QPointF(item.width()/2,item.height()/2))
-                result['controls'][name]={'windowTitle':item.window().title(),'x':position.x(),'y':position.y()}
+            result=engine.rootObjects()[0].shellControlGeometry().toVariant()
             destination=Path(os.environ['MAKOS_SHELL_TEST_GEOMETRY'])
             destination.write_text(json.dumps(result)+'\n')
         geometry_timer=QTimer(app)
