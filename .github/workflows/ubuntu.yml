@@ -1,7 +1,5 @@
-name: Ubuntu desktop session
+name: Legacy Ubuntu desktop session (manual)
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read

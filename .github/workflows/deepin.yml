@@ -1,0 +1,31 @@
+name: makOS on the pinned Deepin base
+on:
+  push:
+    branches: [makos-deepin]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deepin:
+    # This is the CI host; all Qt/application checks run in the Deepin rootfs.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare read-only image inspection tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends squashfs-tools python3-venv
+          python3 -m venv "$RUNNER_TEMP/inspect"
+          "$RUNNER_TEMP/inspect/bin/pip" install pycdlib==1.15.0
+      - name: Fetch and verify the pinned Deepin ISO
+        run: python3 distro/fetch_base.py --output "$RUNNER_TEMP/base" --workers 8
+      - name: Test the native clients and Treeland surfaces in Deepin
+        run: bash distro/ci_deepin.sh
+      - name: Preserve validation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: makos-deepin-validation
+          path: ci-results/
+          if-no-files-found: warn

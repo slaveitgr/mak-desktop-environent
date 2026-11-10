@@ -1,0 +1,31 @@
+{
+  "name": "makOS",
+  "milestone": "0.8-dev",
+  "base": {
+    "distribution": "Deepin",
+    "release": "25.2.0",
+    "architecture": "amd64",
+    "filename": "deepin-desktop-community-25.2.0-amd64.iso",
+    "bytes": 6976131072,
+    "sha256": "f875c9a605bfe6a8425d1d353a3c1ec755bf37f5b0a3231ca19e2145da0ff450",
+    "url": "https://cdimage.deepin.com/releases/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso",
+    "checksum_url": "https://cdimage.deepin.com/releases/25.2.0/amd64/SHA256SUMS",
+    "mirrors": [
+      "https://mirrors.ircam.fr/pub/deepin-cd/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso",
+      "https://mirror.dotsrc.org/deepin-cd/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso",
+      "https://mirror.alpix.eu/deepin-cd/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso"
+    ]
+  },
+  "desktop": {
+    "compositor": "Treeland",
+    "services": "DDE",
+    "shell": "makOS Qt Quick",
+    "style_reference": "macOS Tahoe"
+  },
+  "vm": {
+    "firmware": "UEFI",
+    "cpus": 4,
+    "memory_mib": 8192,
+    "disk_gib": 80
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "treeland": {
+    "url": "https://github.com/linuxdeepin/treeland",
+    "commit": "4abd1b9a1d30a79dee6d98951cfb0a4836952cce"
+  },
+  "treeland-protocols": {
+    "url": "https://github.com/linuxdeepin/treeland-protocols",
+    "commit": "0787816299e227105d9c3a81bf3d9c201596df72"
+  },
+  "dtksystemsettings": {
+    "url": "https://github.com/linuxdeepin/dtksystemsettings",
+    "commit": "1b14749b44e497649b855853febf47036145399c"
+  },
+  "deepin-album": {
+    "url": "https://github.com/linuxdeepin/deepin-album",
+    "commit": "eb5f56923ee895fb460c807a7e36a524c1137e85"
+  },
+  "dde-file-manager": {
+    "url": "https://github.com/linuxdeepin/dde-file-manager",
+    "commit": "350ed9a60bffc768e6559a76cc29366160dfa474"
+  },
+  "dde-daemon": {
+    "url": "https://github.com/linuxdeepin/dde-daemon",
+    "commit": "539c44ba25b9ba1bb513b400deaa2175d00167ca"
+  }
+}

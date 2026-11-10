@@ -8,7 +8,8 @@ import sys
 from PySide6.QtCore import QObject, QSettings, QUrl
 from PySide6.QtGui import QGuiApplication, QFont
 import shiboken6
-from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtQml import QQmlApplicationEngine, QQmlEngine, QQmlExpression
+from PySide6.QtQuick import QQuickItem, QQuickWindow
 from PySide6.QtTest import QTest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -29,7 +30,7 @@ with TemporaryDirectory() as folder:
     engine = QQmlApplicationEngine()
     warnings = []
     engine.warnings.connect(lambda errors: warnings.extend(str(e) for e in errors))
-    for key, value in {'Bridge':bridge, 'startFullscreen':False, 'comparisonMode':False, 'startSettings':True}.items():
+    for key, value in {'Bridge':bridge, 'startFullscreen':False, 'comparisonMode':False, 'startSettings':True, 'startNativeWindows':'--native-windows' in sys.argv}.items():
         engine.rootContext().setContextProperty(key, value)
     engine.load(QUrl.fromLocalFile(str(ROOT / 'qml/Main.qml')))
     assert engine.rootObjects(), warnings
@@ -39,6 +40,21 @@ with TemporaryDirectory() as folder:
     assert len(windows) == 2
     finder, settings = windows
     assert settings.property('appKind') == 'settings'
+    def qml_boolean(expression):
+        evaluator = QQmlExpression(QQmlEngine.contextForObject(desktop), desktop, expression)
+        value, undefined = evaluator.evaluate()
+        assert not evaluator.hasError(), evaluator.error().toString()
+        return not undefined and bool(value)
+
+    if '--native-windows' in sys.argv:
+        assert qml_boolean("windows[0].nativeWindow && windows[1].nativeWindow && windows[0].nativeWindow !== windows[1].nativeWindow")
+        assert qml_boolean("windows[0].nativeWindow.objectName === 'makOSNativeWindow' && windows[0].x === 0 && windows[0].y === 0")
+        desktop.openContext(100, 100, finder)
+        QTest.qWait(30)
+        assert qml_boolean("contextMenu.parent === windows[0].nativeWindow.contentItem")
+        root.findChild(QObject, 'contextMenu').close()
+        desktop.openSettings('Appearance')
+
     for page in [row['name'] for row in bridge.settingsCategories] + ['About', 'Storage', 'Date & Time', 'Sharing']:
         settings.navigate(page)
         QTest.qWait(20)
@@ -51,7 +67,10 @@ with TemporaryDirectory() as folder:
     presentation.enter(settings)
     assert settings.property('isFullscreen')
     desktop.activateFinder()
-    assert not settings.property('isFullscreen')
+    if '--native-windows' not in sys.argv:
+        assert not settings.property('isFullscreen')
+    else:
+        presentation.exit()
     assert desktop.property('activeWindow') == finder
     desktop.openSettings('Appearance')
     assert len(desktop.property('windows').toVariant()) == 2
@@ -75,6 +94,11 @@ with TemporaryDirectory() as folder:
         target = windows[-1]
         assert target.property('appKind') == entry['id'], entry
         assert target.property('pageItem') is not None, entry
+        if '--native-windows' in sys.argv:
+            assert qml_boolean("windows[windows.length-1].nativeWindow !== windows[0].nativeWindow"), entry
+            assert qml_boolean("windows[windows.length-1].nativeWindow.title === windows[windows.length-1].windowTitle"), entry
+            if entry['id'] == 'calculator': assert qml_boolean("windows[windows.length-1].nativeWindow.width < 600")
+
         desktop.openApplication(entry['id'])
         assert len(desktop.property('windows').toVariant()) == len(windows)
         desktop.minimizeWindow(target)

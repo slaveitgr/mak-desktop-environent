@@ -8,7 +8,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent
 VERSION = '0.7'
-DIRECTORIES = {'qml', 'assets', 'shaders', 'tests', 'reference', 'linux', '.github'}
+DIRECTORIES = {'qml', 'assets', 'shaders', 'tests', 'reference', 'linux', 'distro', '.github'}
 FILES = {'README.md', 'RENDERING.md', 'run.sh', 'Launch.command', 'requirements.txt',
          'settings_catalog.json', '.gitignore', 'extract_reference_icons.swift', 'extract_settings_assets.swift'}
 

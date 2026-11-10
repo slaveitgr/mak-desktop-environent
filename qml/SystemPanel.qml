@@ -190,9 +190,9 @@ MaterialPopup {
                 }
                 Column {
                     visible: panel.section === "sound"; width: parent.width; spacing: 10
-                    ControlSlider { objectName: "controlDetailVolume"; width: parent.width; dark: panel.dark; value: panel.soundMuted ? 0 : panel.volume; Accessible.name: "Music volume"; onMoved: panel.changeLevel("sound", value) }
+                    ControlSlider { objectName: "controlDetailVolume"; width: parent.width; dark: panel.dark; value: panel.soundMuted ? 0 : panel.volume; Accessible.name: Bridge.ddeAudio.available ? "System volume" : "Music volume"; onMoved: panel.changeLevel("sound", value) }
                     Switch { objectName: "controlMuteSwitch"; text: "Mute"; checked: panel.soundMuted; onToggled: panel.controls.setPreference("sound.muted", checked) }
-                    Text { width: parent.width; text: "Volume applies to Music playback in this desktop."; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
+                    Text { width: parent.width; text: Bridge.ddeAudio.available ? "Volume controls the system output through DDE." : "Volume applies to Music playback in this desktop."; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
                 }
                 Column {
                     visible: panel.section === "nowplaying"; width: parent.width; spacing: 15

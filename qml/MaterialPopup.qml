@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 
 Popup {
+    popupType: typeof useWaylandShell !== "undefined" && useWaylandShell ? Popup.Window : Popup.Item
     property bool reducedMotion: false
     property real materialization: 1
     enter: Transition {

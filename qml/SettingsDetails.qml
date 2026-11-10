@@ -15,9 +15,17 @@ Column {
     spacing: 14
     function pref(key, fallback) {
         let current = revision;
+        if (Bridge.ddeAudio.available) {
+            if (key === "sound.volume") return String(Bridge.ddeAudio.volume);
+            if (key === "sound.muted") return String(Bridge.ddeAudio.muted);
+        }
         return suite.preference(key, fallback);
     }
     function save(key, value) {
+        if (Bridge.ddeAudio.available) {
+            if (key === "sound.volume") { Bridge.ddeAudio.setVolume(Number(value)); return; }
+            if (key === "sound.muted") { Bridge.ddeAudio.setMuted(String(value) === "true"); return; }
+        }
         let defaults = {
             "sound.volume": "0.75",
             "sound.muted": "false",
@@ -128,7 +136,7 @@ Column {
             return {
                 icon: "speaker",
                 color: "#ed4d64",
-                subtitle: "Adjust the volume of this desktop’s applications.",
+                subtitle: Bridge.ddeAudio.available ? "Adjust the default system output through DDE." : "Adjust the volume of this desktop’s applications.",
                 groups: [group("Output", [row("Output Device", "System default", "Device selection is managed by the operating system.")]), group("Input", [row("Microphone", "Not in use"), row("Input Device", "System managed")])]
             };
         case "Focus":
@@ -388,8 +396,8 @@ Column {
         SettingsToggle {
             dark: details.dark
             reducedMotion: host.desktop.reduceMotion
-            label: "Mute application audio"
-            description: "Applies to the Music player in this desktop."
+            label: Bridge.ddeAudio.available ? "Mute system audio" : "Mute application audio"
+            description: Bridge.ddeAudio.available ? "Controls the default DDE output device." : "Applies to the Music player in this desktop."
             checked: details.pref("sound.muted", "false") === "true"
             onToggled: function (value) {
                 details.save("sound.muted", value);

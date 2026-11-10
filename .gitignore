@@ -10,3 +10,8 @@ vendor/
 dist/
 *.deb
 *.log
+
+*.iso
+*.iso.part
+*.iso.assembling
+*.iso.chunks/

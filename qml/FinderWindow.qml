@@ -5,12 +5,17 @@ import QtQuick.Effects
 
 FocusScope {
     id: win
+    property var nativeWindow: null
+    property var nativeSnapshot: null
+    property url nativeThumbnail: ""
+    readonly property int minimumWindowWidth: 660
+    readonly property int minimumWindowHeight: 390
     required property var desktop
     required property var browser
     readonly property string appKind: "finder"
     readonly property string windowTitle: browser.title
     property bool dark: desktop.dark
-    property bool active: desktop.shellActive && desktop.activeWindow === win
+    property bool active: nativeWindow ? nativeWindow.active : desktop.shellActive && desktop.activeWindow === win
     property bool minimized: false
     property bool appHidden: false
     property bool zoomed: false
@@ -50,7 +55,7 @@ FocusScope {
     height: 570
     opacity: closing ? 0 : appearanceProgress
     scale: 0.965 + 0.035 * appearanceProgress
-    visible: !appHidden && (!minimized || minimizeProgress < 0.999) && (!desktop.presentation.active || desktop.presentation.window === win)
+    visible: nativeWindow ? !appHidden : !appHidden && (!minimized || minimizeProgress < 0.999) && (!desktop.presentation.active || desktop.presentation.window === win)
     enabled: !closing && !minimized && !appHidden
     transformOrigin: Item.Center
     Behavior on opacity {
@@ -208,6 +213,10 @@ FocusScope {
         });
     }
     function animateGeometry(px, py, w, h, duration) {
+        if (nativeWindow) {
+            if (!isFullscreen) { nativeWindow.x = px; nativeWindow.y = py; nativeWindow.width = w; nativeWindow.height = h; }
+            return;
+        }
         geometryDuration = duration;
         geometryAnimating = true;
         x = px;
@@ -221,6 +230,11 @@ FocusScope {
         desktop.presentation.toggle(win);
     }
     function zoom() {
+        if (nativeWindow) {
+            if (zoomed) nativeWindow.showNormal(); else nativeWindow.showMaximized();
+            zoomed = !zoomed;
+            return;
+        }
         if (isFullscreen)
             desktop.presentation.exit();
         geometryDuration = 280;
@@ -315,8 +329,8 @@ FocusScope {
             width: win.sideWidth
             height: surface.height - 16
             backdrop: underlay
-            sampleX: win.x + x
-            sampleY: win.y + surface.y + y
+            sampleX: (win.nativeWindow ? win.nativeWindow.x : win.x) + x
+            sampleY: (win.nativeWindow ? win.nativeWindow.y : win.y) + surface.y + y
             corner: 19
             dark: win.dark
             tint: desktop.glassTinted ? 0.97 : win.dark ? 0.93 : 0.82
@@ -344,11 +358,12 @@ FocusScope {
                 onPressed: function (mouse) {
                     win.geometryAnimating = false;
                     win.activate();
+                    if (win.nativeWindow) { win.nativeWindow.startSystemMove(); return; }
                     pressPosition = mapToItem(desktop, mouse.x, mouse.y);
                     originalPosition = Qt.point(win.x, win.y);
                 }
                 onPositionChanged: function (mouse) {
-                    if (!pressed || win.zoomed || win.isFullscreen)
+                    if (win.nativeWindow || !pressed || win.zoomed || win.isFullscreen)
                         return;
                     let p = mapToItem(desktop, mouse.x, mouse.y);
                     win.x = Math.max(-win.width + 200, Math.min(desktop.width - 160, originalPosition.x + p.x - pressPosition.x));
@@ -1531,11 +1546,12 @@ FocusScope {
             onPressed: function (mouse) {
                 win.geometryAnimating = false;
                 win.activate();
+                if (win.nativeWindow) { win.nativeWindow.startSystemResize(Qt.RightEdge | Qt.BottomEdge); return; }
                 start = mapToItem(desktop, mouse.x, mouse.y);
                 original = Qt.size(win.width, win.height);
             }
             onPositionChanged: function (mouse) {
-                if (pressed) {
+                if (pressed && !win.nativeWindow) {
                     let p = mapToItem(desktop, mouse.x, mouse.y);
                     win.width = Math.max(660, Math.min(desktop.width - win.x, original.width + p.x - start.x));
                     win.height = Math.max(390, Math.min(desktop.height - win.y - 10, original.height + p.y - start.y));
@@ -1546,14 +1562,14 @@ FocusScope {
     ShaderEffectSource {
         id: windowTexture
         sourceItem: surface
-        hideSource: win.minimizeProgress > 0
-        live: win.minimizeProgress > 0
+        hideSource: !win.nativeWindow && win.minimizeProgress > 0
+        live: !win.nativeWindow && win.minimizeProgress > 0
         visible: false
         smooth: true
     }
     ShaderEffect {
         anchors.fill: parent
-        visible: win.minimizeProgress > 0
+        visible: !win.nativeWindow && win.minimizeProgress > 0
         property var source: windowTexture
         property real progress: win.minimizeProgress
         property size windowSize: Qt.size(win.width, win.height)

@@ -71,7 +71,7 @@ QtObject {
             dockHideDelay.restart();
     }
     function fit() {
-        if (window)
+        if (window && !window.nativeWindow)
             window.animateGeometry(0, 0, viewportWidth, viewportHeight, 420);
     }
     function restorePending(entry) {
@@ -95,7 +95,8 @@ QtObject {
             exit();
         pruneRestores();
         let pending = pendingRestores.find(entry => entry.target === target);
-        target.fullscreenRestoreGeometry = pending ? pending.geometry : Qt.rect(target.x, target.y, target.width, target.height);
+        let geometrySource = target.nativeWindow || target;
+        target.fullscreenRestoreGeometry = pending ? pending.geometry : Qt.rect(geometrySource.x, geometrySource.y, geometrySource.width, geometrySource.height);
         target.fullscreenViewport = pending ? pending.viewport : Qt.size(viewportWidth, viewportHeight);
         pendingRestores = pendingRestores.filter(entry => entry.target !== target);
         window = target;

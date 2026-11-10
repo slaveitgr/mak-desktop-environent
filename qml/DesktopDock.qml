@@ -129,8 +129,8 @@ Item {
     Glass {
         anchors.fill: parent
         backdrop: dock.backdrop
-        sampleX: dock.x
-        sampleY: dock.y
+        sampleX: dock.mapToItem(dock.backdrop, 0, 0).x
+        sampleY: dock.mapToItem(dock.backdrop, 0, 0).y
         corner: 27
         dark: desktop.dark
         tint: desktop.glassTinted ? 0.65 : desktop.dark ? 0.18 : 0.14
@@ -207,9 +207,17 @@ Item {
                         anchors.centerIn: parent
                         width: parent.width - 2
                         height: parent.height * 0.71 - 2
-                        sourceItem: entry.isWindow ? entry.modelData.window.surfaceItem : null
+                        sourceItem: entry.isWindow && !entry.modelData.window.nativeWindow ? entry.modelData.window.surfaceItem : null
                         live: false
                         smooth: true
+                    }
+                    Image {
+                        visible: entry.isWindow && !!entry.modelData.window.nativeWindow
+                        anchors.centerIn: parent
+                        width: parent.width - 2
+                        height: parent.height * 0.71 - 2
+                        source: visible ? entry.modelData.window.nativeThumbnail : ""
+                        fillMode: Image.PreserveAspectFit
                     }
                     Image {
                         visible: entry.isWindow

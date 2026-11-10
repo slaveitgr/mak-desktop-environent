@@ -1,8 +1,10 @@
 import QtQuick
+import QtQuick.Window
 import QtQuick.Effects
 
 Item {
     id: glass
+    readonly property Item localBackdrop: backdrop && backdrop.Window.window === glass.Window.window ? backdrop : null
     property Item backdrop
     property real sampleX: 0
     property real sampleY: 0
@@ -39,7 +41,7 @@ Item {
         id: capture
         width: Math.max(1, Math.min(glass.backdrop ? glass.backdrop.width : glass.width, glass.sampleX + glass.width + glass.capturePadding) - glass.captureLeft)
         height: Math.max(1, Math.min(glass.backdrop ? glass.backdrop.height : glass.height, glass.sampleY + glass.height + glass.capturePadding) - glass.captureTop)
-        sourceItem: glass.backdrop
+        sourceItem: glass.localBackdrop
         sourceRect: Qt.rect(glass.captureLeft, glass.captureTop, width, height)
         textureSize: Qt.size(Math.max(1, width), Math.max(1, height))
         live: glass.visible && !glass.reducedTransparency

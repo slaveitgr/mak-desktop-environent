@@ -1,0 +1,138 @@
+{
+  "base": {
+    "distribution": "Deepin",
+    "release": "25.2.0",
+    "architecture": "amd64",
+    "filename": "deepin-desktop-community-25.2.0-amd64.iso",
+    "bytes": 6976131072,
+    "sha256": "f875c9a605bfe6a8425d1d353a3c1ec755bf37f5b0a3231ca19e2145da0ff450",
+    "url": "https://cdimage.deepin.com/releases/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso",
+    "checksum_url": "https://cdimage.deepin.com/releases/25.2.0/amd64/SHA256SUMS",
+    "mirrors": [
+      "https://mirrors.ircam.fr/pub/deepin-cd/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso",
+      "https://mirror.dotsrc.org/deepin-cd/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso",
+      "https://mirror.alpix.eu/deepin-cd/25.2.0/amd64/deepin-desktop-community-25.2.0-amd64.iso"
+    ]
+  },
+  "inspection": "read-only ISO9660 and SquashFS; no boot or install",
+  "package_count": 1950,
+  "selected_packages": {
+    "dde-daemon": "6.1.99",
+    "dde-file-manager": "6.5.151",
+    "dde-file-manager-services-plugins": "6.5.151",
+    "dde-session": "2.0.27",
+    "dde-session-shell": "6.0.63",
+    "dde-session-ui": "6.0.45",
+    "dde-shell": "2.0.49",
+    "libdtk6core:amd64": "6.7.44",
+    "libdtk6declarative:amd64": "6.7.44.1",
+    "libdtk6gui:amd64": "6.7.44",
+    "libdtk6gui-bin": "6.7.44",
+    "libdtk6log:amd64": "6.7.44",
+    "libdtk6ocr": "6.0.4",
+    "libdtk6systemsettings": "6.0.2",
+    "libdtk6widget:amd64": "6.7.44",
+    "libqt6core6:amd64": "6.8.0+dfsg-0deepin24",
+    "libqt6quick6:amd64": "6.8.0+dfsg-0deepin12",
+    "treeland:amd64": "0.8.13",
+    "treeland-data": "0.8.13",
+    "treeland-wallpaper-factory": "0.8.13"
+  },
+  "linglong": [
+    {
+      "id": "org.deepin.editor",
+      "version": "6.5.55.1"
+    },
+    {
+      "id": "org.deepin.image.viewer",
+      "version": "6.0.45.1"
+    },
+    {
+      "id": "org.deepin.calculator",
+      "version": "6.5.35.1"
+    },
+    {
+      "id": "org.deepin.fontmanager",
+      "version": "6.5.40.1"
+    },
+    {
+      "id": "org.deepin.base",
+      "version": "25.2.2.6"
+    },
+    {
+      "id": "org.deepin.runtime.dtk",
+      "version": "25.2.1.5"
+    },
+    {
+      "id": "org.dde.calendar",
+      "version": "6.5.40.1"
+    },
+    {
+      "id": "org.deepin.voice.note",
+      "version": "6.5.60.1"
+    },
+    {
+      "id": "org.deepin.runtime.dtk",
+      "version": "25.2.2.9"
+    },
+    {
+      "id": "org.deepin.draw",
+      "version": "6.5.41.1"
+    },
+    {
+      "id": "org.deepin.runtime.webengine",
+      "version": "25.2.2.9"
+    },
+    {
+      "id": "org.deepin.album",
+      "version": "6.0.61.1"
+    },
+    {
+      "id": "org.deepin.mail",
+      "version": "6.5.75.1"
+    },
+    {
+      "id": "org.deepin.base",
+      "version": "25.2.0.92"
+    },
+    {
+      "id": "org.deepin.camera",
+      "version": "6.5.41.1"
+    },
+    {
+      "id": "org.deepin.movie",
+      "version": "6.5.52.1"
+    },
+    {
+      "id": "org.deepin.browser",
+      "version": "6.6.5.13"
+    },
+    {
+      "id": "org.deepin.base",
+      "version": "25.2.1.3"
+    },
+    {
+      "id": "cn.org.linyaps.preloader",
+      "version": "25.2.0.4"
+    },
+    {
+      "id": "org.deepin.manual",
+      "version": "6.5.54.1"
+    },
+    {
+      "id": "org.deepin.reader",
+      "version": "6.5.57.1"
+    },
+    {
+      "id": "org.deepin.music",
+      "version": "7.0.59.1"
+    }
+  ],
+  "wayland_session": {
+    "path": "/usr/share/wayland-sessions/treeland.desktop",
+    "Exec": "/usr/bin/dde-session",
+    "Hidden": true,
+    "X-DDE-SINGLE-WAYLAND": true
+  },
+  "runtime_verified": false
+}

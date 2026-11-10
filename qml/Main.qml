@@ -8,6 +8,11 @@ import "FinderMenus.js" as FinderMenus
 
 ApplicationWindow {
     id: app
+    signal shellClosing()
+    property bool layerShellMode: false
+    property alias controller: desktop
+    property alias topbarView: topChrome
+    property alias dockView: dock
     visible: true
     width: comparisonMode ? Math.floor(Screen.width / 2) : Math.min(1360, Screen.width - 50)
     x: comparisonMode ? Math.floor(Screen.width / 2) : (Screen.width - width) / 2
@@ -20,7 +25,14 @@ ApplicationWindow {
         if (Bridge.session.enabled && !desktop.sessionEnding) {
             event.accepted = false;
             desktop.requestSessionAction("logout");
-        } else flushApplications();
+        } else {
+            shellClosing();
+            flushApplications();
+            for (let w of desktop.windows) if (w.nativeWindow) {
+                w.nativeWindow.disposing = true;
+                w.nativeWindow.close();
+            }
+        }
     }
     title: "Tahoe Desktop — Prototype"
     palette.window: desktop.dark ? "#242a2c" : "#f6f6f7"
@@ -35,7 +47,7 @@ ApplicationWindow {
     color: "#153266"
     flags: Qt.Window | Qt.FramelessWindowHint
     Component.onCompleted: {
-        if (Bridge.session.enabled) showMaximized();
+        if (Bridge.session.enabled && !layerShellMode) showMaximized();
         else if (startFullscreen) showFullScreen();
     }
 
@@ -44,6 +56,33 @@ ApplicationWindow {
         objectName: "desktop"
         anchors.fill: parent
         readonly property bool shellActive: app.active
+        readonly property bool nativeWindows: typeof startNativeWindows !== "undefined" && startNativeWindows
+        readonly property var hostPalette: app.palette
+        property Item shellOverlay: app.Overlay.overlay
+        property bool layerTopHovered: false
+        property bool layerBottomHovered: false
+        property bool nativeTopHovered: false
+        property bool nativeChromeHovered: false
+        function ensureNativeWindow(w) {
+            if (!nativeWindows || w.nativeWindow) return;
+            let host = nativeWindowComponent.createObject(app, {desktop: desktop});
+            if (host) host.attach(w);
+        }
+        function popupOverlay() {
+            return activeWindow && activeWindow.nativeWindow ? activeWindow.nativeWindow.overlayItem : app.Overlay.overlay;
+        }
+        function centerPopup(popup) {
+            popup.parent = popupOverlay();
+            popup.x = Math.max(0, (popup.parent.width - popup.width) / 2);
+            popup.y = Math.max(0, (popup.parent.height - popup.height) / 2);
+        }
+        function placeContext(x, y) {
+            let target = popupOverlay();
+            let point = desktop.mapToItem(target, x, y);
+            contextMenu.parent = target;
+            contextMenu.x = Math.max(0, Math.min(point.x, target.width - contextMenu.width));
+            contextMenu.y = Math.max(0, Math.min(point.y, target.height - contextMenu.height));
+        }
         property bool sessionEnding: false
         property string sessionAction: "logout"
         function requestSessionAction(action) {
@@ -100,9 +139,9 @@ ApplicationWindow {
         onMenuBarPopupOpenChanged: updateMenuBarVisibility()
         onDesktopMenuAutoHideChanged: updateMenuBarVisibility()
         function updateMenuBarVisibility() {
-            if (topEdge.hovered || normalMenuHover.hovered || menuBarPopupOpen) {
+            if (topEdge.hovered || layerTopHovered || normalMenuHover.hovered || menuBarPopupOpen) {
                 menuBarHideTimer.stop();
-                if (topEdge.hovered || menuBarPopupOpen) menuBarRevealed = true;
+                if (topEdge.hovered || layerTopHovered || menuBarPopupOpen) menuBarRevealed = true;
             } else if (menuBarRevealed) menuBarHideTimer.restart();
         }
         Timer { id: menuBarHideTimer; interval: 350; onTriggered: desktop.menuBarRevealed = false }
@@ -200,7 +239,7 @@ ApplicationWindow {
             onTriggered: desktop.dockRevealed = false
         }
         function updateDockVisibility() {
-            if (bottomEdge.hovered) {
+            if (bottomEdge.hovered || layerBottomHovered) {
                 dockHideTimer.stop();
                 dockRevealTimer.restart();
             } else {
@@ -218,11 +257,11 @@ ApplicationWindow {
             id: fullscreenState
             viewportWidth: desktop.width
             viewportHeight: desktop.height
-            pointerAtTop: topEdge.hovered
+            pointerAtTop: topEdge.hovered || desktop.layerTopHovered || desktop.nativeTopHovered
             alwaysShowChrome: desktop.menuBarHideMode === "Never" || desktop.menuBarHideMode === "On Desktop Only"
-            pointerInChrome: chromeHover.hovered
+            pointerInChrome: chromeHover.hovered || desktop.layerTopHovered || desktop.nativeChromeHovered
             menuOpen: menu.opened || subMenu.opened || contextMenu.opened || systemPanel.opened || controlGallery.opened || appearance.opened || searchOverlay.opened
-            pointerAtBottom: bottomEdge.hovered
+            pointerAtBottom: bottomEdge.hovered || desktop.layerBottomHovered
             pointerInDock: dock.pointerInside
         }
         Item {
@@ -290,7 +329,8 @@ ApplicationWindow {
         function focusWindow(window, keepFocus) {
             if (!window || window.closing)
                 return;
-            if (fullscreenState.active && fullscreenState.window !== window)
+            ensureNativeWindow(window);
+            if (!nativeWindows && fullscreenState.active && fullscreenState.window !== window)
                 fullscreenState.exit();
             let wasMinimized = window.minimized;
             if (wasMinimized) window.minimizeTarget = dock.targetFor(window);
@@ -300,6 +340,7 @@ ApplicationWindow {
             window.z = ++highestZ;
             if (wasMinimized)
                 windows = windows.slice();
+            if (window.nativeWindow) window.nativeWindow.activate();
             if (!keepFocus)
                 window.forceActiveFocus();
         }
@@ -376,7 +417,10 @@ ApplicationWindow {
                 activeWindow = null;
             if (w.browser)
                 Bridge.releaseBrowser(w.browser);
+            let host = w.nativeWindow;
+            if (host) { host.disposing = true; host.view = null; host.hide(); }
             w.destroy();
+            if (host) host.destroy();
             let remaining = windows.filter(item => !item.minimized && !item.appHidden && !item.closing);
             if (remaining.length)
                 focusWindow(remaining[remaining.length - 1]);
@@ -386,6 +430,7 @@ ApplicationWindow {
                 return;
             w.minimized = true;
             w.minimizeTarget = dock.targetFor(w);
+            if (w.nativeWindow) w.nativeWindow.minimize();
             if (activeWindow === w)
                 activeWindow = null;
             let remaining = windows.filter(item => !item.minimized && !item.appHidden && !item.closing);
@@ -414,6 +459,7 @@ ApplicationWindow {
             promptDescription = description;
             promptCallback = callback;
             promptInput.text = value;
+            centerPopup(promptBox);
             promptBox.open();
             Qt.callLater(function () {
                 promptInput.forceActiveFocus();
@@ -430,12 +476,14 @@ ApplicationWindow {
         function showInfo(title, text) {
             infoTitle = title;
             infoText = text;
+            centerPopup(infoBox);
             infoBox.open();
         }
         function showPreview(path) {
             previewData = Bridge.preview(path);
             if (previewData.name) {
                 Bridge.suite.setPreference("menubar.recentFiles",JSON.stringify([path].concat(recentFiles.filter(p=>p!==path)).slice(0,50)));
+                centerPopup(preview);
                 preview.open();
             }
         }
@@ -496,8 +544,7 @@ ApplicationWindow {
         }
         function openOptions(x, y, rows) {
             contextMenu.rows = rows;
-            contextMenu.x = Math.max(8, Math.min(x, desktop.width - contextMenu.width - 8));
-            contextMenu.y = Math.max(30, Math.min(y, desktop.height - contextMenu.height - 12));
+            placeContext(x, y);
             contextMenu.open();
         }
         function openContext(x, y, window) {
@@ -506,8 +553,7 @@ ApplicationWindow {
             let isTrash = window.browser.isTrash;
             if(window.browser.currentPath === "@applications") { openOptions(x,y,selected ? [row("Open","open")] : [row("as Icons","icons"),row("as List","list")]);return; }
             contextMenu.rows = selected ? [row("Open", "open"), row("Get Info", "getinfo", "⌘I"), row("Quick Look", "preview", "Space"), sep(), row("Rename…", "rename", "", !isTrash), row("Copy", "copy", "", !isTrash), row("Duplicate", "duplicate", "", !isTrash), sep(), row(isTrash ? "Put Back" : "Move to Trash", isTrash ? "restore" : "trash")] : [row("New Folder…", "newfolder", "", !isTrash && !window.browser.currentPath.startsWith("@")), row("Paste Items", "paste", "", Bridge.canPaste && !isTrash), sep(), row("Icon View", "icons"), row("List View", "list"), row("Column View", "columns")];
-            contextMenu.x = Math.max(8, Math.min(x, desktop.width - contextMenu.width - 8));
-            contextMenu.y = Math.min(y, desktop.height - contextMenu.height - 12);
+            placeContext(x, y);
             contextMenu.open();
         }
         function dispatch(command) {
@@ -886,7 +932,7 @@ ApplicationWindow {
         // titles works without a second click (including the Apple menu).
         MouseArea {
             objectName: "menuBarTracking"
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             z: 10001
             x: menuLabels.x
             y: topChrome.y
@@ -919,7 +965,7 @@ ApplicationWindow {
             accentColor: desktop.accentColor
             maximumHeight: desktop.height - 42
             onSubmenuDismissed: if(subMenu.parent===menu.contentItem) subMenu.close()
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             dark: desktop.dark
             backdrop: scene
             reducedMotion: desktop.reduceMotion
@@ -940,7 +986,7 @@ ApplicationWindow {
             objectName: "subMenu"
             accentColor: desktop.accentColor
             maximumHeight: desktop.height - 42
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             dark: desktop.dark
             backdrop: scene
             reducedMotion: desktop.reduceMotion
@@ -951,7 +997,7 @@ ApplicationWindow {
         Dialog {
             id: sessionConfirm
             objectName: "sessionConfirm"
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             anchors.centerIn: parent
             width: Math.min(440, desktop.width - 40)
             height: 190
@@ -972,7 +1018,7 @@ ApplicationWindow {
             id: systemPanel
             objectName: "systemPanel"
             desktop: desktop
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             backdrop: scene
             section: desktop.statusPanel
         }
@@ -980,7 +1026,7 @@ ApplicationWindow {
             id: controlGallery
             objectName: "controlGallery"
             desktop: desktop
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             backdrop: scene
         }
         GlassMenu {
@@ -991,7 +1037,7 @@ ApplicationWindow {
             onSubmenuDismissed: if(subMenu.parent===contextMenu.contentItem) subMenu.close()
             onSubmenuRequested: function(rows,offset){subMenu.parent=contextMenu.contentItem;subMenu.rows=rows;subMenu.x=contextMenu.x+contextMenu.width+subMenu.width>desktop.width-12 ? -subMenu.width+8 : contextMenu.width-8;subMenu.y=Math.min(desktop.height-subMenu.height-contextMenu.y-18,offset);subMenu.open();}
             onClosed: if(subMenu.parent===contextMenu.contentItem)subMenu.close()
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             dark: desktop.dark
             backdrop: scene
             reducedMotion: desktop.reduceMotion
@@ -1005,7 +1051,7 @@ ApplicationWindow {
             id: forceQuit
             objectName: "forceQuitPanel"
             reducedMotion: desktop.reduceMotion
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             width: 410; height: 390
             x: (desktop.width-width)/2; y: 100
             modal: true; focus: true
@@ -1026,7 +1072,7 @@ ApplicationWindow {
         MaterialPopup {
             id: promptBox
             reducedMotion: desktop.reduceMotion
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             width: 420
             height: 211
             x: (desktop.width - width) / 2
@@ -1096,7 +1142,7 @@ ApplicationWindow {
         MaterialPopup {
             id: infoBox
             reducedMotion: desktop.reduceMotion
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             width: 450
             height: Math.min(desktop.infoTitle === "Keyboard Shortcuts" ? 520 : desktop.infoTitle === "Tahoe Desktop" ? 360 : 230, desktop.height - 120)
             x: (desktop.width - width) / 2
@@ -1146,7 +1192,7 @@ ApplicationWindow {
         MaterialPopup {
             id: preview
             reducedMotion: desktop.reduceMotion
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             width: Math.min(790, desktop.width - 100)
             height: Math.min(600, desktop.height - 110)
             x: (desktop.width - width) / 2
@@ -1233,7 +1279,7 @@ ApplicationWindow {
         MaterialPopup {
             id: appearance
             reducedMotion: desktop.reduceMotion
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             width: 288
             height: 270
             x: desktop.width - width - 14
@@ -1326,7 +1372,7 @@ ApplicationWindow {
         MaterialPopup {
             id: searchOverlay
             reducedMotion: desktop.reduceMotion
-            parent: Overlay.overlay
+            parent: desktop.shellOverlay
             width: Math.min(600, desktop.width - 100)
             height: 104
             x: (desktop.width - width) / 2
@@ -1373,6 +1419,10 @@ ApplicationWindow {
             function onError(message) {
                 desktop.showInfo("The action couldn’t be completed", message);
             }
+        }
+        Component {
+            id: nativeWindowComponent
+            NativeAppWindow {}
         }
         Component {
             id: finderComponent

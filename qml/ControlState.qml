@@ -10,8 +10,21 @@ Item {
     readonly property string menuControlIds: catalog.filter(c => c.menu || inMenu(c.id)).map(c=>c.id).join(",")
     readonly property var menuControls: menuControlIds.split(",").filter(id=>!!id).map(id=>info(id))
     readonly property var registeredApps: []
-    function preference(key, fallback) { let r = revision; return Bridge.suite.preference(key, fallback); }
-    function setPreference(key, value) { Bridge.suite.setPreference(key, String(value)); }
+    function preference(key, fallback) {
+        let r = revision;
+        if (Bridge.ddeAudio.available) {
+            if (key === "sound.volume") return String(Bridge.ddeAudio.volume);
+            if (key === "sound.muted") return String(Bridge.ddeAudio.muted);
+        }
+        return Bridge.suite.preference(key, fallback);
+    }
+    function setPreference(key, value) {
+        if (Bridge.ddeAudio.available) {
+            if (key === "sound.volume") { Bridge.ddeAudio.setVolume(Number(value)); return; }
+            if (key === "sound.muted") { Bridge.ddeAudio.setMuted(String(value) === "true"); return; }
+        }
+        Bridge.suite.setPreference(key, String(value));
+    }
     function info(id) { return catalog.find(c => c.id === id) || null; }
     function iconFor(id) {
         if (id === "sound") {

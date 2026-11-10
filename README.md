@@ -1,10 +1,33 @@
-# Tahoe Desktop · Prototype 0.7
+# makOS · Deepin/Treeland development
 
-An independent Qt Quick desktop prototype with a Tahoe-inspired Dock, menu bar, Finder, Settings and built-in applications. It runs as a preview application on macOS/Linux and now includes an experimental standalone Ubuntu X11 login session. It is not a Wayland compositor, and pixel-for-pixel or frame-for-frame Tahoe parity has not been established.
+makOS is a Linux desktop and distribution project based on Deepin, with Treeland
+for window composition and DDE services behind an independently implemented
+Tahoe-style Dock, menu bar, Finder, Settings and applications. This branch is
+under development: a bootable makOS ISO and Tahoe animation parity are not yet
+validated. The inspected Deepin base ISO is pinned and checksum verified.
 
-## Install as an Ubuntu desktop session
+## Current development mode
 
-For Ubuntu 26.10 on Intel/AMD, run `./linux/install.sh` from this checkout, then log out and select **Tahoe Desktop (Experimental)** at the login screen. The installer builds a dpkg-managed package containing the shell and a pinned Linux Qt runtime. See [installation, shortcuts, removal and current session limits](linux/README.md). The existing Ubuntu/GNOME session remains selectable.
+```sh
+./run.sh --makos --settings
+```
+
+Finder, Settings and the 19 suite applications now open in separate native Qt
+windows. Window movement, resizing, focus, minimizing and full screen are sent
+to the platform window system. On Linux, `--makos` also opts into the DDE audio
+adapter; it controls the default system output when the existing Audio1 service
+is available. Preview mode remains available without that flag.
+
+The Dock and menu bar still live in the preview shell window. Their separate
+Wayland layer surfaces, compositor blur, cross-window drag/drop, native global
+menus and Treeland minimize targets are the next integration work. Native mode
+uses compositor window transitions; the original in-scene Genie animation is
+retained in preview mode. Native-window backdrop sampling currently uses the
+wallpaper and does not claim live blur of other applications.
+
+See [the makOS base, verified inventory and app reuse decisions](distro/README.md).
+The previous Ubuntu/Openbox prototype is preserved in the repository history and
+[legacy session documentation](linux/README.md); it is no longer the product target.
 
 ## Run
 
@@ -29,7 +52,7 @@ The default workspace is `demo-home/`, seeded once with sample files. An explici
 
 ## Applications
 
-The Dock launches our own application windows. Apps sits immediately after Finder, with search, categories, sorting and keyboard navigation. Its launcher includes 20 applications; Apps itself is the 21st Dock application. Running indicators, hiding, closing, full screen and minimizing refer to these internal windows.
+The Dock launches our own application windows (native in `--makos` mode). Apps sits immediately after Finder, with search, categories, sorting and keyboard navigation. Its launcher includes 20 applications; Apps itself is the 21st Dock application. Running indicators, hiding, closing, full screen and minimizing track our registered application windows.
 
 | Application | Working functionality | Remaining limits |
 | --- | --- | --- |

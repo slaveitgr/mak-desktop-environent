@@ -16,6 +16,7 @@ from applications import ApplicationLauncher
 from suite import Suite, ChessGame
 from terminal_session import TerminalSession
 from linux_session import LinuxSession
+from dde_services import DdeAudio
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -165,11 +166,13 @@ class Bridge(QObject):
     filesystemChanged = Signal()
     cameraPermissionResult = Signal(bool, str)
 
-    def __init__(self, workspace, session_mode=False):
+    def __init__(self, workspace, session_mode=False, dde_mode=False):
         super().__init__()
         self.workspace = workspace
         self.browsers = []
         self.launcher = ApplicationLauncher()
+        self._dde_audio = DdeAudio(dde_mode, self)
+        self._dde_audio.error.connect(self.error)
         self._session = LinuxSession(session_mode, self)
         self._session.error.connect(self.error)
         self._suite = Suite(workspace.root, self)
@@ -184,6 +187,9 @@ class Bridge(QObject):
 
     @Property(QObject, constant=True)
     def session(self): return self._session
+
+    @Property(QObject, constant=True)
+    def ddeAudio(self): return self._dde_audio
 
     @Property(QObject, constant=True)
     def chess(self): return self._chess
@@ -210,6 +216,7 @@ class Bridge(QObject):
         if self._shutting_down: return
         self._shutting_down = True
         self._session.stop()
+        self._dde_audio.stop()
         for decision in list(self._download_decisions.values()): decision['loop'].quit()
         self._chess.shutdown()
         try:
@@ -533,12 +540,17 @@ def main():
     parser.add_argument('--root', type=Path, help='Explicit folder to browse and modify; default: demo-home next to this script')
     parser.add_argument('--fullscreen', action='store_true')
     parser.add_argument('--session', action='store_true', help='Dedicated Linux login session; launched by tahoe-session')
+    parser.add_argument('--wayland-shell', action='store_true', help='Experimental makOS layer surfaces; requires a matching LayerShellQt plugin')
+    parser.add_argument('--makos', action='store_true', help='makOS development mode: native windows and opt-in DDE service adapters on Linux')
+    parser.add_argument('--native-windows', action='store_true', help='makOS development: a real platform window for each application')
     parser.add_argument('--settings', action='store_true', help='Open System Settings alongside Finder')
     parser.add_argument('--compare-right', action='store_true', help='Position the prototype on the right half for native Finder comparison')
     parser.add_argument('--smoke-test', action='store_true', help='Load QML, render once, and exit without UI interactions')
     args = parser.parse_args()
     if args.session and (sys.platform != 'linux' or not os.environ.get('TAHOE_SESSION_SOCKET')):
         parser.error('--session must be started by the Linux session launcher')
+    if args.wayland_shell and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
+        parser.error('--wayland-shell requires a running Linux Wayland compositor')
     user_data = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share')) / 'tahoe-desktop'
     installed_linux = sys.platform == 'linux' and (args.session or not os.access(APP_DIR, os.W_OK))
     root = args.root or (user_data / 'workspace' if installed_linux else APP_DIR / 'demo-home')
@@ -547,7 +559,7 @@ def main():
     from PySide6.QtWebEngineQuick import QtWebEngineQuick
     QtWebEngineQuick.initialize()
     app = QGuiApplication(sys.argv[:1] + (['-name', 'tahoe-desktop-shell'] if args.session else []))
-    app.setApplicationName('Tahoe Desktop')
+    app.setApplicationName('makOS' if args.makos else 'Tahoe Desktop')
     app.setOrganizationName('Desktop Prototype')
     if args.session:
         app.setDesktopFileName('tahoe-desktop')
@@ -555,14 +567,17 @@ def main():
     font.setStyleStrategy(QFont.PreferAntialias)
     app.setFont(font)
     workspace = Workspace(root)
-    bridge = Bridge(workspace, session_mode=args.session)
+    bridge = Bridge(workspace, session_mode=args.session, dde_mode=args.makos or args.wayland_shell)
     bridge.session.start()
+    bridge.ddeAudio.start()
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty('Bridge', bridge)
     engine.rootContext().setContextProperty('startFullscreen', args.fullscreen)
     engine.rootContext().setContextProperty('comparisonMode', args.compare_right)
     engine.rootContext().setContextProperty('startSettings', args.settings)
-    engine.load(QUrl.fromLocalFile(str(APP_DIR / 'qml/Main.qml')))
+    engine.rootContext().setContextProperty('startNativeWindows', args.native_windows or args.makos or args.wayland_shell)
+    engine.rootContext().setContextProperty('useWaylandShell', args.wayland_shell)
+    engine.load(QUrl.fromLocalFile(str(APP_DIR / ('qml/WaylandShell.qml' if args.wayland_shell else 'qml/Main.qml'))))
     if not engine.rootObjects(): return 1
     app.aboutToQuit.connect(engine.rootObjects()[0].flushApplications)
     app.aboutToQuit.connect(bridge.shutdown)
