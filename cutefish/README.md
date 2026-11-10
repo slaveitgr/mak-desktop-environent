@@ -47,7 +47,9 @@ PySide6/Qt and installs only the chess dependency in its own venv.
   corresponding scale/fade/Genie animation is not layered over them.
 - Settings forwards Dock size, auto-hide and glass tint, plus menu-bar battery
   percentage, to the actual Cutefish session D-Bus services. Missing services
-  report an error and are not implicitly started. Unsupported Dock switches
+  report an error and are not implicitly started. The shipped compositor does
+  not export these services in headless mode; live-session settings success
+  still needs a graphical-session test. Unsupported Dock switches
   are disabled in this mode.
 
 The imported XML definitions are pinned to the compositor snapshot named by the

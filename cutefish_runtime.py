@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import sys
+import subprocess
 from PySide6.QtCore import QObject, QLockFile, QTimer
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtQml import QQmlExpression
@@ -27,7 +27,10 @@ class CutefishInstance(QObject):
             client.connectToServer(self.name)
             if not client.waitForConnected(2000):
                 raise RuntimeError('The existing makOS client is not accepting activation requests.')
-            client.write(b'activate\n'); client.waitForBytesWritten(1000)
+            payload = {'action':'activate', 'token':os.environ.get('XDG_ACTIVATION_TOKEN', '')[:2048]}
+            client.write(json.dumps(payload).encode() + b'\n')
+            if not client.waitForBytesWritten(1000):
+                raise RuntimeError('Could not deliver the activation request.')
             client.disconnectFromServer()
             return False
         QLocalServer.removeServer(self.name)  # only after exclusive lock ownership
@@ -38,64 +41,126 @@ class CutefishInstance(QObject):
     def bind(self, root):
         self.root = root
 
+    def activate(self, payload):
+        if not isinstance(payload, dict) or payload.get('action') != 'activate': return
+        token = payload.get('token', '')
+        if not isinstance(token, str) or len(token) > 2048 or '\0' in token: return
+        if self.root:
+            # Qt 6.8 consumes XDG_ACTIVATION_TOKEN synchronously from
+            # requestActivate(). Forward the launcher's token to the owner.
+            if token: os.environ['XDG_ACTIVATION_TOKEN'] = token
+            try: self.root.activateCutefishClient()
+            finally:
+                if token: os.environ.pop('XDG_ACTIVATION_TOKEN', None)
+
     def accept(self):
         while self.server.hasPendingConnections():
             client = self.server.nextPendingConnection()
+            client.setReadBufferSize(4097)
             client.disconnected.connect(client.deleteLater)
-            # The socket carries only activation, never executable commands.
-            if self.root:
-                self.root.activateCutefishClient()
-            client.disconnectFromServer()
+            deadline = QTimer(client); deadline.setSingleShot(True)
+            deadline.timeout.connect(lambda client=client: client.disconnectFromServer())
+            deadline.start(1500)
+            def receive(client=client, deadline=deadline):
+                if client.bytesAvailable() > 4096:
+                    client.disconnectFromServer(); return
+                if not client.canReadLine(): return
+                deadline.stop()
+                try: self.activate(json.loads(bytes(client.readLine()).decode()))
+                except (ValueError, UnicodeError): pass
+                client.disconnectFromServer()
+            client.readyRead.connect(receive)
+            receive()
 
 
 def exercise(app, root, engine):
-    """Meaningful behavior checks under the actual compositor, without user data."""
-    results = []
+    """Checks under the shipped headless compositor, in a private CI session."""
+    from PySide6.QtDBus import QDBusConnection, QDBusMessage, QDBus
+    results, snapshots, applied, errors = [], [], [], []
     shell = engine.rootContext().contextProperty('Bridge').cutefishShell
-    applied = []
     shell.applied.connect(applied.append)
-    def change_shell():
-        shell.setDockSize(48)
-        shell.setDockAutoHide(True)
-        shell.setDockGlassTint(.6)
-        shell.preferenceChanged('battery.showPercentage', 'true')
-    QTimer.singleShot(700, change_shell)
-    def check(label, expression):
+    shell.error.connect(errors.append)
+    bus = QDBusConnection.sessionBus()
+    failed = [False]
+
+    def guard(callback):
+        if failed[0]: return
+        try: callback()
+        except Exception as error:
+            failed[0] = True
+            print('FAIL:', error, flush=True)
+            app.exit(1)
+
+    def server_state(expected, active):
+        request = QDBusMessage.createMethodCall('org.cutefish.WindowDebug1',
+            '/org/cutefish/WindowDebug1', 'org.cutefish.WindowDebug1', 'ListWindows')
+        reply = bus.call(request, QDBus.CallMode.Block, 1200)
+        if reply.type() == QDBusMessage.MessageType.ErrorMessage:
+            raise AssertionError(reply.errorMessage())
+        windows = json.loads(reply.arguments()[0])
+        clients = [w for w in windows if w['appId'] == app.desktopFileName()]
+        assert len(clients) == 1, 'Expected exactly one native app surface: ' + repr(clients)
+        window = clients[0]
+        assert window['state'] == expected and window['active'] == active, repr(window)
+        snapshots.append(window)
+
+    def restore_from_shell():
+        # A minimized client cannot mint its own focus token. Exercise the
+        # compositor activation path used by its Dock/window switcher.
+        result = subprocess.run(['dbus-send', '--session', '--print-reply',
+            '--dest=org.cutefish.WindowDebug1', '/org/cutefish/WindowDebug1',
+            'org.cutefish.WindowDebug1.ActivateWindow', 'uint64:' + snapshots[-1]['id']],
+            capture_output=True, text=True, timeout=3)
+        assert result.returncode == 0 and 'boolean true' in result.stdout, result.stderr
+
+    def check(label, expression, state=None, active=True):
+        if callable(expression):
+            expression(); results.append(label); return
         qml = QQmlExpression(engine.rootContext(), root, expression)
         value = qml.evaluate()
         if isinstance(value, tuple): value = value[0]
         if qml.hasError() or value is not True:
             raise AssertionError(label + ': ' + qml.error().toString())
+        if state: server_state(state, active)
         results.append(label)
+
     steps = [
-        (1500, 'native client and protocol bridge', '''controller.windows.length === 1 && controller.windows[0].nativeWindow.visible && !visible'''),
-        (1800, 'minimize request', '''(controller.minimizeWindow(controller.windows[0]), true)'''),
-        (2300, 'minimize retained after compositor deactivation', '''controller.windows[0].minimized && !controller.windows[0].nativeWindow.active'''),
-        (2500, 'restore request', '''(controller.focusWindow(controller.windows[0]), true)'''),
-        (3000, 'restored native window', '''!controller.windows[0].minimized && controller.windows[0].nativeWindow.visible && controller.windows[0].nativeWindow.active'''),
-        (3200, 'fullscreen request', '''(controller.presentation.enter(controller.windows[0]), true)'''),
-        (3800, 'fullscreen native window', '''controller.windows[0].nativeWindow.visibility === 5'''),
-        (4000, 'fullscreen exit request', '''(controller.presentation.exit(), true)'''),
-        (4600, 'normal native window restored', '''controller.windows[0].nativeWindow.visibility === 2'''),
-        (4900, 'menu model available', '''JSON.parse(controller.nativeMenuRows(controller.windows[0])).length >= 5'''),
+        (1500, 'native client and protocol bridge', 'controller.windows.length === 1 && controller.windows[0].nativeWindow.visible && controller.windows[0].nativeWindow.compositorGlass && !visible', 'normal', True),
+        (1800, 'minimize request', '(controller.minimizeWindow(controller.windows[0]), true)', None, False),
+        # xdg-shell has no minimized configure state. Check the actual window
+        # manager plus the retained client request and loss of focus instead.
+        (2300, 'compositor confirms minimized window', 'controller.windows[0].minimized && !controller.windows[0].nativeWindow.active', 'minimized', False),
+        (2500, 'restore through compositor activation', restore_from_shell, None, True),
+        (3000, 'compositor confirms restored window', '!controller.windows[0].minimized && controller.windows[0].nativeWindow.visible && controller.windows[0].nativeWindow.active', 'normal', True),
+        (3200, 'fullscreen request', '(controller.presentation.enter(controller.windows[0]), true)', None, True),
+        (3800, 'compositor confirms fullscreen window', 'controller.windows[0].nativeWindow.visibility === 5', 'fullscreen', True),
+        (4000, 'fullscreen exit request', '(controller.presentation.exit(), true)', None, True),
+        (4600, 'compositor confirms windowed restore', 'controller.windows[0].nativeWindow.visibility === 2', 'normal', True),
+        (4900, 'menu model available', 'JSON.parse(controller.nativeMenuRows(controller.windows[0])).length >= 5', None, True),
     ]
-    failed = [False]
-    def run(label, code):
-        if failed[0]: return
-        try: check(label, code)
-        except Exception as e:
-            failed[0] = True; print('FAIL:', e, flush=True); app.exit(1)
-    for delay, label, code in steps:
-        QTimer.singleShot(delay, lambda label=label, code=code: run(label, code))
+    for delay, label, code, state, active in steps:
+        QTimer.singleShot(delay, lambda label=label, code=code, state=state, active=active:
+                          guard(lambda: check(label, code, state, active)))
+
+    def absent_services():
+        # Upstream deliberately does not export Dock/Statusbar services with
+        # --no-drm (compositor_shell.cpp). Exercise the real missing-service
+        # path, without substituting mocks or claiming successful settings.
+        for service in ('org.cutefish.Dock', 'org.cutefish.Statusbar'):
+            registered = bus.interface().isServiceRegistered(service)
+            assert registered.isValid() and not registered.value(), service
+        shell.setDockSize(48)
+        shell.setDockAutoHide(True)
+        shell.setDockGlassTint(.6)
+        shell.preferenceChanged('battery.showPercentage', 'true')
+    QTimer.singleShot(5100, lambda: guard(absent_services))
+
     def finish():
-        if failed[0]: return
         bridges = root.findChildren(QObject, 'makOSCutefishBridge')
-        if not bridges or not all(b.property('active') for b in bridges):
-            print('FAIL: Cutefish protocol bridge not active', flush=True); app.exit(1); return
-        if not {'setIconSize', 'setVisibility', 'setGlassTint', 'setBatteryPercentage'}.issubset(applied):
-            print('FAIL: Cutefish shell settings did not acknowledge changes: ' + repr(applied), flush=True)
-            app.exit(1); return
-        results.append('real Dock and menu-bar D-Bus settings acknowledged')
-        print('MAKOS_CUTEFISH_TEST=' + json.dumps(results), flush=True)
+        assert bridges and all(b.property('active') for b in bridges), 'Cutefish protocol bridge not active'
+        assert len(errors) == 4 and not applied, 'Unavailable shell settings must report failure: ' + repr((errors, applied))
+        results.append('headless shell service absence reported without false success')
+        print('MAKOS_CUTEFISH_TEST=' + json.dumps({'checks':results, 'windows':snapshots,
+            'shell_settings':'missing-service handling verified; live-session success unverified'}), flush=True)
         app.quit()
-    QTimer.singleShot(5300, finish)
+    QTimer.singleShot(6800, lambda: guard(finish))

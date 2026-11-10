@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 from datetime import datetime
 
-from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl, QFileSystemWatcher, QTimer, Qt, QProcess, QEventLoop
+from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl, QFileSystemWatcher, QTimer, Qt, QProcess, QEventLoop, QCoreApplication, QEvent
 from PySide6.QtGui import QGuiApplication, QFont, QFontDatabase
 from PySide6.QtQml import QQmlApplicationEngine, QQmlEngine
 from PySide6.QtMultimedia import QImageCapture
@@ -638,7 +638,14 @@ def main():
     if args.smoke_test:
         QTimer.singleShot(8000 if args.session else 1600,
                           lambda: finish_session(app, engine.rootObjects()[0]) if args.session else app.quit())
-    return app.exec()
+    result = app.exec()
+    if cutefish_instance:
+        # Tear down QML and Wayland protocol objects while their Python context
+        # providers and the QGuiApplication still exist.
+        cutefish_instance.root = None
+        engine.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    return result
 
 
 if __name__ == '__main__':
