@@ -56,7 +56,10 @@ chmod 755 /usr/sbin/policy-rc.d
 apt_args=(-o Dir::Etc::sourcelist=/tmp/makos/sources.list -o Dir::Etc::sourceparts=- -o Acquire::SmartMirrors::Enable=false -o APT::Update::Error-Mode=any)
 apt-get "${apt_args[@]}" update
 apt-get "${apt_args[@]}" install -y --no-install-recommends python3-venv dbus-x11 libqt6test6 qml6-module-org-kde-layershell \
-  libqt6webenginequick6 qml6-module-qtquick-effects qml6-module-qtquick-controls \
+  libqt6webenginequick6 qml6-module-qtcore qml6-module-qtqml qml6-module-qtqml-base \
+  qml6-module-qtqml-models qml6-module-qtqml-workerscript qml6-module-qtquick \
+  qml6-module-qtquick-window qml6-module-qtquick-layouts qml6-module-qtquick-dialogs \
+  qml6-module-qtquick-effects qml6-module-qtquick-controls \
   qml6-module-qtmultimedia qml6-module-qtwebengine fonts-inter
 python3 -m venv /tmp/makos/venv
 /tmp/makos/venv/bin/pip install PySide6==6.8.0.2 chess==1.11.2 pyte==0.8.2 wcwidth==0.9.4
@@ -69,6 +72,8 @@ import shutil,sysconfig
 libraries=Path(sysconfig.get_path('purelib'))/'PySide6'/'Qt'/'lib'
 assert libraries.is_dir(), libraries
 shutil.move(str(libraries), '/tmp/makos/unused-wheel-qt-libraries')
+qml=libraries.parent/'qml'
+shutil.move(str(qml), '/tmp/makos/unused-wheel-qml')
 QT
 useradd --create-home --shell /bin/bash makos-test
 mkdir -p /tmp/makos/results
