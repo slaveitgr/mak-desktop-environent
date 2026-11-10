@@ -70,9 +70,9 @@ def exercise(app, root, engine):
     steps = [
         (1500, 'native client and protocol bridge', '''controller.windows.length === 1 && controller.windows[0].nativeWindow.visible && !visible'''),
         (1800, 'minimize request', '''(controller.minimizeWindow(controller.windows[0]), true)'''),
-        (2300, 'minimized native window', '''controller.windows[0].nativeWindow.visibility === 3'''),
+        (2300, 'minimize retained after compositor deactivation', '''controller.windows[0].minimized && !controller.windows[0].nativeWindow.active'''),
         (2500, 'restore request', '''(controller.focusWindow(controller.windows[0]), true)'''),
-        (3000, 'restored native window', '''!controller.windows[0].minimized && controller.windows[0].nativeWindow.visible'''),
+        (3000, 'restored native window', '''!controller.windows[0].minimized && controller.windows[0].nativeWindow.visible && controller.windows[0].nativeWindow.active'''),
         (3200, 'fullscreen request', '''(controller.presentation.enter(controller.windows[0]), true)'''),
         (3800, 'fullscreen native window', '''controller.windows[0].nativeWindow.visibility === 5'''),
         (4000, 'fullscreen exit request', '''(controller.presentation.exit(), true)'''),

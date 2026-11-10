@@ -9,6 +9,7 @@ ApplicationWindow {
     required property var desktop
     property var view: null
     property bool disposing: false
+    property bool minimizeRequested: false
     readonly property bool compositorGlass: !!(cutefishBridge.item && cutefishBridge.item.glassReady)
     readonly property int compositorReveal: cutefishBridge.item ? cutefishBridge.item.revealOffset : 0
     readonly property int compositorRevealDuration: cutefishBridge.item ? cutefishBridge.item.revealDuration : 200
@@ -40,7 +41,9 @@ ApplicationWindow {
         show();
     }
     function activate() {
-        if (!visible || visibility === Window.Minimized) {
+        if (!visible || visibility === Window.Minimized || minimizeRequested) {
+            minimizeRequested = false;
+            if (view) view.minimized = false;
             if (view && view.isFullscreen) showFullScreen(); else showNormal();
         }
         raise();
@@ -48,7 +51,7 @@ ApplicationWindow {
     }
     function minimize() {
         if (!view || view.closing) return;
-        if (desktop.cutefishMode) { showMinimized(); return; }
+        if (desktop.cutefishMode) { minimizeRequested = true; showMinimized(); return; }
         // A texture cannot be shared between QQuickWindows. Keep an image for
         // the Dock, capturing while the native client is still mapped.
         let captured = view.surfaceItem.grabToImage(function(result) {
@@ -61,14 +64,24 @@ ApplicationWindow {
     }
     onActiveChanged: {
         if (active && view && !view.closing) {
+            if (desktop.cutefishMode && minimizeRequested) {
+                minimizeRequested = false; view.minimized = false;
+                desktop.windows = desktop.windows.slice();
+            }
             desktop.activeWindow = view;
             view.z = ++desktop.highestZ;
         }
     }
     onVisibilityChanged: function(visibility) {
         if (!view || disposing) return;
-        if (desktop.cutefishMode && visibility !== Window.Minimized && visibility !== Window.Hidden)
-            view.isFullscreen = visibility === Window.FullScreen;
+        if (desktop.cutefishMode) {
+            // xdg-shell does not report a minimized state in configure events.
+            // Keep our request until activation instead of treating the next
+            // normal-state configure as a restore from the Dock.
+            if (visibility === Window.Minimized) minimizeRequested = true;
+            if (minimizeRequested) return;
+            if (visibility !== Window.Hidden) view.isFullscreen = visibility === Window.FullScreen;
+        }
         let minimized = visibility === Window.Minimized;
         if (view.minimized !== minimized && visibility !== Window.Hidden) {
             view.minimized = minimized;

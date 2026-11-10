@@ -42,7 +42,7 @@ def main():
                     required = ['.get_toplevel(', '.set_main_menu(', '.set_glass(', '.set_fullscreen_bars(',
                                 '.set_minimized(', '.set_fullscreen(', '.unset_fullscreen(', 'MAKOS_CUTEFISH_TEST=']
                     missing = [token for token in required if token not in trace]
-                    errors = [token for token in ('TypeError:', 'ReferenceError:', 'failed to load component', 'error in client communication', 'FAIL:') if token in trace]
+                    errors = [token for token in ('TypeError:', 'ReferenceError:', 'failed to load component', 'error in client communication', 'Expected token', 'is not a type', 'FAIL:') if token in trace]
                     if result.returncode or missing or errors:
                         raise RuntimeError(f'{kind}: exit={result.returncode}, missing={missing}, errors={errors}')
                     if compositor.poll() is not None: raise RuntimeError('Compositor exited during client checks')

@@ -5,14 +5,14 @@ Item {
     id: adapter
     property var host: null
     readonly property var view: host ? host.view : null
-    readonly property bool glassReady: native.active && native.glassEnabled
-    readonly property int revealOffset: native.revealOffset
-    readonly property int revealDuration: native.revealDuration
+    readonly property bool glassReady: backend.active && backend.glassEnabled
+    readonly property int revealOffset: backend.revealOffset
+    readonly property int revealDuration: backend.revealDuration
     function refresh() {
-        if (host && view) native.menus = host.desktop.nativeMenuRows(view);
+        if (host && view) backend.menus = host.desktop.nativeMenuRows(view);
     }
     CutefishWindow {
-        id: native
+        id: backend
         objectName: "makOSCutefishBridge"
         window: adapter.host
         dark: adapter.view ? adapter.view.dark : false
