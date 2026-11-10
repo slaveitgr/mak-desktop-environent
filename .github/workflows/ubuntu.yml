@@ -24,6 +24,7 @@ jobs:
       - name: Build package without root
         run: runuser -u tahoe-test -- python3 linux/build_deb.py
       - name: Install and validate login entry
+        id: install
         run: |
           apt-get install -y ./dist/tahoe-desktop_0.7.0_amd64.deb
           desktop-file-validate /usr/share/xsessions/tahoe.desktop /usr/share/applications/tahoe-desktop.desktop
@@ -33,6 +34,7 @@ jobs:
       - name: All-app QML smoke check
         run: runuser -u tahoe-test -- env PYTHONPATH=/opt/tahoe-desktop/vendor QTWEBENGINE_DISABLE_SANDBOX=1 python3 tests/smoke_ui.py
       - name: Installed session lifecycle on isolated X11 server
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: runuser -u tahoe-test -- python3 linux/ci_session.py
       - name: Upload installable package
         uses: actions/upload-artifact@v4

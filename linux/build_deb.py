@@ -16,7 +16,7 @@ from package_release import DIRECTORIES, FILES, VERSION
 DEPENDENCIES = ('python3 (>= 3.10), python3 (<< 3.16), openbox, picom, dbus-x11, '
                 'xserver-xorg, x11-xserver-utils, wmctrl, xss-lock, i3lock, '
                 'policykit-1-gnome, libglib2.0-bin, fonts-inter, '
-                'libegl1, libgl1, libopengl0, libnss3, libxkbcommon-x11-0, '
+                'libegl1, libgl1, libopengl0, libnss3, libpulse0, libxkbcommon-x11-0, '
                 'libxcb-cursor0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, '
                 'libxcb-render-util0, libxcb-xinerama0, libxcb-randr0, libxcb-shape0, '
                 'libxcb-xfixes0, libxcb-sync1, libxcb-xkb1, libxcomposite1, '
