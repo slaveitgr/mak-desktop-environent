@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Tahoe Desktop Preview
+Comment=Run Tahoe Desktop in a window
+Exec=/usr/bin/tahoe-desktop
+Icon=/opt/tahoe-desktop/assets/finder.png
+Terminal=false
+Type=Application
+Categories=Utility;
+NotShowIn=Tahoe;

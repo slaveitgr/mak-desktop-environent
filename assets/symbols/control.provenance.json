@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-11-10T08:02:47.875523+00:00",
+  "method": "Public AppKit NSImage(systemSymbolName:accessibilityDescription:) with NSImage.SymbolConfiguration(pointSize:18, weight:.regular)",
+  "extractor": "../../extract_reference_icons.swift",
+  "canvas_logical_size": [
+    24,
+    24
+  ],
+  "maximum_symbol_logical_size": [
+    20,
+    20
+  ],
+  "pixel_size": [
+    72,
+    72
+  ],
+  "format": "RGBA PNG; centered, original aspect ratio preserved; transparent padding",
+  "observed": "Each available system symbol was resolved by AppKit and rendered using the same rasterization method as the existing reference symbols.",
+  "inferred": "Assignments to this desktop’s status controls and volume thresholds are semantic reconstruction; these exports alone do not prove identical glyph selection or metrics in Tahoe’s live menu bar.",
+  "assets": [
+    {
+      "file": "mirroring.png",
+      "system_symbol": "display.2",
+      "available": true,
+      "pixel_size": [
+        72,
+        72
+      ],
+      "alpha_bounds_pixels": [
+        8,
+        17,
+        64,
+        55
+      ],
+      "png_sha256": "055e1b272e462c40a46d93b1891ffb5bef387b861a079bf0511e71b3edb77475"
+    },
+    {
+      "file": "speaker-high.png",
+      "system_symbol": "speaker.wave.3.fill",
+      "available": true,
+      "pixel_size": [
+        72,
+        72
+      ],
+      "alpha_bounds_pixels": [
+        11,
+        17,
+        61,
+        55
+      ],
+      "png_sha256": "c3cc32b1f29591f121aba34ca3a5b247c1102c8fdae6c08e882d02f62dad6bfd"
+    },
+    {
+      "file": "speaker-low.png",
+      "system_symbol": "speaker.wave.1.fill",
+      "available": true,
+      "pixel_size": [
+        72,
+        72
+      ],
+      "alpha_bounds_pixels": [
+        14,
+        14,
+        58,
+        61
+      ],
+      "png_sha256": "a3f6dbc9c8455f0c70cd3749aad2b7949bc0042a9d32361b2fe6402f7b110cc7"
+    },
+    {
+      "file": "speaker-muted.png",
+      "system_symbol": "speaker.slash.fill",
+      "available": true,
+      "pixel_size": [
+        72,
+        72
+      ],
+      "alpha_bounds_pixels": [
+        8,
+        11,
+        61,
+        61
+      ],
+      "png_sha256": "f91973b2af6f3677d44106495ba4f31e84b702feed18952a760995f1cb8f3740"
+    },
+    {
+      "file": "timer.png",
+      "system_symbol": "timer",
+      "available": true,
+      "pixel_size": [
+        72,
+        72
+      ],
+      "alpha_bounds_pixels": [
+        11,
+        11,
+        61,
+        64
+      ],
+      "png_sha256": "8adff77257ab8a3881b617679cd9b0f741a37de61fe335ff6e0d670ba35ce45e"
+    },
+    {
+      "file": "weather.png",
+      "system_symbol": "cloud.sun",
+      "available": true,
+      "pixel_size": [
+        72,
+        72
+      ],
+      "alpha_bounds_pixels": [
+        8,
+        14,
+        67,
+        58
+      ],
+      "png_sha256": "386e5cbd4980e5edaf27a9d41d56bd6758f9f3ff0847eb1d142a48bc309f0be1"
+    }
+  ],
+  "unavailable_public_system_symbols": [
+    {
+      "file": "timemachine.png",
+      "system_symbol": "arrow.counterclockwise.clock",
+      "available": false,
+      "observation": "NSImage(systemSymbolName:accessibilityDescription:) returned nil; no timemachine.png was written.",
+      "rendered_fallback": "clock.png",
+      "fallback_basis": "Existing generic public clock symbol; not exact Time Machine artwork.",
+      "fallback_png_sha256": "7926ee1922d23415cf053201254e721a8ed4ff7adfc507016ab4e27409f355e5"
+    }
+  ]
+}

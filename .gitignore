@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+demo-home/
+.DS_Store
+
+Tahoe Desktop.app/
+.desktop-data/
+vendor/
+dist/
+*.deb
+*.log

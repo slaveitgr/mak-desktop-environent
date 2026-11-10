@@ -1,0 +1,91 @@
+{
+  "version": "0.6",
+  "reference": "Local macOS Tahoe 26.7.2",
+  "observed": {
+    "menu_bar_rows": [
+      "Clock",
+      "Spotlight",
+      "Wi-Fi",
+      "Bluetooth",
+      "Battery",
+      "AirDrop",
+      "Focus",
+      "Screen Mirroring",
+      "Display",
+      "Sound",
+      "Now Playing",
+      "Fast User Switching",
+      "Text Input",
+      "Time Machine",
+      "Timer",
+      "Weather"
+    ],
+    "menu_bar_layout": {
+      "sidebar_width": 223,
+      "content_x": 243,
+      "content_width": 460,
+      "row_height": 45,
+      "checkbox_x": 13,
+      "category_icon_x": 39,
+      "label_x": 64
+    },
+    "top_options": [
+      "Automatically hide and show the menu bar",
+      "Show menu bar background",
+      "Recent documents, applications, and servers"
+    ],
+    "clock_options": [
+      "Show date",
+      "Show the day of the week",
+      "Digital/Analog",
+      "Show AM/PM",
+      "Flash the time separators",
+      "Display the time with seconds",
+      "Announce the time",
+      "Interval",
+      "Voice",
+      "Customize Voice"
+    ],
+    "battery_options": [
+      "Show Percentage",
+      "Show Energy Mode: When Active/Always"
+    ],
+    "additional_sections": [
+      "Add Controls",
+      "Allow in the Menu Bar",
+      "Reset Control Center"
+    ]
+  },
+  "evidence": [
+    {
+      "id": "ev_f9cbeff6d204c428e14744a2689bee24220b5c09c473b61483ef6952d54a79fb",
+      "source": "ControlCenterSettings.appex/Contents/Resources/Localizable.loctable",
+      "kind": "observed resource strings"
+    },
+    {
+      "source": "CUA System Settings live accessibility and screenshot",
+      "kind": "runtime settings/layout observations"
+    },
+    {
+      "source": "https://support.apple.com/en-in/guide/mac-help/mchlc9d0e1f2/mac",
+      "kind": "official search excerpt: Edit Controls, add/reorder, menu pinning; page open rate-limited"
+    }
+  ],
+  "implemented": [
+    "Anchored status panels and click/hover/Escape/outside-dismiss behavior",
+    "Menu icon visibility and active-only modes",
+    "Menu Command-drag reorder/remove and overflow",
+    "Searchable controls gallery with both destinations",
+    "Persistent Control Center add/remove/reorder/resize/reset",
+    "Native category artwork and sound level/mute symbols",
+    "Working local media, appearance, brightness, accessibility, Focus and timer controls",
+    "Native Settings field groups and options sheets"
+  ],
+  "unknowns": [
+    "Native ControlCenter app inaccessible through CUA; getApp timed out",
+    "Add Controls click dispatched, but separate native editor capture failed with ScreenCaptureKit -3811",
+    "Gallery geometry/default layout/timings are independent approximations",
+    "Hardware and external services remain unconnected",
+    "No Linux compositor runtime validation"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "version": "0.5",
+  "result": "passed",
+  "unit_test_count": 114,
+  "unit_seconds": 64.024,
+  "checks": [
+    {
+      "name": "unit-and-integration",
+      "exit_code": 0,
+      "log": "work/verify-0.5-unit-final.log"
+    },
+    {
+      "name": "all-apps-and-settings-qml",
+      "exit_code": 0,
+      "log": "work/verify-0.5-qml.log"
+    },
+    {
+      "name": "appearance-settings",
+      "exit_code": 0,
+      "log": "work/verify-0.5-settings.log"
+    },
+    {
+      "name": "menu-symbols-and-material",
+      "exit_code": 0,
+      "log": "work/verify-0.5-menus.log"
+    }
+  ],
+  "interaction_coverage": [
+    "Desktop empty/file/folder context menus",
+    "Selection modifiers and marquee",
+    "Rename, new folder, copy/paste, Trash and Undo through clicked menu routes",
+    "Persistent exact-endpoint and group icon positioning",
+    "Finder/Desktop transfers in icons, list, columns and gallery",
+    "Option-copy including colliding names",
+    "Help-to-Apple top-menu mouse sweep without further clicks",
+    "First-frame right-side Dock minimize target",
+    "Multiple minimized windows and magnified/scaled targets",
+    "Restore after viewport change",
+    "Interrupted full-screen reentry/switch/resize/close"
+  ],
+  "live_ui": [
+    "Native Finder and Appearance inspected",
+    "Prototype Desktop context menu and native Settings artwork observed",
+    "Rebuilt macOS launcher opened",
+    "Updated Apple/File menu symbols and blurred material observed"
+  ],
+  "limitations": [
+    "No exact native motion curve or synchronized animation comparison",
+    "No pixel-perfect whole-system parity claim",
+    "Host/external-app file drags not supported; internal workspace drags verified",
+    "No Linux session/compositor trial",
+    "No real camera capture test"
+  ]
+}

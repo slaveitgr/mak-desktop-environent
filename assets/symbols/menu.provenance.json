@@ -1,0 +1,1180 @@
+{
+  "format_version": 1,
+  "method": "Public AppKit NSImage(systemSymbolName:) at 18 pt regular, aspect-fit within a 24 pt canvas, exported at 72×72 pixels.",
+  "finder_evidence_file": "work/rea-reference/finder.evidence.json",
+  "finder_evidence_id": "ev_6c940a0068b34aa3b865a23e40e19d4da3c2280efbb0ce9b25e78c6361de98cf",
+  "finder_archive_path": "/System/Library/CoreServices/Finder.app/Contents/Resources/Base.lproj/MenuBar.nib",
+  "finder_archive_sha256": "c0924d1aed5193193d219deba3a7140b37139cffe976b6803f99aa40d8e188a8",
+  "observed_finder_labels": {
+    "Move Items Here": {
+      "symbol": "folder",
+      "basis": "observed-finder-archive",
+      "object_id": "38",
+      "image_object_id": "43",
+      "field": "NSActionImage"
+    },
+    "Select All": {
+      "symbol": "character.textbox",
+      "basis": "observed-finder-archive",
+      "object_id": "50",
+      "image_object_id": "55",
+      "field": "NSActionImage"
+    },
+    "as List": {
+      "symbol": "list.bullet",
+      "basis": "observed-finder-archive",
+      "object_id": "60",
+      "image_object_id": "65",
+      "field": "NSActionImage"
+    },
+    "Back": {
+      "symbol": "chevron.backward",
+      "basis": "observed-finder-archive",
+      "object_id": "70",
+      "image_object_id": "75",
+      "field": "NSActionImage"
+    },
+    "Show Clipboard": {
+      "symbol": "clipboard",
+      "basis": "observed-finder-archive",
+      "object_id": "80",
+      "image_object_id": "85",
+      "field": "NSActionImage"
+    },
+    "as Icons": {
+      "symbol": "square.grid.2x2",
+      "basis": "observed-finder-archive",
+      "object_id": "90",
+      "image_object_id": "95",
+      "field": "NSActionImage"
+    },
+    "as Columns": {
+      "symbol": "rectangle.split.3x1",
+      "basis": "observed-finder-archive",
+      "object_id": "100",
+      "image_object_id": "105",
+      "field": "NSActionImage"
+    },
+    "Group By": {
+      "symbol": "arrow.up.arrow.down",
+      "basis": "observed-finder-archive",
+      "object_id": "119",
+      "image_object_id": "123",
+      "field": "NSActionImage"
+    },
+    "Hide Sidebar": {
+      "symbol": "sidebar.leading",
+      "basis": "observed-finder-archive",
+      "object_id": "1018",
+      "image_object_id": "138",
+      "field": "NSActionImage"
+    },
+    "Customize Toolbar…": {
+      "symbol": "wrench.adjustable",
+      "basis": "observed-finder-archive",
+      "object_id": "143",
+      "image_object_id": "147",
+      "field": "NSActionImage"
+    },
+    "Show View Options": {
+      "symbol": "gearshape",
+      "basis": "observed-finder-archive",
+      "object_id": "159",
+      "image_object_id": "164",
+      "field": "NSActionImage"
+    },
+    "Forward": {
+      "symbol": "chevron.forward",
+      "basis": "observed-finder-archive",
+      "object_id": "169",
+      "image_object_id": "174",
+      "field": "NSActionImage"
+    },
+    "Enclosing Folder": {
+      "symbol": "arrow.up.folder",
+      "basis": "observed-finder-archive",
+      "object_id": "463",
+      "image_object_id": "184",
+      "field": "NSActionImage"
+    },
+    "Home": {
+      "symbol": "house",
+      "basis": "observed-finder-archive",
+      "object_id": "196",
+      "image_object_id": "201",
+      "field": "NSImage"
+    },
+    "Desktop": {
+      "symbol": "menubar.dock.rectangle",
+      "basis": "observed-finder-archive",
+      "object_id": "206",
+      "image_object_id": "211",
+      "field": "NSImage"
+    },
+    "Applications": {
+      "symbol": "appstore",
+      "basis": "observed-finder-archive",
+      "object_id": "216",
+      "image_object_id": "221",
+      "field": "NSImage"
+    },
+    "Utilities": {
+      "symbol": "wrench.and.screwdriver",
+      "basis": "observed-finder-archive",
+      "object_id": "227",
+      "image_object_id": "232",
+      "field": "NSImage"
+    },
+    "Go to Folder…": {
+      "symbol": "arrow.forward.folder",
+      "basis": "observed-finder-archive",
+      "object_id": "237",
+      "image_object_id": "242",
+      "field": "NSActionImage"
+    },
+    "Recent Folders": {
+      "symbol": "clock",
+      "basis": "observed-finder-archive",
+      "object_id": "247",
+      "image_object_id": "251",
+      "field": "NSActionImage"
+    },
+    "Connect to Server…": {
+      "symbol": "rectangle.connected.to.line.below",
+      "basis": "observed-finder-archive",
+      "object_id": "266",
+      "image_object_id": "271",
+      "field": "NSActionImage"
+    },
+    "as Gallery": {
+      "symbol": "squares.below.rectangle",
+      "basis": "observed-finder-archive",
+      "object_id": "276",
+      "image_object_id": "281",
+      "field": "NSActionImage"
+    },
+    "Clean Up": {
+      "symbol": "square.grid.3x3",
+      "basis": "observed-finder-archive",
+      "object_id": "306",
+      "image_object_id": "114",
+      "field": "NSActionImage"
+    },
+    "Network": {
+      "symbol": "network",
+      "basis": "observed-finder-archive",
+      "object_id": "334",
+      "image_object_id": "339",
+      "field": "NSImage"
+    },
+    "Sort By": {
+      "symbol": "arrow.up.arrow.down",
+      "basis": "observed-finder-archive",
+      "object_id": "344",
+      "image_object_id": "123",
+      "field": "NSActionImage"
+    },
+    "Mac User Guide": {
+      "symbol": "book.pages",
+      "basis": "observed-finder-archive",
+      "object_id": "354",
+      "image_object_id": "359",
+      "field": "NSActionImage"
+    },
+    "Recents": {
+      "symbol": "clock",
+      "basis": "observed-finder-archive",
+      "object_id": "364",
+      "image_object_id": "251",
+      "field": "NSImage"
+    },
+    "Preferences…": {
+      "symbol": "gear",
+      "basis": "observed-finder-archive",
+      "object_id": "403",
+      "image_object_id": "408",
+      "field": "NSActionImage"
+    },
+    "Empty Trash": {
+      "symbol": "trash",
+      "basis": "observed-finder-archive",
+      "object_id": "423",
+      "image_object_id": "418",
+      "field": "NSActionImage"
+    },
+    "QuickLook": {
+      "symbol": "eye",
+      "basis": "observed-finder-archive",
+      "object_id": "577",
+      "image_object_id": "581",
+      "field": "NSActionImage"
+    },
+    "Compress": {
+      "symbol": "zipper.page",
+      "basis": "observed-finder-archive",
+      "object_id": "586",
+      "image_object_id": "590",
+      "field": "NSActionImage"
+    },
+    "Find": {
+      "symbol": "magnifyingglass",
+      "basis": "observed-finder-archive",
+      "object_id": "595",
+      "image_object_id": "488",
+      "field": "NSActionImage"
+    },
+    "Eject": {
+      "symbol": "eject",
+      "basis": "observed-finder-archive",
+      "object_id": "610",
+      "image_object_id": "498",
+      "field": "NSActionImage"
+    },
+    "Move to Trash": {
+      "symbol": "trash",
+      "basis": "observed-finder-archive",
+      "object_id": "616",
+      "image_object_id": "418",
+      "field": "NSActionImage"
+    },
+    "Show Original": {
+      "symbol": "arrowshape.turn.up.left.square.dashed",
+      "basis": "observed-finder-archive",
+      "object_id": "622",
+      "image_object_id": "627",
+      "field": "NSActionImage"
+    },
+    "Add to Sidebar": {
+      "symbol": "star",
+      "basis": "observed-finder-archive",
+      "object_id": "632",
+      "image_object_id": "636",
+      "field": "NSActionImage"
+    },
+    "New Smart Folder": {
+      "symbol": "gearshape",
+      "basis": "observed-finder-archive",
+      "object_id": "647",
+      "image_object_id": "164",
+      "field": "NSActionImage"
+    },
+    "New Finder Window": {
+      "symbol": "plus.rectangle",
+      "basis": "observed-finder-archive",
+      "object_id": "1052",
+      "image_object_id": "658",
+      "field": "NSActionImage"
+    },
+    "Make Alias": {
+      "symbol": "square.dashed.and.alias",
+      "basis": "observed-finder-archive",
+      "object_id": "676",
+      "image_object_id": "680",
+      "field": "NSActionImage"
+    },
+    "New Folder": {
+      "symbol": "folder.badge.plus",
+      "basis": "observed-finder-archive",
+      "object_id": "685",
+      "image_object_id": "690",
+      "field": "NSActionImage"
+    },
+    "Duplicate": {
+      "symbol": "plus.square.on.square",
+      "basis": "observed-finder-archive",
+      "object_id": "695",
+      "image_object_id": "700",
+      "field": "NSActionImage"
+    },
+    "Print": {
+      "symbol": "printer",
+      "basis": "observed-finder-archive",
+      "object_id": "705",
+      "image_object_id": "710",
+      "field": "NSActionImage"
+    },
+    "Get Info": {
+      "symbol": "info.circle",
+      "basis": "observed-finder-archive",
+      "object_id": "715",
+      "image_object_id": "546",
+      "field": "NSActionImage"
+    },
+    "Open": {
+      "symbol": "arrow.up.forward.app",
+      "basis": "observed-finder-archive",
+      "object_id": "728",
+      "image_object_id": "472",
+      "field": "NSActionImage"
+    },
+    "Downloads": {
+      "symbol": "arrow.down.circle",
+      "basis": "observed-finder-archive",
+      "object_id": "746",
+      "image_object_id": "751",
+      "field": "NSImage"
+    },
+    "AirDrop": {
+      "symbol": "airdrop",
+      "basis": "observed-finder-archive",
+      "object_id": "781",
+      "image_object_id": "786",
+      "field": "NSImage"
+    },
+    "Documents": {
+      "symbol": "document",
+      "basis": "observed-finder-archive",
+      "object_id": "791",
+      "image_object_id": "796",
+      "field": "NSImage"
+    },
+    "New Tab": {
+      "symbol": "plus.square.on.square",
+      "basis": "observed-finder-archive",
+      "object_id": "862",
+      "image_object_id": "700",
+      "field": "NSActionImage"
+    },
+    "Hide Preview": {
+      "symbol": "sidebar.trailing",
+      "basis": "observed-finder-archive",
+      "object_id": "868",
+      "image_object_id": "873",
+      "field": "NSActionImage"
+    },
+    "Tags…": {
+      "symbol": "tag",
+      "basis": "observed-finder-archive",
+      "object_id": "884",
+      "image_object_id": "888",
+      "field": "NSActionImage"
+    },
+    "Rename": {
+      "symbol": "pencil",
+      "basis": "observed-finder-archive",
+      "object_id": "929",
+      "image_object_id": "933",
+      "field": "NSActionImage"
+    },
+    "Copy as Pathname": {
+      "symbol": "document.on.document",
+      "basis": "observed-finder-archive",
+      "object_id": "956",
+      "image_object_id": "960",
+      "field": "NSActionImage"
+    },
+    "Share…": {
+      "symbol": "square.and.arrow.up",
+      "basis": "observed-finder-archive",
+      "object_id": "977",
+      "image_object_id": "981",
+      "field": "NSActionImage"
+    },
+    "Use Groups": {
+      "symbol": "square.grid.3x1.below.line.grid.1x2",
+      "basis": "observed-finder-archive",
+      "object_id": "1022",
+      "image_object_id": "1027",
+      "field": "NSActionImage"
+    },
+    "Tips for Your Mac": {
+      "symbol": "tips",
+      "basis": "observed-finder-archive",
+      "object_id": "1038",
+      "image_object_id": "1042",
+      "field": "NSActionImage"
+    },
+    "Shared": {
+      "symbol": "folder.badge.person.crop",
+      "basis": "observed-finder-archive",
+      "object_id": "1057",
+      "image_object_id": "1062",
+      "field": "NSImage"
+    },
+    "iCloud Drive": {
+      "symbol": "icloud",
+      "basis": "observed-finder-archive",
+      "object_id": "1073",
+      "image_object_id": "924",
+      "field": "NSImage"
+    }
+  },
+  "inferred_labels": {
+    "About This Mac": "display",
+    "System Settings…": "gearshape",
+    "App Store…": "appstore",
+    "Recent Items": "clock",
+    "Force Quit…": "xmark.octagon",
+    "Sleep": "moon.zzz",
+    "Restart…": "arrow.clockwise",
+    "Shut Down…": "power",
+    "Lock Screen": "lock",
+    "Settings…": "gear",
+    "Quick Look": "eye",
+    "Empty Trash…": "trash",
+    "Show Sidebar": "sidebar.leading",
+    "Show Preview": "sidebar.trailing",
+    "Print…": "printer",
+    "Use Stacks": "square.grid.3x1.below.line.grid.1x2",
+    "New Folder with Selection": "folder.badge.plus",
+    "Open With": "arrow.up.forward.app",
+    "Clean Up By": "square.grid.3x3",
+    "Computer": "desktopcomputer",
+    "Pictures": "photo",
+    "Trash": "trash",
+    "Put Back": "arrow.uturn.backward",
+    "Undo": "arrow.uturn.backward",
+    "Redo": "arrow.uturn.forward",
+    "Cut": "scissors",
+    "Copy": "document.on.document",
+    "Paste": "document.on.clipboard",
+    "Paste Items": "document.on.clipboard",
+    "Close": "xmark",
+    "Close Window": "xmark",
+    "Minimize": "minus",
+    "Zoom": "arrow.up.left.and.arrow.down.right",
+    "Cycle Through Windows": "rectangle.on.rectangle",
+    "Bring All to Front": "rectangle.on.rectangle",
+    "Enter Full Screen": "arrow.up.left.and.arrow.down.right",
+    "Exit Full Screen": "arrow.down.right.and.arrow.up.left",
+    "Hide Finder": "eye.slash",
+    "Hide Others": "eye.slash",
+    "Show All": "eye"
+  },
+  "inferred_commands": {
+    "aboutmac": "display",
+    "settings": "gearshape",
+    "launch:appstore": "appstore",
+    "forcequit": "xmark.octagon",
+    "session:sleep": "moon.zzz",
+    "session:restart": "arrow.clockwise",
+    "session:shutdown": "power",
+    "session:lock": "lock",
+    "session:logout": "rectangle.portrait.and.arrow.right",
+    "about": "info.circle",
+    "appearance": "gearshape",
+    "help": "keyboard",
+    "hide": "eye.slash",
+    "hideothers": "eye.slash",
+    "unhideall": "eye",
+    "newwindow": "plus.rectangle",
+    "newfolder": "folder.badge.plus",
+    "open": "arrow.up.forward.app",
+    "close": "xmark",
+    "getinfo": "info.circle",
+    "rename": "pencil",
+    "duplicate": "plus.square.on.square",
+    "preview": "eye",
+    "restore": "arrow.uturn.backward",
+    "trash": "trash",
+    "undo": "arrow.uturn.backward",
+    "copy": "document.on.document",
+    "copypaths": "document.on.document",
+    "paste": "document.on.clipboard",
+    "move": "folder",
+    "selectall": "character.textbox",
+    "icons": "square.grid.2x2",
+    "list": "list.bullet",
+    "columns": "rectangle.split.3x1",
+    "gallery": "squares.below.rectangle",
+    "sidebar": "sidebar.leading",
+    "fullscreen": "arrow.up.left.and.arrow.down.right",
+    "back": "chevron.backward",
+    "forward": "chevron.forward",
+    "up": "arrow.up.folder",
+    "go:@recents": "clock",
+    "go:Documents": "document",
+    "go:Desktop": "menubar.dock.rectangle",
+    "go:Downloads": "arrow.down.circle",
+    "go:": "house",
+    "go:@applications": "appstore",
+    "go:Pictures": "photo",
+    "go:.Trash": "trash",
+    "minimize": "minus",
+    "zoom": "arrow.up.left.and.arrow.down.right",
+    "showall": "rectangle.on.rectangle",
+    "app:undo": "arrow.uturn.backward",
+    "app:cut": "scissors",
+    "app:copy": "document.on.document",
+    "app:copyExpression": "document.on.document",
+    "app:paste": "document.on.clipboard",
+    "app:selectAll": "character.textbox",
+    "app:find": "magnifyingglass",
+    "app:back": "chevron.backward",
+    "app:forward": "chevron.forward",
+    "app:reload": "arrow.clockwise"
+  },
+  "limitations": [
+    "Archive image assignments establish resource linkage, not current runtime visibility.",
+    "Apple menu and standard action assignments lacking an archived image link are semantic inferences, not claimed 1:1 observations.",
+    "Finder resource mappings reused in other app menus do not establish those apps' native menu assignments.",
+    "Unknown rows, sort fields, tag color names and dynamic window titles receive no automatic icon."
+  ],
+  "assets": [
+    {
+      "file": "menu-arrow.clockwise.png",
+      "system_symbol": "arrow.clockwise",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "e279c770ba82c28e65708ace5418b58e9a5d1ddb178cf964e5f0c8c0ee84569a"
+    },
+    {
+      "file": "menu-arrow.down.circle.png",
+      "system_symbol": "arrow.down.circle",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "f19e3ae4afc51822366b8d08110f40521b3efd6181d2909ea11c86e5f23abd29"
+    },
+    {
+      "file": "menu-arrow.down.right.and.arrow.up.left.png",
+      "system_symbol": "arrow.down.right.and.arrow.up.left",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "cbcdec0183afae081f6a87cb940d0ba3820fcb3205785a778d76d78dcb2be56d"
+    },
+    {
+      "file": "menu-arrow.forward.folder.png",
+      "system_symbol": "arrow.forward.folder",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "17b133e4ce3aacb89d812fadb8317a704802e34f53bf33de5202a8669d2a30da"
+    },
+    {
+      "file": "menu-arrow.up.arrow.down.png",
+      "system_symbol": "arrow.up.arrow.down",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "41b9d820d7936ee64ec3854c53d36da69bfce9dd6a0cbd300a3563933ab85d7f"
+    },
+    {
+      "file": "menu-arrow.up.folder.png",
+      "system_symbol": "arrow.up.folder",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "60f73889a9d05924b9b748aece321bd3bbd8d338de5393e4a583f77c7abb4cc1"
+    },
+    {
+      "file": "menu-arrow.up.forward.app.png",
+      "system_symbol": "arrow.up.forward.app",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "0b42c80ed44301d9c0364b57f1e10cdc367008fe461342b0f4205c4dd9acb9d1"
+    },
+    {
+      "file": "menu-arrow.up.left.and.arrow.down.right.png",
+      "system_symbol": "arrow.up.left.and.arrow.down.right",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "8cc96f2d7cdda8694a1a876bd01862d9d84d8708d5b45169654070ee50fefece"
+    },
+    {
+      "file": "menu-arrow.uturn.backward.png",
+      "system_symbol": "arrow.uturn.backward",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "d6dbb260bd5bdd0ce0ce6a13145fe5b62a411dbc0e1a546d01201f1e463def1d"
+    },
+    {
+      "file": "menu-arrow.uturn.forward.png",
+      "system_symbol": "arrow.uturn.forward",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "10ea6eeb0da668fa7d239728541cb29f053aa68ed84d1fc6586d109f19a9cb67"
+    },
+    {
+      "file": "menu-arrowshape.turn.up.left.png",
+      "system_symbol": "arrowshape.turn.up.left",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "9194f464e290f611b97c00aef2d62d4267b08e4ccc211fe3158cf90e773b9c48"
+    },
+    {
+      "file": "menu-bag.png",
+      "system_symbol": "bag",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "e1696331f790af1af85881440a0b61b52d4b3739309294427bf03cced41b126b"
+    },
+    {
+      "file": "menu-book.pages.png",
+      "system_symbol": "book.pages",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "430e44e110c540cdddc8df3a849bc7a7b85dd21086dc8bcf15d7e3dc1e7f7fcd"
+    },
+    {
+      "file": "menu-character.textbox.png",
+      "system_symbol": "character.textbox",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "0a9e4b7b7940221b1e990609737ee69b70b4c5186803137e3c1b52c9bb5907fa"
+    },
+    {
+      "file": "menu-chevron.backward.png",
+      "system_symbol": "chevron.backward",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "3163261b189c2d8ed451511addb94794474ab5b6bd06d9e931a2ad81d8da1bc9"
+    },
+    {
+      "file": "menu-chevron.forward.png",
+      "system_symbol": "chevron.forward",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "a19d01910907484d1301964ad739826e369ca75d6fc1c9ab55141157c6550385"
+    },
+    {
+      "file": "menu-clipboard.png",
+      "system_symbol": "clipboard",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "3f265eeb9ac553e2e55d90bc4b1545debfa41b60ba6e05e420f9b9687146bc28"
+    },
+    {
+      "file": "menu-clock.png",
+      "system_symbol": "clock",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "7926ee1922d23415cf053201254e721a8ed4ff7adfc507016ab4e27409f355e5"
+    },
+    {
+      "file": "menu-desktopcomputer.png",
+      "system_symbol": "desktopcomputer",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "09e3991ca5a4bec3605410cda5c534db0b31ebf4d7d456727bfe8abe2c92b449"
+    },
+    {
+      "file": "menu-display.png",
+      "system_symbol": "display",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "8953662697c93cd8636aafec1ec159d1cd82fc6308a41cf97501eb5f9e854715"
+    },
+    {
+      "file": "menu-document.png",
+      "system_symbol": "document",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "a49b8012f9642081c2184070cfce88034dcc6ebba43f7f8555a81e282bbb3aab"
+    },
+    {
+      "file": "menu-document.on.clipboard.png",
+      "system_symbol": "document.on.clipboard",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "9e8d635e8ae65359e77c8e4d4473f05f390778e3f6b476f851c4c269ff3a19a8"
+    },
+    {
+      "file": "menu-document.on.document.png",
+      "system_symbol": "document.on.document",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "9520bba53654989cff7e4e13b099a016248e55c3b24a48fb162a82505b2d46e0"
+    },
+    {
+      "file": "menu-eject.png",
+      "system_symbol": "eject",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "3cc230ce2b1de457684cb2c018608e0eaa60104e4edea6a53a6460e9c277fcf9"
+    },
+    {
+      "file": "menu-eye.png",
+      "system_symbol": "eye",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "b9c6cb5aed3dbff8bed0e23718f5d719b55a0c8b917404f4d0b552cdc27d467b"
+    },
+    {
+      "file": "menu-eye.slash.png",
+      "system_symbol": "eye.slash",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "a84a524704075a8b3ea4266adcbf3bf08124388897c5de7c2ae4b93bd8f58a12"
+    },
+    {
+      "file": "menu-folder.png",
+      "system_symbol": "folder",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "98dee7d7a35b6c0e09dd2262ad412a290ded241cf55b224e25bcc81524d2344c"
+    },
+    {
+      "file": "menu-folder.badge.person.crop.png",
+      "system_symbol": "folder.badge.person.crop",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "7787a0d8e5f6fbbd5a0525d224e3d4dd3669e897bc47141b0cbefc78aed4da33"
+    },
+    {
+      "file": "menu-folder.badge.plus.png",
+      "system_symbol": "folder.badge.plus",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "29cbf4f441ed0091995eddb6c60bd1e55b4acb0d7a944a74bc989c513e64349f"
+    },
+    {
+      "file": "menu-gear.png",
+      "system_symbol": "gear",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "3461b9a63e39cf2c46695d13eef29e283b6a840ac15b37e470ea23a7c33da982"
+    },
+    {
+      "file": "menu-gearshape.png",
+      "system_symbol": "gearshape",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "e4451dc1237fd062eeb9c7d52cae077ac801c729681ccb403ade3d839656c760"
+    },
+    {
+      "file": "menu-house.png",
+      "system_symbol": "house",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "d7b19e8464efeec8f542aed55070da702f4fae651f4c4ccdb40f64f5a46fcaba"
+    },
+    {
+      "file": "menu-icloud.png",
+      "system_symbol": "icloud",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "f0f59e92c0b2428fddca1703ca74c42885d753c7fdfa74ce22d72101ef8a54b9"
+    },
+    {
+      "file": "menu-info.circle.png",
+      "system_symbol": "info.circle",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "6a660c5598e97a4da3faae54f71a3dd72e05b27f077f4ac82810fcf7524c64c0"
+    },
+    {
+      "file": "menu-keyboard.png",
+      "system_symbol": "keyboard",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "01be9e3438de79981779b332326357297fb1e3f244e1a944bb05fb9cb275bfcc"
+    },
+    {
+      "file": "menu-lightbulb.png",
+      "system_symbol": "lightbulb",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "9c5de6dfc77a4f6e2302d408d1994962401a42660ddf6bf03a40771a924a7991"
+    },
+    {
+      "file": "menu-link.png",
+      "system_symbol": "link",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "4ee78565841af13c4841659d8726ae1a0b048240989ec137c0fc13a3da2bcb75"
+    },
+    {
+      "file": "menu-list.bullet.png",
+      "system_symbol": "list.bullet",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "4be5f6d2d946e91c5cd33e402730e1d596842655f0208eec224857dc73a4f513"
+    },
+    {
+      "file": "menu-lock.png",
+      "system_symbol": "lock",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "6277f4a08d3921bb74cc0c787db75818c1919b47640954f1229d997f64658d74"
+    },
+    {
+      "file": "menu-magnifyingglass.png",
+      "system_symbol": "magnifyingglass",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "2f6562216dfdacb9f05e576599211a6d3c92e08043b466a7f694bc49e8d90fa5"
+    },
+    {
+      "file": "menu-menubar.dock.rectangle.png",
+      "system_symbol": "menubar.dock.rectangle",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "d14853a1a99e0f0c865fb69870ca95dca7310c5871a6a842e28a04ca731cf521"
+    },
+    {
+      "file": "menu-minus.png",
+      "system_symbol": "minus",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "556b1f1d20be698e5c887008d54eb2f0bff225f04be42bdb42b11854b1fdd446"
+    },
+    {
+      "file": "menu-moon.zzz.png",
+      "system_symbol": "moon.zzz",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "b23eadfa74e1eef18c2b0b7bba3f13770c32cd793f5b60c634d12a062f4dba14"
+    },
+    {
+      "file": "menu-network.png",
+      "system_symbol": "network",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "19297d03532ba3d05466043bba9605dd0ff66456ecc8a709b883fde82dac7058"
+    },
+    {
+      "file": "menu-pencil.png",
+      "system_symbol": "pencil",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "db32a051cef2b511d4275d231f6a24994fc2a24cc7a4b79bc50880b923d89980"
+    },
+    {
+      "file": "menu-photo.png",
+      "system_symbol": "photo",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "4f27477d32c5844649f3a6548d307f7bfc214fca52098124fc0f2c92cfe23f63"
+    },
+    {
+      "file": "menu-plus.rectangle.png",
+      "system_symbol": "plus.rectangle",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "7d33dc2b875a2e7830c4efd463fe1fef799b78a936afd4d97030324f8b9b27da"
+    },
+    {
+      "file": "menu-plus.square.on.square.png",
+      "system_symbol": "plus.square.on.square",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "e977d0b7c1dce94b77d5e12db2ef17dd00a8fe9ffb22aeb999a679bda584f614"
+    },
+    {
+      "file": "menu-power.png",
+      "system_symbol": "power",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "cb01b3d3c768564c297f3d4256c0918b96caa959ff84dc2bb5392fd64d63cc1d"
+    },
+    {
+      "file": "menu-printer.png",
+      "system_symbol": "printer",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "9f33bb9cc80f16d278cf0506fa0e34935d2eaedc427e21d918709d0158ee16bf"
+    },
+    {
+      "file": "menu-rectangle.connected.to.line.below.png",
+      "system_symbol": "rectangle.connected.to.line.below",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "da961b28faf769f1da794cfe5805143eaf864e7f2c2adbe500981fc235122e56"
+    },
+    {
+      "file": "menu-rectangle.on.rectangle.png",
+      "system_symbol": "rectangle.on.rectangle",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "d5d1695bc88bbaa27a1faf69ed71427fda791cc18b2f346efed2ce8f898cffb3"
+    },
+    {
+      "file": "menu-rectangle.portrait.and.arrow.right.png",
+      "system_symbol": "rectangle.portrait.and.arrow.right",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "ea77a56619a93fc4897b30581746c8445f38e49fde6e4241f4f283232670038d"
+    },
+    {
+      "file": "menu-rectangle.split.3x1.png",
+      "system_symbol": "rectangle.split.3x1",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "b088c47147356ada91045d32d7b6c1026a5429108f21f8c939e6bf5bcef52b0d"
+    },
+    {
+      "file": "menu-scissors.png",
+      "system_symbol": "scissors",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "c6ab6e1bf54b80c51bd470a5e012db36e233a901df287d25bcc0066903a9c4b8"
+    },
+    {
+      "file": "menu-sidebar.leading.png",
+      "system_symbol": "sidebar.leading",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "69d0a15fcf23cd47588f3c9b918922ac8ef8200812f1cfbc767cb3710df6d984"
+    },
+    {
+      "file": "menu-sidebar.trailing.png",
+      "system_symbol": "sidebar.trailing",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "cb024be4b4100b0c38ec6134c3ee61cef979cbb0211d06ef9da7542e400d9670"
+    },
+    {
+      "file": "menu-square.and.arrow.up.png",
+      "system_symbol": "square.and.arrow.up",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "d8dbff04acf0591f06d96a39db04788ce28540b7d1968d22c481f647a584760e"
+    },
+    {
+      "file": "menu-square.grid.2x2.png",
+      "system_symbol": "square.grid.2x2",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "e8cc14904b227428f27d7ec72553ed38476b3e098f42775571bf940b118ff7e2"
+    },
+    {
+      "file": "menu-square.grid.3x1.below.line.grid.1x2.png",
+      "system_symbol": "square.grid.3x1.below.line.grid.1x2",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "4247d3ced64fe6f491795b84c120058bdf5e0b944cc113efc4a525ae9437c6f4"
+    },
+    {
+      "file": "menu-square.grid.3x3.png",
+      "system_symbol": "square.grid.3x3",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "6c968dd74ba0ca7f7c9d02c04518f8165009ac271ed5669513972ee1849cefda"
+    },
+    {
+      "file": "menu-squares.below.rectangle.png",
+      "system_symbol": "squares.below.rectangle",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "2de6d659bcf15f3c3c4648a75e8c6792588b0300096c88b49a7a9ead0ed2fbbb"
+    },
+    {
+      "file": "menu-star.png",
+      "system_symbol": "star",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "5b983b09776f717fbeb79edeba396f8c0ab0a2768cfadfcb0717569cd803a51f"
+    },
+    {
+      "file": "menu-tag.png",
+      "system_symbol": "tag",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "17f70e26614e536deb6c20d1199b9a211dad1940888347e04a355e243d5bc49b"
+    },
+    {
+      "file": "menu-trash.png",
+      "system_symbol": "trash",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "51b7ba1595225a0d807738df9746aceb25e71904ff4a9405eeaff654d8effcea"
+    },
+    {
+      "file": "menu-wrench.adjustable.png",
+      "system_symbol": "wrench.adjustable",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "ed0621a07526a38dbf62c958df75bacfd922c4c4a646b869c8fe51e1027bb296"
+    },
+    {
+      "file": "menu-wrench.and.screwdriver.png",
+      "system_symbol": "wrench.and.screwdriver",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "8cc5608dfa372fd1484518df9ff9251f7f272a84e15e4ab7a39d79f985a74d99"
+    },
+    {
+      "file": "menu-xmark.png",
+      "system_symbol": "xmark",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "756768ee9531c923a7cf16d0336f349ab4e17ab8b442f8c594d68b7628f0790f"
+    },
+    {
+      "file": "menu-xmark.octagon.png",
+      "system_symbol": "xmark.octagon",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "0c14f20d45486de12c6b16ec674c96fba81aaf42cfc0b8f6bb11422025b2b58a"
+    },
+    {
+      "file": "menu-zipper.page.png",
+      "system_symbol": "zipper.page",
+      "pixel_size": [
+        72,
+        72
+      ],
+      "png_sha256": "4c33e015f47ef8f9fa8c614e46c7b3ebd505275d419861f5420ae5ea19a5fd05"
+    }
+  ],
+  "unavailable_public_system_symbols": [
+    {
+      "observed_symbol": "appstore",
+      "rendered_fallback": "bag",
+      "basis": "semantic-inference; not exact native artwork"
+    },
+    {
+      "observed_symbol": "tips",
+      "rendered_fallback": "lightbulb",
+      "basis": "semantic-inference; not exact native artwork"
+    },
+    {
+      "observed_symbol": "square.dashed.and.alias",
+      "rendered_fallback": "link",
+      "basis": "semantic-inference; not exact native artwork"
+    },
+    {
+      "observed_symbol": "arrowshape.turn.up.left.square.dashed",
+      "rendered_fallback": "arrowshape.turn.up.left",
+      "basis": "semantic-inference; not exact native artwork"
+    },
+    {
+      "observed_symbol": "airdrop",
+      "rendered_asset": "airdrop.png",
+      "source": "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarAirDrop.icns",
+      "basis": "existing native CoreTypes artwork reused; not proof of identical menu rendition"
+    }
+  ],
+  "reused_assets": [
+    {
+      "file": "airdrop.png",
+      "source": "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarAirDrop.icns",
+      "png_sha256": "b862b24f80dc1a1fd301b1ce4880467d3970e07091eefedb69174552d433e3a1"
+    }
+  ]
+}

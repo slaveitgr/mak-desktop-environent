@@ -1,0 +1,2420 @@
+{
+  "asset_count" : 78,
+  "assets" : [
+    {
+      "asset_name" : "AppearanceLight",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-light-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "77501c607bae971d72804f2fb9551d2791d131d2d5f17cc52bf2a6d04078a402",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceLight",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-light-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "77501c607bae971d72804f2fb9551d2791d131d2d5f17cc52bf2a6d04078a402",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceDark",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-dark-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "eb4f34dcd51fd0c6eff2af205e4a55ee4cbf449f3f72894b23e37e06bb10284b",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceDark",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-dark-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "eb4f34dcd51fd0c6eff2af205e4a55ee4cbf449f3f72894b23e37e06bb10284b",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceAuto",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-auto-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "769ca3bde96c70d07d4852885eba7ca0736f974ad2f8e4496d5d9df02a13a902",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceAuto",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-auto-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "769ca3bde96c70d07d4852885eba7ca0736f974ad2f8e4496d5d9df02a13a902",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceLightNoColor",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-light-no-color-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "7e0da7b6524758f08485e43186054a4f5ac8991b69fab212f95ca5ac45d39b4e",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceLightNoColor",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-light-no-color-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "7e0da7b6524758f08485e43186054a4f5ac8991b69fab212f95ca5ac45d39b4e",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceDarkNoColor",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-dark-no-color-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "1a63eb36050da19480bd6b97af69f110bf6adae654144b4ddd11954d2bf02ab0",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceDarkNoColor",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-dark-no-color-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "1a63eb36050da19480bd6b97af69f110bf6adae654144b4ddd11954d2bf02ab0",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceAutoNoColor",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-auto-no-color-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "c1fa8c4a0d4962214703e242ac8e032936c6ce6129ff3a5506a28a601a5b4e1d",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "AppearanceAutoNoColor",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "appearance-auto-no-color-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "c1fa8c4a0d4962214703e242ac8e032936c6ce6129ff3a5506a28a601a5b4e1d",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "GlassClear",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "glass-clear-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "4fe2d24630535ae5ae7dab3cef2f4b696f87570454257fcabde956e69516ce0a",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "GlassClear",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "glass-clear-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "3cea6a4c3d938fb88b2da4ae14ebfedcac79939adca914c8ccc7dc366d428b77",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "GlassTinted",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "glass-tinted-light.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "6501c1a341ede48fa1f2af4649906b478ff204e6200af60671e35ece5720c4a2",
+      "scale" : 2
+    },
+    {
+      "asset_name" : "GlassTinted",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "evidence_id" : "ev_b8a3a8cdd4c7bc67d9eb135c741e4bd1b9f49ec2f3bbd1041c34cd3873fef483",
+      "evidence_scope" : "Existing REA catalog identity; names beyond its bounded first 12 records verified by successful public named-image lookup.",
+      "file" : "glass-tinted-dark.png",
+      "kind" : "named-resource",
+      "logical_size" : [
+        67,
+        44
+      ],
+      "pixel_size" : [
+        134,
+        88
+      ],
+      "png_sha256" : "71a54724067348dd9dd17a790bb844d1e6642ab9280cbc8bef6ff468a8b9234e",
+      "scale" : 2
+    },
+    {
+      "bundle_identifier" : "com.apple.Accessibility-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/AccessibilitySettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AccessibilitySettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "2570260db91866ff153f2478d55c3382126ae9e76dd22197b9dabbea50e35eb3"
+      },
+      "category_label" : "Accessibility",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-accessibility-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.accessibility"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AccessibilitySettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "b1d1697d75f170853a048e3d0370d21e83be863c1358616bc25b5b0c1806f6e1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "5d658c87d6fa33a31c18928c580b750b85c1123447b5a17063487c36c35399ef",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Accessibility-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/AccessibilitySettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AccessibilitySettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "2570260db91866ff153f2478d55c3382126ae9e76dd22197b9dabbea50e35eb3"
+      },
+      "category_label" : "Accessibility",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-accessibility-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.accessibility"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AccessibilitySettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "b1d1697d75f170853a048e3d0370d21e83be863c1358616bc25b5b0c1806f6e1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "5d658c87d6fa33a31c18928c580b750b85c1123447b5a17063487c36c35399ef",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Appearance-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "category_label" : "Appearance",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-appearance-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Black",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "appearance"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Info.plist",
+        "sha256" : "baef6c248fedd50101aadb301f04b6c39c4639814e8d4d3326661089f9776da0"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "92be63c17fc233bf6461e83a8733e1a405454fd0148e803cdfedc43c53c8f7e5",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Appearance-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f9539084e3f0450cd0b9254d920b5d1a66fefb1869cbb904f0fd7e8e6895c521"
+      },
+      "category_label" : "Appearance",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-appearance-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Black",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "appearance"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Appearance.appex\/Contents\/Info.plist",
+        "sha256" : "baef6c248fedd50101aadb301f04b6c39c4639814e8d4d3326661089f9776da0"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "92be63c17fc233bf6461e83a8733e1a405454fd0148e803cdfedc43c53c8f7e5",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.systempreferences.AppleIDSettings",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/AppleIDSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AppleIDSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "67feb672572a12125356a6c2191bc78030bfe21bbaf98357736340546b8c6d3e"
+      },
+      "category_label" : "Apple Account bundle icon; not the user's avatar",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-apple-account-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "gray",
+          "ISRenderingMode" : "monochrome",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "apple.logo"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AppleIDSettings.appex\/Contents\/Info.plist",
+        "sha256" : "621e712d542d76a78265dbe92a4f40330b9dbcd45ea08c25573efe78eea3b6e5"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "6e208878c19f01914180921414928208b73e955a20b4852a0d42f51c9ce8e3ca",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.systempreferences.AppleIDSettings",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/AppleIDSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AppleIDSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "67feb672572a12125356a6c2191bc78030bfe21bbaf98357736340546b8c6d3e"
+      },
+      "category_label" : "Apple Account bundle icon; not the user's avatar",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-apple-account-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "gray",
+          "ISRenderingMode" : "monochrome",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "apple.logo"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/AppleIDSettings.appex\/Contents\/Info.plist",
+        "sha256" : "621e712d542d76a78265dbe92a4f40330b9dbcd45ea08c25573efe78eea3b6e5"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "6e208878c19f01914180921414928208b73e955a20b4852a0d42f51c9ce8e3ca",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.BluetoothSettings",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Bluetooth.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Bluetooth.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "67eed2bcb4dc68ded06537edeaa1bbdb23da3bec9d4d014ef18449cc950acd7e"
+      },
+      "category_label" : "Bluetooth",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-bluetooth-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.bluetooth"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Bluetooth.appex\/Contents\/Info.plist",
+        "sha256" : "0c4fe9c04c49ca7206dbd8da2dfbf36b2e4438da749a69502965899a28d7f528"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "5fbc56652ee9e1aee57d4ff49c61a4d6a6414cf32eca315cf547e0a867cba25a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.BluetoothSettings",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Bluetooth.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Bluetooth.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "67eed2bcb4dc68ded06537edeaa1bbdb23da3bec9d4d014ef18449cc950acd7e"
+      },
+      "category_label" : "Bluetooth",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-bluetooth-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.bluetooth"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Bluetooth.appex\/Contents\/Info.plist",
+        "sha256" : "0c4fe9c04c49ca7206dbd8da2dfbf36b2e4438da749a69502965899a28d7f528"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "5fbc56652ee9e1aee57d4ff49c61a4d6a6414cf32eca315cf547e0a867cba25a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.ControlCenter-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/ControlCenterSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ControlCenterSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "6db5066510224ff840a65e7aace8b02bcb2bdc4ad4fb5fd59426eeacbdd62942"
+      },
+      "category_label" : "Control Center \/ Menu Bar bundle",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-menu-bar-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "switch.2"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ControlCenterSettings.appex\/Contents\/Info.plist",
+        "sha256" : "a1fea14a09791e2f916003a08d218c7407450079540099d9dcbadb779b72c218"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "4661b0eda4b50d8fe202ae2b9ca42bf0670ae2b63fe849c1eca4ca6392996f2a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.ControlCenter-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/ControlCenterSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ControlCenterSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "6db5066510224ff840a65e7aace8b02bcb2bdc4ad4fb5fd59426eeacbdd62942"
+      },
+      "category_label" : "Control Center \/ Menu Bar bundle",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-menu-bar-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "switch.2"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ControlCenterSettings.appex\/Contents\/Info.plist",
+        "sha256" : "a1fea14a09791e2f916003a08d218c7407450079540099d9dcbadb779b72c218"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "4661b0eda4b50d8fe202ae2b9ca42bf0670ae2b63fe849c1eca4ca6392996f2a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Desktop-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/DesktopSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DesktopSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "e734042e554df3ca3fe77fe0856e7ed01a98a65f0efd47b14eda04b3ba1cce6f"
+      },
+      "category_label" : "Desktop & Dock",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-desktop-dock-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.desktop"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DesktopSettings.appex\/Contents\/Info.plist",
+        "sha256" : "4e180f7b079a73cf6460c9ac648993e865404facf7fb315ec118998539473a6e"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "2705cafc1ba3d58adc876fabef9b73e8c35f5b2359e80cceeb035c5037e5ee0f",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Desktop-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/DesktopSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DesktopSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "e734042e554df3ca3fe77fe0856e7ed01a98a65f0efd47b14eda04b3ba1cce6f"
+      },
+      "category_label" : "Desktop & Dock",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-desktop-dock-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.desktop"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DesktopSettings.appex\/Contents\/Info.plist",
+        "sha256" : "4e180f7b079a73cf6460c9ac648993e865404facf7fb315ec118998539473a6e"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "2705cafc1ba3d58adc876fabef9b73e8c35f5b2359e80cceeb035c5037e5ee0f",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Displays-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/DisplaysExt.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DisplaysExt.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "d3768824afb6fe9de82e54c18e2fc90c8cab394df3268b38f6cca76668ef59ce"
+      },
+      "category_label" : "Displays",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-displays-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.display"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DisplaysExt.appex\/Contents\/Info.plist",
+        "sha256" : "70b126b2b1c34b287c2fbb449ed1f95c9c63e052f6ad9074d3494f55425a20cb"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "d374ab2a7bd534862f8143f481fca973e0fd888a12258b8df31b8aac51699863",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Displays-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/DisplaysExt.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DisplaysExt.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "d3768824afb6fe9de82e54c18e2fc90c8cab394df3268b38f6cca76668ef59ce"
+      },
+      "category_label" : "Displays",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-displays-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.display"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/DisplaysExt.appex\/Contents\/Info.plist",
+        "sha256" : "70b126b2b1c34b287c2fbb449ed1f95c9c63e052f6ad9074d3494f55425a20cb"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "d374ab2a7bd534862f8143f481fca973e0fd888a12258b8df31b8aac51699863",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Family-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/FamilySettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FamilySettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "1affbf1203db82e687244d85f4568c6294ee8e1111438fb9aed334cd0a94b09f"
+      },
+      "category_label" : "Family",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-family-light.png",
+      "icon_declaration" : "AppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FamilySettings.appex\/Contents\/Info.plist",
+        "sha256" : "211fb01c0640c42c9a3ef2b9d57ce7a45683f01cde86f861785f5839730848cd"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "62d533b0cc8b4d8b654a8c722d804e4b0b6c15274528a3c51fa660d7ede8cc64",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Family-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/FamilySettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FamilySettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "1affbf1203db82e687244d85f4568c6294ee8e1111438fb9aed334cd0a94b09f"
+      },
+      "category_label" : "Family",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-family-dark.png",
+      "icon_declaration" : "AppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FamilySettings.appex\/Contents\/Info.plist",
+        "sha256" : "211fb01c0640c42c9a3ef2b9d57ce7a45683f01cde86f861785f5839730848cd"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "62d533b0cc8b4d8b654a8c722d804e4b0b6c15274528a3c51fa660d7ede8cc64",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Focus-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/FocusSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FocusSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "a3fcf2f35b69e76cf5eebec3829921166639c393948d8f0790ad7ce802c39387"
+      },
+      "category_label" : "Focus",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-focus-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.focus"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FocusSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "0de4bc4fb317d72418c032a2e61b0c952f12ba3b4a151460e2599f9bfcd17400"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "07db861cfd09a3bf714f7700d30e1c7b924e25df0c18ad3646e901812a03c0db",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Focus-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/FocusSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FocusSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "a3fcf2f35b69e76cf5eebec3829921166639c393948d8f0790ad7ce802c39387"
+      },
+      "category_label" : "Focus",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-focus-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.focus"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/FocusSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "0de4bc4fb317d72418c032a2e61b0c952f12ba3b4a151460e2599f9bfcd17400"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "07db861cfd09a3bf714f7700d30e1c7b924e25df0c18ad3646e901812a03c0db",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Game-Center-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/GameCenterMacOSSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/GameCenterMacOSSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "8ecc74056fd11a3bbf1116c9e9a04888ceec139ecc2b52ecb2d62ba126f8be56"
+      },
+      "category_label" : "Game Center",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-game-center-light.png",
+      "icon_declaration" : "GCAppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/GameCenterMacOSSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "d82e536a26d21f0f69e44eab8ccfdc0d388bdcf9d114d79eaccb6efe354e784e"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "9790ea1ae34d9a681e348ae2a8265b112b716104b44fcd90c7697af180b6452d",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Game-Center-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/GameCenterMacOSSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/GameCenterMacOSSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "8ecc74056fd11a3bbf1116c9e9a04888ceec139ecc2b52ecb2d62ba126f8be56"
+      },
+      "category_label" : "Game Center",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-game-center-dark.png",
+      "icon_declaration" : "GCAppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/GameCenterMacOSSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "d82e536a26d21f0f69e44eab8ccfdc0d388bdcf9d114d79eaccb6efe354e784e"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "9790ea1ae34d9a681e348ae2a8265b112b716104b44fcd90c7697af180b6452d",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Internet-Accounts-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/InternetAccountsSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/InternetAccountsSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "71a6a82eb64b5b3195681718b7ee99f78371489e4facb4435901f2119e58b5e6"
+      },
+      "category_label" : "Internet Accounts",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-internet-accounts-light.png",
+      "icon_declaration" : {
+        "CFBundleSymbolName" : "InternetAccountsIcons",
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "at"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/InternetAccountsSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "ce00ea270688a2c2e7e5b17afd807bfe604b1845e5b8fbc95d114287e745d5af"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "c083dd5edfd12fac861c0f07a1880c194d50d0997f4c59e7d9629559f41b7d1e",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Internet-Accounts-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/InternetAccountsSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/InternetAccountsSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "71a6a82eb64b5b3195681718b7ee99f78371489e4facb4435901f2119e58b5e6"
+      },
+      "category_label" : "Internet Accounts",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-internet-accounts-dark.png",
+      "icon_declaration" : {
+        "CFBundleSymbolName" : "InternetAccountsIcons",
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "at"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/InternetAccountsSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "ce00ea270688a2c2e7e5b17afd807bfe604b1845e5b8fbc95d114287e745d5af"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "c083dd5edfd12fac861c0f07a1880c194d50d0997f4c59e7d9629559f41b7d1e",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Keyboard-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/KeyboardSettings.appex",
+      "category_label" : "Keyboard",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-keyboard-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.keyboard"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/KeyboardSettings.appex\/Contents\/Info.plist",
+        "sha256" : "80bbeb5c739499909076dba5ec10d273c581ed1f02d6b6ce9caa03dfc0b4b1b1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "09d95cbab2218a1b9af5995131630614845727c9cae5e1754f9228c790d1c15f",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Keyboard-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/KeyboardSettings.appex",
+      "category_label" : "Keyboard",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-keyboard-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.keyboard"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/KeyboardSettings.appex\/Contents\/Info.plist",
+        "sha256" : "80bbeb5c739499909076dba5ec10d273c581ed1f02d6b6ce9caa03dfc0b4b1b1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "09d95cbab2218a1b9af5995131630614845727c9cae5e1754f9228c790d1c15f",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Lock-Screen-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/LockScreen.appex",
+      "category_label" : "Lock Screen",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-lock-screen-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "black",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "dots.below.lock.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/LockScreen.appex\/Contents\/Info.plist",
+        "sha256" : "dca2e7728b9f52c3dba7ce66d832e5422e9b97878c01017eb96c0b5fc845b5fe"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "d2369739066a150b9eb4be8b86c62b3bc293cda1050abd44e370f9a489640a2a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Lock-Screen-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/LockScreen.appex",
+      "category_label" : "Lock Screen",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-lock-screen-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "black",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "dots.below.lock.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/LockScreen.appex\/Contents\/Info.plist",
+        "sha256" : "dca2e7728b9f52c3dba7ce66d832e5422e9b97878c01017eb96c0b5fc845b5fe"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "d2369739066a150b9eb4be8b86c62b3bc293cda1050abd44e370f9a489640a2a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Mouse-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/MouseExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/MouseExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "311696ade2eda7cb5c2bac2bdfd132748a4fb1c92603bf9255a0313399cf630b"
+      },
+      "category_label" : "Mouse",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-mouse-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "magicmouse.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/MouseExtension.appex\/Contents\/Info.plist",
+        "sha256" : "4c85bfa5c428d421d1def21877f9d543fbfbdf23f96941febd5d15c01b3ab299"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "7e4d286d58700060399e787746aeade99399fdc07cf9b32c64299c11726aebd3",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Mouse-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/MouseExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/MouseExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "311696ade2eda7cb5c2bac2bdfd132748a4fb1c92603bf9255a0313399cf630b"
+      },
+      "category_label" : "Mouse",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-mouse-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "magicmouse.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/MouseExtension.appex\/Contents\/Info.plist",
+        "sha256" : "4c85bfa5c428d421d1def21877f9d543fbfbdf23f96941febd5d15c01b3ab299"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "7e4d286d58700060399e787746aeade99399fdc07cf9b32c64299c11726aebd3",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Network-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Network.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Network.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "be8efba0baf6d5c5fd86bdf13fe943b0587268b64f4cdf67ecb780a466cf5a75"
+      },
+      "category_label" : "Network",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-network-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Blue",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "network"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Network.appex\/Contents\/Info.plist",
+        "sha256" : "38b3bca18d83b8830e7e7db32d8daae2f6ce80378f235c5915ce1b17cadd787d"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "5d1be5fbdc91d5b5f272ea0c4e28dea238a6a14e0d9810d258698bf163cb68d0",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Network-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Network.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Network.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "be8efba0baf6d5c5fd86bdf13fe943b0587268b64f4cdf67ecb780a466cf5a75"
+      },
+      "category_label" : "Network",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-network-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Blue",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "network"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Network.appex\/Contents\/Info.plist",
+        "sha256" : "38b3bca18d83b8830e7e7db32d8daae2f6ce80378f235c5915ce1b17cadd787d"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "5d1be5fbdc91d5b5f272ea0c4e28dea238a6a14e0d9810d258698bf163cb68d0",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Notifications-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/NotificationsSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/NotificationsSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f27bc05dec8cb5f6ee4c78fb8b50361f5e0d652f21880ebb6b520b9ffadbcae9"
+      },
+      "category_label" : "Notifications",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-notifications-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.notifications"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/NotificationsSettings.appex\/Contents\/Info.plist",
+        "sha256" : "0adc0fe2c022db89d8031750f1a364679561bc7a4ba50e2cdc633ab74c8724a1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "83347b62e511547d130c1c7d147e9799035c103999ea441b48e5b356f437355b",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Notifications-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/NotificationsSettings.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/NotificationsSettings.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "f27bc05dec8cb5f6ee4c78fb8b50361f5e0d652f21880ebb6b520b9ffadbcae9"
+      },
+      "category_label" : "Notifications",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-notifications-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.notifications"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/NotificationsSettings.appex\/Contents\/Info.plist",
+        "sha256" : "0adc0fe2c022db89d8031750f1a364679561bc7a4ba50e2cdc633ab74c8724a1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "83347b62e511547d130c1c7d147e9799035c103999ea441b48e5b356f437355b",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Battery-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/PowerPreferences.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/PowerPreferences.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "be9d3d77a8832b95972f2a407d57fb10972d0563abd779bb4f0ea8039554fd31"
+      },
+      "category_label" : "Battery",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-battery-light.png",
+      "icon_declaration" : "icon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/PowerPreferences.appex\/Contents\/Info.plist",
+        "sha256" : "805487fded58181e1ed62f880814f2160efc19eece6fad7d349e012caa35182f"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "1b6e3db4dd749edd859d32ce4ecb1f6882cf1012cc46f606608740c5e3fc200a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Battery-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/PowerPreferences.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/PowerPreferences.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "be9d3d77a8832b95972f2a407d57fb10972d0563abd779bb4f0ea8039554fd31"
+      },
+      "category_label" : "Battery",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-battery-dark.png",
+      "icon_declaration" : "icon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/PowerPreferences.appex\/Contents\/Info.plist",
+        "sha256" : "805487fded58181e1ed62f880814f2160efc19eece6fad7d349e012caa35182f"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "1b6e3db4dd749edd859d32ce4ecb1f6882cf1012cc46f606608740c5e3fc200a",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Print-Scan-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/PrinterScannerSettings.appex",
+      "category_label" : "Printers & Scanners",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-printers-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "printer.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/PrinterScannerSettings.appex\/Contents\/Info.plist",
+        "sha256" : "ff43218d292de8f61886b95c00cbd2b446fb74d231a00fc6e2a409e724e046b1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "472d8a9287a6665f4a90ed060c71f3b98108379a963d0c081725160d39629589",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Print-Scan-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/PrinterScannerSettings.appex",
+      "category_label" : "Printers & Scanners",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-printers-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "printer.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/PrinterScannerSettings.appex\/Contents\/Info.plist",
+        "sha256" : "ff43218d292de8f61886b95c00cbd2b446fb74d231a00fc6e2a409e724e046b1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "472d8a9287a6665f4a90ed060c71f3b98108379a963d0c081725160d39629589",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Screen-Time-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/ScreenTimePreferencesExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ScreenTimePreferencesExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "9c85584cc2b83bb8f14c1e1321d2bedab482d0972051c91adaaf0661f8007dad"
+      },
+      "category_label" : "Screen Time",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-screen-time-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.screen-time"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ScreenTimePreferencesExtension.appex\/Contents\/Info.plist",
+        "sha256" : "2e4e40dff99cbc3221c3dfaeacc2b1e6a9f88036a820b4efda99809c9dbf9052"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "534430a4a690289bbe788d6896cc8cb87fb2bec812e65d910e775b04756fd8a8",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Screen-Time-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/ScreenTimePreferencesExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ScreenTimePreferencesExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "9c85584cc2b83bb8f14c1e1321d2bedab482d0972051c91adaaf0661f8007dad"
+      },
+      "category_label" : "Screen Time",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-screen-time-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.screen-time"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/ScreenTimePreferencesExtension.appex\/Contents\/Info.plist",
+        "sha256" : "2e4e40dff99cbc3221c3dfaeacc2b1e6a9f88036a820b4efda99809c9dbf9052"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "534430a4a690289bbe788d6896cc8cb87fb2bec812e65d910e775b04756fd8a8",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.settings.PrivacySecurity.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/SecurityPrivacyExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SecurityPrivacyExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "50dd4e0f341806bdcecda8079815cc53ddde4875435f8d891686cecc96e14630"
+      },
+      "category_label" : "Privacy & Security",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-privacy-security-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.privacy"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SecurityPrivacyExtension.appex\/Contents\/Info.plist",
+        "sha256" : "4332594586f11ee34481671495d7b5247ad851f6bee4865cc242686bb3445973"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "fc5875aff5c670ec1b20db02f3981e64416d221d5025d81eb606d200b8ec711b",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.settings.PrivacySecurity.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/SecurityPrivacyExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SecurityPrivacyExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "50dd4e0f341806bdcecda8079815cc53ddde4875435f8d891686cecc96e14630"
+      },
+      "category_label" : "Privacy & Security",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-privacy-security-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.privacy"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SecurityPrivacyExtension.appex\/Contents\/Info.plist",
+        "sha256" : "4332594586f11ee34481671495d7b5247ad851f6bee4865cc242686bb3445973"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "fc5875aff5c670ec1b20db02f3981e64416d221d5025d81eb606d200b8ec711b",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Siri-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/SiriPreferenceExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SiriPreferenceExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "9e428a906bdc55804a5c984e778769bf41278ee919c23dac897e75f03b9f3e9a"
+      },
+      "category_label" : "Siri",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-siri-light.png",
+      "icon_declaration" : "AppIconSiri",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SiriPreferenceExtension.appex\/Contents\/Info.plist",
+        "sha256" : "ca547308e688472cf1cbbf82105d1eb3e42639fb0d16ccce3b8da1f1629d161a"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "2e0c949a61114c5366335e66cda7cffe53925faa3a15ef14900ed13ea117a28c",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Siri-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/SiriPreferenceExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SiriPreferenceExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "9e428a906bdc55804a5c984e778769bf41278ee919c23dac897e75f03b9f3e9a"
+      },
+      "category_label" : "Siri",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-siri-dark.png",
+      "icon_declaration" : "AppIconSiri",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SiriPreferenceExtension.appex\/Contents\/Info.plist",
+        "sha256" : "ca547308e688472cf1cbbf82105d1eb3e42639fb0d16ccce3b8da1f1629d161a"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "2e0c949a61114c5366335e66cda7cffe53925faa3a15ef14900ed13ea117a28c",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Sound-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Sound.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Sound.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "699da52332adf00008d30d24b26ef60dbff06eddcd5489278fb5d8a391a2808f"
+      },
+      "category_label" : "Sound",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-sound-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.sound"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Sound.appex\/Contents\/Info.plist",
+        "sha256" : "e9a826ddabdf3465c92bc8b00b12986da702088a5ce66331fb30b5b57b376501"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "43a26ee1f535dd6027187adc890e854db499d7746145f5484646b74e702f005c",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Sound-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Sound.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Sound.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "699da52332adf00008d30d24b26ef60dbff06eddcd5489278fb5d8a391a2808f"
+      },
+      "category_label" : "Sound",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-sound-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISTypeIdentifier" : "com.apple.graphic-icon.sound"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Sound.appex\/Contents\/Info.plist",
+        "sha256" : "e9a826ddabdf3465c92bc8b00b12986da702088a5ce66331fb30b5b57b376501"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "43a26ee1f535dd6027187adc890e854db499d7746145f5484646b74e702f005c",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Spotlight-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/SpotlightPreferenceExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SpotlightPreferenceExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "6787eea5c7aec0566c209c070e62789551deec4caf0e3e9faeaa8f1eb267b576"
+      },
+      "category_label" : "Spotlight",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-spotlight-light.png",
+      "icon_declaration" : "AppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SpotlightPreferenceExtension.appex\/Contents\/Info.plist",
+        "sha256" : "07d4601afcee1a6a28118b736a31ccf0fdbff67f74b70baa26843ae430eb0117"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "70c0394bad637aa3a3dd4c24be9e40f14ff69410113c225758772f0c11ea05b1",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Spotlight-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/SpotlightPreferenceExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SpotlightPreferenceExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "6787eea5c7aec0566c209c070e62789551deec4caf0e3e9faeaa8f1eb267b576"
+      },
+      "category_label" : "Spotlight",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-spotlight-dark.png",
+      "icon_declaration" : "AppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/SpotlightPreferenceExtension.appex\/Contents\/Info.plist",
+        "sha256" : "07d4601afcee1a6a28118b736a31ccf0fdbff67f74b70baa26843ae430eb0117"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "70c0394bad637aa3a3dd4c24be9e40f14ff69410113c225758772f0c11ea05b1",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Touch-ID-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Touch ID & Password.appex",
+      "category_label" : "Touch ID bundle; not proof of the Login Password-only row icon",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-touch-id-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISSymbolColor" : "pink",
+          "ISSymbolName" : "touchid"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Touch ID & Password.appex\/Contents\/Info.plist",
+        "sha256" : "1f863854b73ee9ff0c54845800a290cc65e463f2f4006eaf28b3e6d7cee67e02"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "429d3e94659b4639c785fc8fbab8a0e3e8b41167254a79411bf3dab5bad808de",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Touch-ID-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Touch ID & Password.appex",
+      "category_label" : "Touch ID bundle; not proof of the Login Password-only row icon",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-touch-id-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISSymbolColor" : "pink",
+          "ISSymbolName" : "touchid"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Touch ID & Password.appex\/Contents\/Info.plist",
+        "sha256" : "1f863854b73ee9ff0c54845800a290cc65e463f2f4006eaf28b3e6d7cee67e02"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "429d3e94659b4639c785fc8fbab8a0e3e8b41167254a79411bf3dab5bad808de",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Trackpad-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/TrackpadExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/TrackpadExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "2730372359379a7930840093368622ca0fb4731f21bad2182b157f97dd82de6c"
+      },
+      "category_label" : "Trackpad",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-trackpad-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "rectangle.and.hand.point.up.left.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/TrackpadExtension.appex\/Contents\/Info.plist",
+        "sha256" : "eae11281b33c8f495a7bc507cd9f0e80142cb4a7d18f6a59cc726238227e50f8"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "c4b7fdead9873ec86c5fa0f61910681eff85cd6f40f819eb12ff9fe4525b67c1",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Trackpad-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/TrackpadExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/TrackpadExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "2730372359379a7930840093368622ca0fb4731f21bad2182b157f97dd82de6c"
+      },
+      "category_label" : "Trackpad",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-trackpad-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "rectangle.and.hand.point.up.left.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/TrackpadExtension.appex\/Contents\/Info.plist",
+        "sha256" : "eae11281b33c8f495a7bc507cd9f0e80142cb4a7d18f6a59cc726238227e50f8"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "c4b7fdead9873ec86c5fa0f61910681eff85cd6f40f819eb12ff9fe4525b67c1",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Users-Groups-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/UsersGroups.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/UsersGroups.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "40f94d8b68fc9f6b7dbd3d89178bd102b551c4b2b315a3f35508418eda595e52"
+      },
+      "category_label" : "Users & Groups",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-users-groups-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "person.2.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/UsersGroups.appex\/Contents\/Info.plist",
+        "sha256" : "2276aa00bc7964e307f47a908d2168393cc095844514fa739d6851f0c794e609"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "4e078eb7d5590bf83d8e31d1edcdd68ba1a81292611838f78d8679d04595e214",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Users-Groups-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/UsersGroups.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/UsersGroups.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "40f94d8b68fc9f6b7dbd3d89178bd102b551c4b2b315a3f35508418eda595e52"
+      },
+      "category_label" : "Users & Groups",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-users-groups-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "person.2.fill"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/UsersGroups.appex\/Contents\/Info.plist",
+        "sha256" : "2276aa00bc7964e307f47a908d2168393cc095844514fa739d6851f0c794e609"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "4e078eb7d5590bf83d8e31d1edcdd68ba1a81292611838f78d8679d04595e214",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.NetworkExtensionSettingsUI.NESettingsUIExtension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/VPN.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/VPN.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "acad1b275a0e5cf85ff860e6b93d0ac18b6fc1a786fb02a2f92884d53f8d0051"
+      },
+      "category_label" : "VPN",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-vpn-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "network.badge.shield.half.filled"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/VPN.appex\/Contents\/Info.plist",
+        "sha256" : "344bc77113fa07e23a1e943de7a14adf9cec49d2a77ea061c8d5db9641d63ec1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "8bd36a697234c2eb17491e00a264b24878b30a4ac1ed6cb68137274166316402",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.NetworkExtensionSettingsUI.NESettingsUIExtension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/VPN.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/VPN.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "acad1b275a0e5cf85ff860e6b93d0ac18b6fc1a786fb02a2f92884d53f8d0051"
+      },
+      "category_label" : "VPN",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-vpn-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "network.badge.shield.half.filled"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/VPN.appex\/Contents\/Info.plist",
+        "sha256" : "344bc77113fa07e23a1e943de7a14adf9cec49d2a77ea061c8d5db9641d63ec1"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "8bd36a697234c2eb17491e00a264b24878b30a4ac1ed6cb68137274166316402",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.WalletSettingsExtension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/WalletSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/WalletSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "e7b0c4dea61a6e06ff1a4623f178a6ccbc66f77abffe333008773a3ba2e57b71"
+      },
+      "category_label" : "Wallet & Apple Pay",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-wallet-light.png",
+      "icon_declaration" : "AppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/WalletSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "c03e77398197d69468b91b685edc9392ea424d082b33963ffc018d8beac803fe"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "a0eaf68283b883a900c751807849f15972308ad1b95cd91ae4ea52176ffe7381",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.WalletSettingsExtension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/WalletSettingsExtension.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/WalletSettingsExtension.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "e7b0c4dea61a6e06ff1a4623f178a6ccbc66f77abffe333008773a3ba2e57b71"
+      },
+      "category_label" : "Wallet & Apple Pay",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-wallet-dark.png",
+      "icon_declaration" : "AppIcon",
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/WalletSettingsExtension.appex\/Contents\/Info.plist",
+        "sha256" : "c03e77398197d69468b91b685edc9392ea424d082b33963ffc018d8beac803fe"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "Bundle.image(forResource:) using CFBundleIconFile\/CFBundleIconName",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "a0eaf68283b883a900c751807849f15972308ad1b95cd91ae4ea52176ffe7381",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Wallpaper-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wallpaper.appex",
+      "category_label" : "Wallpaper",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-wallpaper-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Cyan",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "photos"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wallpaper.appex\/Contents\/Info.plist",
+        "sha256" : "d7b42c17a0f9230c707e77345b98cf1511ee9f4c86e74ab58f263e1519f191c6"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "0d493ac10fc3a778ddb01c5db9c76f0a6bd7f5929cc7bc4b34667f176047a11b",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.Wallpaper-Settings.extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wallpaper.appex",
+      "category_label" : "Wallpaper",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-wallpaper-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "Cyan",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "White",
+          "ISSymbolName" : "photos"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wallpaper.appex\/Contents\/Info.plist",
+        "sha256" : "d7b42c17a0f9230c707e77345b98cf1511ee9f4c86e74ab58f263e1519f191c6"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "0d493ac10fc3a778ddb01c5db9c76f0a6bd7f5929cc7bc4b34667f176047a11b",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.wifi-settings-extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wi-Fi.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wi-Fi.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "ca777db89556dfeca533502958b845527d48515f90d2038be1e2fe8eb6962ac0"
+      },
+      "category_label" : "Wi-Fi",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-wifi-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "wifi"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wi-Fi.appex\/Contents\/Info.plist",
+        "sha256" : "1d7a57ab1bfd964aa176300fac7525a5d86b3fe4d775ef3fa371ccaf04a33afc"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "99757209d17df726c13460e158836b0370708f8ff6732e4bfc18e4efa877d310",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.wifi-settings-extension",
+      "bundle_path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wi-Fi.appex",
+      "catalog" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wi-Fi.appex\/Contents\/Resources\/Assets.car",
+        "sha256" : "ca777db89556dfeca533502958b845527d48515f90d2038be1e2fe8eb6962ac0"
+      },
+      "category_label" : "Wi-Fi",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-wifi-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "blue",
+          "ISRenderingMode" : "automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "wifi"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Library\/ExtensionKit\/Extensions\/Wi-Fi.appex\/Contents\/Info.plist",
+        "sha256" : "1d7a57ab1bfd964aa176300fac7525a5d86b3fe4d775ef3fa371ccaf04a33afc"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "99757209d17df726c13460e158836b0370708f8ff6732e4bfc18e4efa877d310",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.systempreferences.GeneralSettings",
+      "bundle_path" : "\/System\/Applications\/System Settings.app\/Contents\/PlugIns\/GeneralSettings.appex",
+      "category_label" : "General",
+      "drawing_appearance" : "NSAppearanceNameAqua",
+      "file" : "category-general-light.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "gear"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Applications\/System Settings.app\/Contents\/PlugIns\/GeneralSettings.appex\/Contents\/Info.plist",
+        "sha256" : "6c0ac418446d79816b51b1cb9db83dd374156de8417d46ee5c99a28af30a2051"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "9d15a3ee614f5732e7c869c513c83dc48a97135752a7954a20b5f8898ba28fb8",
+      "scale" : 3
+    },
+    {
+      "bundle_identifier" : "com.apple.systempreferences.GeneralSettings",
+      "bundle_path" : "\/System\/Applications\/System Settings.app\/Contents\/PlugIns\/GeneralSettings.appex",
+      "category_label" : "General",
+      "drawing_appearance" : "NSAppearanceNameDarkAqua",
+      "file" : "category-general-dark.png",
+      "icon_declaration" : {
+        "ISGraphicIconConfiguration" : {
+          "ISEnclosureColor" : "gray",
+          "ISRenderingMode" : "Automatic",
+          "ISSymbolColor" : "white",
+          "ISSymbolName" : "gear"
+        }
+      },
+      "info_plist" : {
+        "path" : "\/System\/Applications\/System Settings.app\/Contents\/PlugIns\/GeneralSettings.appex\/Contents\/Info.plist",
+        "sha256" : "6c0ac418446d79816b51b1cb9db83dd374156de8417d46ee5c99a28af30a2051"
+      },
+      "kind" : "declared-category-bundle-icon",
+      "limitation" : "Declared bundle icon rendered by public AppKit. Compare with the live sidebar before asserting exact row parity.",
+      "logical_size" : [
+        20,
+        20
+      ],
+      "method" : "NSWorkspace.shared.icon(forFile:)",
+      "pixel_size" : [
+        60,
+        60
+      ],
+      "png_sha256" : "9d15a3ee614f5732e7c869c513c83dc48a97135752a7954a20b5f8898ba28fb8",
+      "scale" : 3
+    }
+  ],
+  "format_version" : 1,
+  "host_os" : "Version 26.7.2 (Build 25G332)",
+  "method" : "Public AppKit Bundle.image(forResource:), NSWorkspace.icon(forFile:) and NSAppearance drawing contexts; no UI automation, target execution, or system preference mutation.",
+  "sidebar_configuration" : {
+    "path" : "\/System\/Applications\/System Settings.app\/Contents\/Resources\/Sidebar124.plist",
+    "sha256" : "963d27b6a7a6c441c73dbb1ec455e639b162ad1a93810cbb68737ff158f014de"
+  },
+  "unknowns" : [
+    {
+      "reason" : "No named preview image keys were observed in the scoped Appearance and DesktopSettings asset-catalog string inventories or the existing bounded REA projections. No substitute AppIcon was presented as a live preview control.",
+      "requested" : "Icon \/ Widget style previews"
+    },
+    {
+      "reason" : "These dynamic\/subpage rows were not resolved to explicit artwork by this scoped extraction. Touch ID artwork must not be substituted for a Password-only row without live evidence.",
+      "requested" : "iCloud, Software Update and Login Password-only sidebar icons"
+    }
+  ]
+}

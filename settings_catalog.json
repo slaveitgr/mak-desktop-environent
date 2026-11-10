@@ -1,0 +1,226 @@
+[
+  {
+    "name": "Apple Account",
+    "icon": "account",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Family",
+    "icon": "shared",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Software Update",
+    "icon": "settings",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Wi-Fi",
+    "icon": "wifi",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Bluetooth",
+    "icon": "bluetooth",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Network",
+    "icon": "network",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Battery",
+    "icon": "battery",
+    "color": "#36b854",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "General",
+    "icon": "settings",
+    "color": "#8b8d92",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Accessibility",
+    "icon": "accessibility",
+    "color": "#278eea",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Appearance",
+    "icon": "appearance",
+    "color": "#24252b",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Desktop & Dock",
+    "icon": "desktop",
+    "color": "#292a2d",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Displays",
+    "icon": "display",
+    "color": "#268cec",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Menu Bar",
+    "icon": "menubar",
+    "color": "#8c8f95",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Siri",
+    "icon": "sun",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Spotlight",
+    "icon": "search",
+    "color": "#278eea",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Wallpaper",
+    "icon": "image",
+    "color": "#28b3d2",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Notifications",
+    "icon": "bell",
+    "color": "#ed4761",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Sound",
+    "icon": "speaker",
+    "color": "#ed4761",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Focus",
+    "icon": "moon",
+    "color": "#7c64cf",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Screen Time",
+    "icon": "clock",
+    "color": "#7c64cf",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Lock Screen",
+    "icon": "lock",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Privacy & Security",
+    "icon": "shield",
+    "color": "#408cde",
+    "connected": true,
+    "detailed": true
+  },
+  {
+    "name": "Login Password",
+    "icon": "key",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Users & Groups",
+    "icon": "shared",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Internet Accounts",
+    "icon": "network",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Game Center",
+    "icon": "games",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "iCloud",
+    "icon": "cloud",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Wallet & Apple Pay",
+    "icon": "wallet",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Keyboard",
+    "icon": "keyboard",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Mouse",
+    "icon": "mouse",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Trackpad",
+    "icon": "trackpad",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  },
+  {
+    "name": "Printers & Scanners",
+    "icon": "printer",
+    "color": "#278eea",
+    "connected": false,
+    "detailed": true
+  }
+]

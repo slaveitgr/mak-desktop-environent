@@ -1,0 +1,42 @@
+name: Ubuntu desktop session
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ubuntu-2610:
+    runs-on: ubuntu-24.04
+    container: ubuntu:26.10
+    timeout-minutes: 25
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      QTWEBENGINE_DISABLE_SANDBOX: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-venv dpkg-dev xvfb xauth desktop-file-utils
+          useradd --create-home --shell /bin/bash tahoe-test
+          chown -R tahoe-test:tahoe-test "$GITHUB_WORKSPACE"
+      - name: Build package without root
+        run: runuser -u tahoe-test -- python3 linux/build_deb.py
+      - name: Install and validate login entry
+        run: |
+          apt-get install -y ./dist/tahoe-desktop_0.7.0_amd64.deb
+          desktop-file-validate /usr/share/xsessions/tahoe.desktop /usr/share/applications/tahoe-desktop.desktop
+          runuser -u tahoe-test -- tahoe-session --check
+      - name: Unit and Qt interaction tests
+        run: runuser -u tahoe-test -- env PYTHONPATH=/opt/tahoe-desktop/vendor QTWEBENGINE_DISABLE_SANDBOX=1 python3 -m unittest discover -s tests -v
+      - name: All-app QML smoke check
+        run: runuser -u tahoe-test -- env PYTHONPATH=/opt/tahoe-desktop/vendor QTWEBENGINE_DISABLE_SANDBOX=1 python3 tests/smoke_ui.py
+      - name: Installed session lifecycle on isolated X11 server
+        run: runuser -u tahoe-test -- python3 linux/ci_session.py
+      - name: Upload installable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: tahoe-desktop-ubuntu-26.10-amd64
+          path: dist/*.deb
+          if-no-files-found: error

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Tahoe Desktop (Experimental)
+Comment=Tahoe-style desktop session using Openbox and Qt Quick
+Exec=/usr/bin/tahoe-session
+TryExec=/usr/bin/tahoe-session
+Type=Application
+DesktopNames=Tahoe

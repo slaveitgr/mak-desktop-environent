@@ -1,0 +1,48 @@
+{
+  "version": "0.4",
+  "unit_test_count": 96,
+  "result": "passed",
+  "limitations": [
+    "No final live GUI comparison; host locked",
+    "No real camera activation",
+    "No Linux execution or compositor integration"
+  ],
+  "checks": [
+    {
+      "name": "unit",
+      "exit_code": 0
+    },
+    {
+      "name": "qml-suite",
+      "exit_code": 0
+    },
+    {
+      "name": "calculator-ui",
+      "exit_code": 0
+    },
+    {
+      "name": "apps-ui",
+      "exit_code": 0
+    },
+    {
+      "name": "media",
+      "exit_code": 0
+    },
+    {
+      "name": "photo-booth",
+      "exit_code": 0
+    },
+    {
+      "name": "web",
+      "exit_code": 0
+    },
+    {
+      "name": "downloads",
+      "exit_code": 0
+    },
+    {
+      "name": "macos-launcher-offscreen",
+      "exit_code": 0
+    }
+  ]
+}

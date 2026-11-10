@@ -1,0 +1,65 @@
+{
+  "version": "0.5",
+  "host_reference": "macOS Tahoe 26.7.2, local installed UI and resources",
+  "observations": {
+    "finder": {
+      "window": [
+        960,
+        481
+      ],
+      "sidebar_width": 222,
+      "sidebar_inset": 8,
+      "sidebar_row": 32,
+      "grid_pitch": 112,
+      "toolbar_capsule_height": 35,
+      "icon_selection_plate": [
+        72,
+        72
+      ]
+    },
+    "appearance_settings": {
+      "window": [
+        723,
+        861
+      ],
+      "sidebar_width": 223,
+      "content_origin": [
+        243,
+        52
+      ],
+      "content_width": 460,
+      "preview_points": [
+        67,
+        44
+      ]
+    },
+    "live_prototype": [
+      "Real workspace Desktop item visible",
+      "Empty-space contextual menu visible",
+      "Appearance settings native preview artwork and Theme/Windows groups visible",
+      "Updated Apple menu shows left action symbols over a visibly blurred/translucent window backdrop",
+      "Updated Finder File menu shows native resource-derived symbols and keyboard traversal"
+    ]
+  },
+  "implemented": [
+    "Finder sidebar/grid/toolbar spacing and colors",
+    "Appearance page structure, native category/preview artwork, working accent/highlight/sidebar preferences",
+    "Correct native Bluetooth template",
+    "Dock right-side thumbnail target layout and transformed rectangle",
+    "Interrupted full-screen restore geometry",
+    "Real desktop files, selection, menus, drag/drop and persistent positioning",
+    "Menu symbols, material and hover rollover"
+  ],
+  "inferred": [
+    "Color/tint strengths and animation easing/durations are independent approximations",
+    "Not all menu symbols are runtime-verified; provenance distinguishes archive links and semantic fallbacks"
+  ],
+  "unresolved": [
+    "No synchronized frame-by-frame native animation comparison",
+    "Native Dock capture timed out; no pixel-perfect Dock measurement",
+    "Finder menu screenshot exposed desktop compositing layer rather than menu",
+    "No Linux compositor execution",
+    "No claim of complete 1:1 parity",
+    "Final live minimize gesture was interrupted by concurrent user interaction; destination verified by offscreen actual-QML geometry tests"
+  ]
+}

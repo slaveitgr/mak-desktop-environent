@@ -1,0 +1,27 @@
+{
+  "resource_name": "NSBluetoothTemplate",
+  "method": "Public AppKit NSImage(named:)",
+  "is_template": true,
+  "native_logical_size": [
+    16,
+    20
+  ],
+  "canvas_logical_size": [
+    24,
+    24
+  ],
+  "pixel_size": [
+    72,
+    72
+  ],
+  "alpha_bounds_pixels": [
+    20,
+    11,
+    52,
+    64
+  ],
+  "png_sha256": "03a8d6176734579e8f8ccf2589d8b1e7834b8f989ca249a7ee02d3d2d354a83b",
+  "previous_incorrect_symbol": "dot.radiowaves.left.and.right",
+  "scope": "Native Bluetooth template artwork successfully loaded from AppKit. Existing Control Center/SystemUIServer bounded REA projections did not list a Bluetooth asset. No live menu control state is inferred from this resource.",
+  "extractor": "../../extract_reference_icons.swift"
+}
