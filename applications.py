@@ -32,9 +32,31 @@ APPLICATIONS.sort(key=lambda a: (0 if a['id']=='apps' else 2 if a['id'] in ('cal
 HOST_SETTINGS = dict(id='host-settings', name='System Settings', bundle='com.apple.systempreferences', mac='/System/Applications/System Settings.app', linux=['dde-control-center','systemsettings','systemsettings6','gnome-control-center'])
 
 
+# Stable Wayland app_id and Desktop Entry identities for separate native clients.
+# Keep Finder/Settings identities compatible with existing Cutefish installations.
+NATIVE_APPLICATIONS = [dict(id='finder', name='Finder'), dict(id='settings', name='System Settings')] + APPLICATIONS
+_DESKTOP_SUFFIXES = {'photobooth': 'PhotoBooth', 'facetime': 'FaceTime', 'appstore': 'AppStore'}
+NATIVE_APPLICATIONS = [dict(item, desktop_id='org.makos.' + _DESKTOP_SUFFIXES.get(item['id'], item['id'].capitalize()),
+                            windowed=item['id'] != 'apps') for item in NATIVE_APPLICATIONS]
+NATIVE_WINDOW_APPLICATIONS = tuple(item for item in NATIVE_APPLICATIONS if item['windowed'])
+NATIVE_APP_IDS = tuple(item['id'] for item in NATIVE_APPLICATIONS)
+NATIVE_APP_INFO = {item['id']: item for item in NATIVE_APPLICATIONS}
+
+
+def native_command(app_id, source_root, workspace=None, python=None):
+    """An argv list for one known makOS client; never a shell command."""
+    if app_id not in NATIVE_APP_INFO:
+        return []
+    args = [str(python or sys.executable), str(Path(source_root) / 'main.py'), '--cutefish-app', app_id]
+    if workspace is not None:
+        args += ['--root', str(workspace)]
+    return args
+
+
 class ApplicationLauncher:
-    def __init__(self, platform=None, exists=None, which=None):
+    def __init__(self, platform=None, exists=None, which=None, native=False):
         self.platform = platform or sys.platform
+        self.native = bool(native)
         self.exists = exists or (lambda path: Path(path).is_dir())
         self.which = which or shutil.which
         self.apps = {item['id']: item for item in APPLICATIONS + [HOST_SETTINGS]}
@@ -54,5 +76,7 @@ class ApplicationLauncher:
 
     def catalog(self):
         return [dict(id=a['id'], name=a['name'], image=a['id']+'.png',
-                     available=True, provider='Built-in', label=a['name'],
+                     available=True, provider=('makOS shell launcher' if a['id']=='apps' else 'makOS native application') if self.native else 'Built-in', label=a['name'],
+                     desktopId=NATIVE_APP_INFO[a['id']]['desktop_id'], native=self.native,
+                     windowed=NATIVE_APP_INFO[a['id']]['windowed'],
                      hostAvailable=bool(self.command(a['id']))) for a in APPLICATIONS]

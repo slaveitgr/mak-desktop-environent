@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-11-10",
+  "scope": "Safari shipped launcher/private-framework resource metadata and controlled native UI observations; official WebKit integration research; bounded implementation of QtWebEngine regular/private profiles, new-window commands and tab overview. No original source recovery, engine migration or host-browser data export.",
+  "summary": {
+    "recommended_route": "A gated WPE WebKit 2.54.2 Qt6/QML integration proof, followed by a C++ browser-services adapter and reconstructed Safari-style frontend.",
+    "decision_state": "technically evidenced candidate, not runtime validated or selected for default shipping",
+    "original_source_recovered": false,
+    "tahoe_visual_animation_parity_verified": false
+  },
+  "apple_reference": {
+    "existing_resource_ledger": "reference/coverage.json",
+    "existing_projection": "../../work/rea-reference/safari.ui-reference.json",
+    "existing_evidence": [
+      "../../work/rea-reference/safari.evidence.json",
+      "../../work/rea-reference/safari-ib.evidence.json"
+    ],
+    "version_from_prior_plist": "26.6.2 (21624.5.1.11.3)",
+    "prior_resource_counts": {
+      "menu_records": 208,
+      "control_records_including_frames": 850,
+      "target_action_records": 231,
+      "projected_assets": 11
+    },
+    "limitations": [
+      "Compiled resource text/frames do not establish dynamic layout or visible menu variants.",
+      "No original source or comprehensive Safari internals were recovered.",
+      "Safari UI, Apple services and Linux WebKit ports are distinct components."
+    ]
+  },
+  "new_shipped_artifact_inspection": {
+    "evidence_bundle": "../../work/rea-reference/safari-native-2026-11-10.evidence.json",
+    "artifact_path": "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/Contents/MacOS/Safari",
+    "sha256": "ac8784db18f82f93fbb758bf45418a3edcbea700883f10bb7b905f9b2b361043",
+    "macho_evidence_id": "ev_b54868a1677e511f786de31445ed92b681097e03d55a6bcd16dc84ba6dd5e93d",
+    "dispatch_evidence_id": "ev_fb2c2abdf2dbaf3d523c91b54c74ee1edcbdd58467f9e990ac1c6c2524ca2d2b",
+    "format": "mach-o-universal",
+    "architectures": [
+      "x86_64",
+      "arm64e"
+    ],
+    "inspected_slice": {
+      "architecture": "x86_64",
+      "container_offset": 16384,
+      "bytes": 69152,
+      "uuid": "7A105B32-6CA5-3856-BBCE-3955A2F42549",
+      "minimum_macos": "26.7",
+      "sdk": "26.7.2",
+      "text_section_bytes": 10
+    },
+    "observed_imports": [
+      "_SafariMain"
+    ],
+    "observed_libraries": [
+      "/System/Library/PrivateFrameworks/Safari.framework/Versions/A/Safari",
+      "/usr/lib/libSystem.B.dylib"
+    ],
+    "observed_environment_load_commands": [
+      "DYLD_FRAMEWORK_PATH=/System/Cryptexes/App/System/Library/StagedFrameworks/Safari",
+      "DYLD_LIBRARY_PATH=/System/Cryptexes/App/System/Library/StagedFrameworks/Safari"
+    ],
+    "dispatch_classes_in_selected_executable": 0,
+    "conclusion": "The inspected executable slice is a small launcher entry into a private Safari framework. Browser tab/download logic was not present in this launcher metadata.",
+    "confidence": "High for the exact selected file's metadata; framework implementation unresolved.",
+    "limitations": [
+      "Imports/exports may be incomplete for stripped or toolchain-hidden symbols.",
+      "Only the selected x86_64 slice was inspected in detail.",
+      "Expected framework filesystem paths were not ordinary files at the two probed paths; dyld-cache resolution and framework internals were not inspected.",
+      "No decompiler or dynamic tracing was used."
+    ],
+    "session_closed": true
+  },
+  "new_controlled_ui_observation": {
+    "tool": "cua_repl native Safari accessibility",
+    "version_from_about_dialog": "26.6.2 (21624.5.1.11.3)",
+    "controlled_actions": [
+      "Created a new window using Command-N.",
+      "Navigated that new window to about:blank.",
+      "Inspected File menu.",
+      "Created a second about:blank tab.",
+      "Inspected View menu and opened Tab Overview.",
+      "Returned from Tab Overview, inspected application menu and About Safari.",
+      "Closed About and the created blank window; verified its window identifier was no longer present."
+    ],
+    "privacy_scope": "Only synthesized, generic UI observations are retained. Existing window content automatically surfaced at initial app selection is excluded; no existing tab, history, bookmark, profile store, credential or download list was opened/exported. Profile-specific menu names are omitted.",
+    "observations": [
+      {
+        "id": "native-single-tab",
+        "kind": "runtime_accessibility",
+        "finding": "New blank single-tab window exposes sidebar/profile controls, back/forward, Page Menu, Reading List, smart search field, reload, downloads, share, new tab and tab overview; a tab-bar group was not exposed until the second tab."
+      },
+      {
+        "id": "native-contextual-file-menu",
+        "kind": "runtime_accessibility",
+        "finding": "File menu exposes profile-specific new windows, private window, new tab, tab groups, Open File/Location, Close, Save As, Export as PDF, import/export browsing data and Print. Close Tab/Other Tabs were disabled for one tab and enabled after creating a second; group label changed to 'New Tab Group with 2 Tabs'."
+      },
+      {
+        "id": "native-tab-overview",
+        "kind": "runtime_accessibility",
+        "finding": "Tab Overview has a Search Tabs field and two Local Tabs cards with thumbnail, title and close controls plus New Tab. Back/forward, sidebar and share are disabled in this state and restored on return as applicable."
+      },
+      {
+        "id": "native-view-menu",
+        "kind": "runtime_accessibility",
+        "finding": "View exposes toolbar customization, Favorites/Status bars, sidebar variants, Reader, Tab Overview, Downloads, reload, translation, zoom, text encoding and Enter Full Screen. Enabled states reflect blank-page context."
+      },
+      {
+        "id": "native-app-menu",
+        "kind": "runtime_accessibility",
+        "finding": "Application menu exposes extensions, settings, privacy report, per-site preferences, certificate details, history clearing and profile management. Per-site preferences and certificate details were disabled for about:blank."
+      }
+    ],
+    "screenshots": "Unavailable: native getScreenshot reported Screenshot unavailable for Safari.",
+    "limitations": [
+      "Accessibility may expose alternate or hidden commands; it does not prove every row is visibly displayed.",
+      "No pixel geometry, translucency, animation duration/easing, fullscreen reveal timing, real-page media behavior or download lifecycle was measured.",
+      "No runtime claim is made about private-mode isolation or Apple's network services."
+    ],
+    "cleanup": {
+      "about_dialog_closed": true,
+      "created_window_closed": true,
+      "existing_windows_closed": false
+    }
+  },
+  "route_comparison": [
+    {
+      "route": "WebKitGTK 6.0",
+      "engine": "WebKit / JavaScriptCore",
+      "api": "GTK4/GObject, libsoup3",
+      "qtquick_item": false,
+      "debian_13_amd64": {
+        "runtime": "libwebkitgtk-6.0-4",
+        "development": "libwebkitgtk-6.0-dev",
+        "observed_version": "2.54.0-1~deb13u3",
+        "security_label": true
+      },
+      "fit": "Good maintained Linux browser API and distribution package path; a native GTK browser frontend is possible.",
+      "constraint": "WebKitWebView inherits GtkWidget, not QQuickItem. No turnkey QtQuick adapter was identified in this API. Foreign-window embedding would add focus/input/compositing work and is not the recommended default for the existing QML frontend.",
+      "sources": [
+        "https://webkitgtk.org/reference/webkitgtk/stable/class.WebView.html",
+        "https://webkitgtk.org/reference/webkitgtk/stable/",
+        "https://packages.debian.org/trixie/libwebkitgtk-6.0-4",
+        "https://packages.debian.org/trixie/libwebkitgtk-6.0-dev"
+      ]
+    },
+    {
+      "route": "WPE WebKit Qt6",
+      "engine": "WebKit / JavaScriptCore",
+      "api": "WPE API2.0 plus upstream org.wpewebkit.qtwpe WPEView / WPEQtView QQuickItem",
+      "qtquick_item": true,
+      "upstream_stable": "2.54.2",
+      "debian_13_amd64": {
+        "runtime": "libwpewebkit-2.0-1",
+        "development": "libwpewebkit-2.0-dev",
+        "observed_version": "2.48.3-1",
+        "qt_plugin_in_inspected_package_filelists": false
+      },
+      "fit": "Best structural candidate for keeping the QML browser chrome on Linux.",
+      "constraints": [
+        "Not available by merely installing Debian's current libwpewebkit-2.0-dev: inspected runtime/development file lists lack qtwpe/QML plugin.",
+        "Build ENABLE_WPE_QT_API=ON and ENABLE_WPE_PLATFORM=ON; upstream option defaults to developer-mode setting.",
+        "Uses Qt6 Core/Quick/Gui, QuickPrivate and Qt6Test, plus GLib, Epoxy and WebKit. Needs an SDK matching the loaded Qt build.",
+        "Upstream implementation targets Linux EGL; comments name EGLFS and Wayland-EGL QPAs, and sets an OpenGL surface. Cutefish renderer/compositor integration is untested.",
+        "QML wrapper exposes basic navigation, title/progress and JS execution. Full profiles, downloads, policy, dialogs, permissions and fullscreen require an adapter.",
+        "network-session is construct-only. Upstream WPEQtView creates a default view without a supplied session, so proper normal/private isolation needs construction-time session injection, not a late QML flag.",
+        "Current project pins Linux PySide6 6.12.0, while Debian13 Qt development/private headers are 6.8.2. A plugin compiled against Debian Qt private APIs must not be assumed compatible with the pip-bundled Qt runtime."
+      ],
+      "sources": [
+        "https://wpewebkit.org/release/wpewebkit-2.54.2.html",
+        "https://packages.debian.org/trixie/libwpewebkit-2.0-1",
+        "https://packages.debian.org/trixie/amd64/libwpewebkit-2.0-1/filelist",
+        "https://packages.debian.org/trixie/amd64/libwpewebkit-2.0-dev/filelist",
+        "https://packages.debian.org/trixie/qt6-base-dev",
+        "https://packages.debian.org/trixie/qt6-declarative-private-dev"
+      ]
+    },
+    {
+      "route": "Qt WebView",
+      "engine": "Platform-specific",
+      "fit": "Not a Linux WebKit solution by itself.",
+      "constraint": "Official Qt6 documentation says Linux Qt WebView uses QtWebEngine. macOS system-webview behavior does not establish Linux engine parity.",
+      "sources": [
+        "https://doc.qt.io/qt-6/qtwebview-index.html"
+      ]
+    },
+    {
+      "route": "Current QtWebEngine",
+      "engine": "Chromium",
+      "fit": "Keep existing implementation available as a tested fallback until an alternative passes the Linux acceptance gate.",
+      "constraint": "Do not call it Safari or WebKit engine parity.",
+      "sources": [
+        "https://doc.qt.io/qt-6/qtwebengine-overview.html"
+      ]
+    }
+  ],
+  "upstream_source_evidence": [
+    {
+      "id": "cmake-options",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Source/cmake/OptionsWPE.cmake",
+      "git_blob_sha": "10746b1c6dd6af594d1224167d0884caf4ff373b",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    },
+    {
+      "id": "qt-view-header",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Source/WebKit/UIProcess/API/wpe/qt6/WPEQtView.h",
+      "git_blob_sha": "ad2ca24269882bfe0a3a64005ea089dc2eeec760",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    },
+    {
+      "id": "qt-view-implementation",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Source/WebKit/UIProcess/API/wpe/qt6/WPEQtView.cpp",
+      "git_blob_sha": "245918ec0215a428fd5538d79dc829250960d0fe",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    },
+    {
+      "id": "qt-plugin-build",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Source/WebKit/PlatformWPE.cmake",
+      "git_blob_sha": "7ca61370da771f08bc6c0f60577a7d9d331a27fc",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    },
+    {
+      "id": "minibrowser-example",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Tools/MiniBrowser/wpe/qt6/main.cpp",
+      "git_blob_sha": "74ed626408b91b5f0e05fdb3f4a572a92312b761",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    },
+    {
+      "id": "network-session-header",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Source/WebKit/UIProcess/API/glib/WebKitNetworkSession.h.in",
+      "git_blob_sha": "d6cb4264736b9b3356f6d01db9079e700a8ac3d8",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    },
+    {
+      "id": "webview-session-construction",
+      "url": "https://github.com/WebKit/WebKit/blob/wpewebkit-2.54.2/Source/WebKit/UIProcess/API/glib/WebKitWebView.cpp",
+      "git_blob_sha": "e988d2a7035c0006c7c13354e6a0048eaef5f475",
+      "ref": "wpewebkit-2.54.2",
+      "kind": "public_upstream_source"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "S0",
+      "name": "Pin reconstruction target",
+      "deliverable": "Versioned public UI behavior specification using Safari26.6.2 resource + controlled runtime evidence; separate user-configurable states and alternate AX menu rows.",
+      "acceptance": [
+        "Add blank/local fixture scenarios for one tab, many tabs, new/private window, overview, permission/download dialogs and fullscreen reveal.",
+        "Capture pixels/timing only when supported; leave appearance/animation measurements explicitly incomplete otherwise."
+      ],
+      "status": "Partial native menu/tab evidence captured; pixel/timing and additional scenarios remain."
+    },
+    {
+      "id": "S1",
+      "name": "WebKit Qt6 rendering gate",
+      "deliverable": "Isolated Linux C++/QML proof using WPE2.54.2 with qtwpe enabled and a single matched Qt SDK/runtime, packaged separately from the default browser.",
+      "acceptance": [
+        "A real Wayland app window renders a local HTML/CSS/JS fixture with active engine sandbox.",
+        "Keyboard, Greek text/IME, pointer, wheel, resize, focus and 100%/200% scale work under target Cutefish compositor.",
+        "A QML overlay renders correctly; no black surface or frame-orientation errors.",
+        "Repeated page/window open-close leaves no leaked web/network/GPU process.",
+        "Record engine version, Qt version, loaded plugin path and reproducible package hashes."
+      ],
+      "status": "Research only; runtime integration gate not started."
+    },
+    {
+      "id": "S2",
+      "name": "Browser service adapter",
+      "deliverable": "Engine-neutral page contract plus C++ WPE adapter for normal/ephemeral sessions, tabs/popups, downloads, find, permission/auth/file dialogs, TLS errors and fullscreen.",
+      "acceptance": [
+        "Normal profile persists test cookies across restart; private profile writes no persistent test state and cannot read normal cookies.",
+        "A local download verifies content hash, collision behavior, cancel/error and cleanup.",
+        "Blocked popups/permissions and TLS errors are surfaced without silent security bypass.",
+        "New windows/popups retain the correct originating session and process ownership."
+      ],
+      "status": "Bounded first improvements implemented/tested using existing QtWebEngine; full milestone incomplete."
+    },
+    {
+      "id": "S3",
+      "name": "Safari interaction reconstruction",
+      "deliverable": "QML toolbar, sidebar, tab groups/overview, context-sensitive menus, address-field states and download popover derived from evidence.",
+      "acceptance": [
+        "Each enabled menu item performs its documented action.",
+        "One-tab/two-tab/overview state transitions match the captured native behavior.",
+        "Replace find→address behavior with real page find; support normal/private windows and history.",
+        "Only claim visual/animation parity for scenarios with measured reference captures."
+      ],
+      "status": "Bounded first improvements implemented/tested using existing QtWebEngine; full milestone incomplete."
+    },
+    {
+      "id": "S4",
+      "name": "Product completeness and default switch",
+      "deliverable": "Session restore, bookmark/history management, permissions, accessibility, media and updates; set default browser only after tests.",
+      "acceptance": [
+        "Regression fixtures pass on the shipped Linux image.",
+        "Security-update packaging for WPE/plugin is owned and reproducible.",
+        "Existing saved makOS bookmarks migrate without accessing the user's Safari data.",
+        "Apple-specific account/protocol integrations remain explicitly separate and unclaimed."
+      ]
+    }
+  ],
+  "unanswered": [
+    "Exact native Safari toolbar pixel metrics and animation easing/timing",
+    "Private Safari framework internals and download/tab implementation code",
+    "WPEQtView compatibility with project Qt6.12 private APIs",
+    "Performance, IME, accessibility and media under Cutefish's compositor",
+    "Build/package effort and update delivery for WPE2.54.x on this image"
+  ],
+  "licenses": {
+    "webkitgtk_documentation_declaration": "BSD, LGPL-2.1",
+    "qt_wpe_selected_source_header": "GNU Library General Public License version2 or later",
+    "note": "These apply to inspected components; full engine and dependency notices need preservation when packaging. No Apple executable/resources are proposed for redistribution."
+  },
+  "new_framework_resource_inspection": {
+    "resource_root": "/System/Volumes/Preboot/Cryptexes/OS/System/Library/PrivateFrameworks/Safari.framework/Versions/A/Resources",
+    "bundle_identifier": "com.apple.Safari.framework",
+    "version": "21624.5.1.11.3",
+    "executable_status": "Not present as an ordinary file in Versions/A; no framework executable hash, dyld-cache extraction or decompilation performed.",
+    "evidence_bundles": [
+      "../../work/rea-reference/safari-framework-2026-11-10.evidence.json",
+      "../../work/rea-reference/safari-framework-ib-2026-11-10.evidence.json"
+    ],
+    "metadata_evidence_id": "ev_812e0e7e322e1b1d8ec9213a1cb96840f1cb126c44385c17a495823644f79020",
+    "interface_evidence_id": "ev_653ca30125a31af53b45bc20bc3338b3efacbfc07b9bf216f5249fead6699f34",
+    "interface_decode_bounds": {
+      "documents": 64,
+      "nodes": 4000,
+      "edges": 3276,
+      "graph_truncated": true
+    },
+    "selected_resources": [
+      {
+        "path": "DownloadsPopoverView.nib",
+        "sha256": "8c9a816b4a0c203f20a7b5e99b57bca6335c340ed98d8ec82680a79ae984f85a",
+        "objects": 53,
+        "connections": 9,
+        "hierarchy_recovered": true,
+        "observed": [
+          "DownloadsPopoverViewController",
+          "ClearDownloads",
+          "Clear label",
+          "DownloadsListViewController",
+          "clear: action",
+          "_clearSegment",
+          "_listScrollView",
+          "_tableView"
+        ]
+      },
+      {
+        "path": "PrivateBrowsingExplanationBanner.nib",
+        "sha256": "4f24be48b57ccfdaa9179c1b9b4b03c873e79cedc945021cef67f0f8626f95b2",
+        "objects": 45,
+        "connections": 10,
+        "hierarchy_recovered": false
+      },
+      {
+        "path": "PrivateBrowsingPrivacyProtectionsBanner.nib",
+        "sha256": "76276855cc1b18bd0c652f3bc3fc55fa3ae1aaf0cdeac855dcbc6ff10c65c603",
+        "objects": 41,
+        "connections": 8,
+        "hierarchy_recovered": false
+      }
+    ],
+    "limits": [
+      "Resource records establish classes/actions/text, not browser session implementation or animation timings.",
+      "The bounded graph omitted later resources; no claim of exhaustive framework coverage.",
+      "Compiled NIBArchive required interface-builder decoder; generic keyed-archive inspection was unsupported."
+    ]
+  },
+  "prototype_before_changes": {
+    "renderer": "QtWebEngine WebEngineView (Chromium family), not WebKit",
+    "source_paths": [
+      "qml/WebApp.qml",
+      "qml/WebPage.qml",
+      "qml/BrowserDownloads.qml",
+      "qml/AppMenus.js",
+      "browser_downloads.py",
+      "main.py",
+      "requirements.txt"
+    ],
+    "inspected_source_sha256": {
+      "qml/WebApp.qml": "8be85d2a6ebf3b72b612412d1bc26aa0667e48f2880e181763362d337eb8f33d",
+      "qml/WebPage.qml": "e1511bd3b8e9eae730766c1aad3940716337bb827967a366446cefa94517c2fd",
+      "qml/BrowserDownloads.qml": "cd1cb0119012e29b541acf1ab84b3713545ce44f186a820a951d900b7c9299be",
+      "qml/AppMenus.js": "51032ae2790e8c0677da3fde77a7c73b8e64aff5d8d77f56f5ec8b407e8497c7",
+      "browser_downloads.py": "7e3a33c8ae2544e28fe03420b8087ded4ead0d2c5560aae7c86c38a47b69aa1a",
+      "requirements.txt": "7c7e180a8a6cee85c63560978c30c3d5f1c64bfff9e896b995ba1e52b31edfb2"
+    },
+    "present_by_source": [
+      "URL navigation, loading/progress/error handling, back/forward/reload/stop",
+      "Tabs and persistent bookmark records",
+      "Download request UI/manager and cancellation cleanup",
+      "Web-process termination message",
+      "Per-website camera/microphone/location requests currently denied"
+    ],
+    "gaps": [
+      {
+        "feature": "engine",
+        "state": "different",
+        "detail": "QtWebEngine uses Chromium; swapping toolbar assets does not change engine behavior."
+      },
+      {
+        "feature": "normal/private profiles",
+        "state": "missing distinction",
+        "detail": "Every profile is offTheRecord with memory cache and no persistent cookies; File New Private Window is disabled."
+      },
+      {
+        "feature": "new windows",
+        "state": "menu disabled",
+        "detail": "File New Window is disabled; popup requests are redirected to a tab."
+      },
+      {
+        "feature": "tab management",
+        "state": "partial",
+        "detail": "Hard limit of 12 tabs; no tab groups, tab overview, pinned tabs or persisted session restore established."
+      },
+      {
+        "feature": "find in page",
+        "state": "incorrect command mapping",
+        "detail": "find currently focuses the address field rather than a page-find controller."
+      },
+      {
+        "feature": "history",
+        "state": "missing application history UI",
+        "detail": "Only per-view back/forward exists; Show All History and Clear History are disabled."
+      },
+      {
+        "feature": "permissions",
+        "state": "deny-only",
+        "detail": "No per-origin permission decision UI or saved grants."
+      },
+      {
+        "feature": "fullscreen",
+        "state": "content disabled",
+        "detail": "WebEngineView.settings.fullScreenSupportEnabled=false; browser chrome fullscreen reveal not assessed."
+      },
+      {
+        "feature": "save/print",
+        "state": "disabled",
+        "detail": "Menu Save As and Print disabled; native Safari exposes corresponding commands and Export as PDF."
+      },
+      {
+        "feature": "Safari services",
+        "state": "unimplemented/unverified",
+        "detail": "Reader, Reading List, profile UI, extensions, password integration, translation, iCloud, Handoff and Apple-specific services are not provided by this frontend."
+      }
+    ],
+    "existing_tests_not_rerun": [
+      "tests/verify_web_page.py",
+      "tests/verify_web_downloads.py",
+      "tests/test_downloads.py"
+    ],
+    "test_claim": "Source audit only in this task; presence of test files is not a fresh execution result.",
+    "captured_before_implementation": true
+  },
+  "current_prototype": {
+    "renderer": "QtWebEngine/Chromium remains unchanged; no WebKit runtime claim.",
+    "implemented": [
+      "Shared named regular profile with persisted cookies/cache under the makOS application data directory.",
+      "A separate off-the-record memory profile for each private window, released after its views unload.",
+      "Enabled New Window and New Private Window commands; fresh SuiteWindow helper wired by root.",
+      "Tab overview with search, pointer selection, close and new-tab controls; best-effort in-memory preview of visited current tabs.",
+      "Shared-profile download routing checks originating WebEngineView before prompting.",
+      "Close Tab menu is disabled with one tab, as observed in the native File menu."
+    ],
+    "verification": {
+      "platform": "macOS host, PySide6 Qt offscreen, local HTTP fixtures and temporary data only; not Linux compositor runtime",
+      "passed": [
+        "tests/verify_browser_profiles.py: separate write/read processes prove persistent normal cookies; private isolation and clear-on-close; shared-normal-window cookies/download ownership; actual overview pointer select/close/new-tab and search.",
+        "tests/verify_web_page.py: local load, bookmarks, tabs and cleanup.",
+        "tests/verify_web_downloads.py: all download lifecycle checks, with explicit privateBrowsing=true fixture.",
+        "tests/test_downloads.py: 6 unit tests passed."
+      ],
+      "qml_warnings": 0
+    },
+    "source_sha256": {
+      "browser_profiles.py": "8e1f08423cdb4a7d81bfd295f63ad124c4349375a3ff06ed15640ffbdaf05d76",
+      "qml/WebApp.qml": "76ff5387525f08fbd1bef203d85a85c6c10b0fbd53a56d1da214d2e714609d29",
+      "qml/WebPage.qml": "52607b364057354f7392640c659bba780b7525d93e5cc7553388d00502cb1b0e",
+      "qml/BrowserDownloads.qml": "7f1c68e7caa8db1e57aa0302565f0dc5426d25077ff622ae8db92cddf5cc2893",
+      "qml/BrowserTabOverview.qml": "48de4df9f0c290e238a4909f9cffc1c8fa3cd9ae7972611e5b874f7b9c123683",
+      "tests/verify_browser_profiles.py": "52b961b39e46bebf3a0d445cdb10a6c7df5f9a2f792f3c2c9a101beef6de7347",
+      "tests/verify_web_downloads.py": "ad9169b2401550ec54a9f5a2ab663a8a7e67167563c729646933f089b5778f5a"
+    },
+    "remaining": [
+      "No visual/animation parity measurement; native AX observations are not screenshots.",
+      "No Linux/WPE runtime verification or engine switch.",
+      "12-tab limit remains; tab groups, pinned tabs, session restore and history UI remain absent.",
+      "Find still focuses address; page search not yet implemented.",
+      "Private windows use one profile each; cross-private-window sharing was not asserted to match Safari.",
+      "Normal cookies persist; session-only cookies may be removed by Chromium policy on exit.",
+      "Downloads/bookmarks intentionally persist when explicitly saved from a private window.",
+      "Permissions remain deny-only; content fullscreen, print, save-page and Apple account/services integrations remain absent."
+    ]
+  }
+}

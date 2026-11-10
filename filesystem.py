@@ -3,8 +3,10 @@ from pathlib import Path
 import json
 import os
 import shutil
+import tempfile
 import uuid
 import file_tags
+from finder_backend import occupied, rename_exclusive, copy_exclusive, search_names
 
 
 class FileError(Exception):
@@ -24,8 +26,23 @@ class Workspace:
             raise FileError('The Trash index cannot be a symbolic link.')
         try:
             self.trash_index = json.loads(self.index_file.read_text())
-        except (FileNotFoundError, ValueError):
+        except FileNotFoundError:
             self.trash_index = {}
+        except ValueError as exc:
+            raise FileError('The Trash index is damaged; existing items have been left untouched.') from exc
+        if not isinstance(self.trash_index, dict):
+            raise FileError('The Trash index is not a valid item map.')
+        for token, entry in self.trash_index.items():
+            if (not isinstance(token, str) or not token or token in ('.', '..')
+                    or any(c in token for c in ('/', '\0'))
+                    or not isinstance(entry, dict) or not isinstance(entry.get('original'), str)
+                    or not isinstance(entry.get('name'), str)):
+                raise FileError('The Trash index contains an invalid item.')
+            original = Path(entry['original'])
+            if (not original.parts or original.is_absolute() or '..' in original.parts
+                    or original.parts[0] in ('.Trash', '.desktop-data')
+                    or '\0' in entry['original'] or entry['original'].startswith('@') or original.name != entry['name']):
+                raise FileError('The Trash index contains an invalid original location.')
         self.undo_stack = []
         self.clipboard = []
 
@@ -54,16 +71,27 @@ class Workspace:
     def rel(self, path):
         return str(Path(path).relative_to(self.root)).replace(os.sep, '/')
 
+    def _check_trash(self):
+        if self.trash.is_symlink() or not self.trash.is_dir() or self.index_file.is_symlink():
+            raise FileError('The workspace Trash or its index has changed unexpectedly.')
+
+    def search(self, relative, query, hidden=False):
+        directory = self.path(relative)
+        if not directory.is_dir():
+            raise FileError('Search requires a folder.')
+        paths, limited = search_names(directory, query, hidden)
+        return [self.rel(path) for path in paths], limited
+
     @staticmethod
     def name(name):
         name = name.strip()
-        if not name or name in ('.', '..', '.Trash') or any(c in name for c in ('/', '\\', '\0')):
+        if not name or name in ('.', '..', '.Trash', '.desktop-data') or any(c in name for c in ('/', '\\', '\0')):
             raise FileError('Choose a name without slashes or reserved path components.')
         return name
 
     def unique(self, parent, name, suffix=' copy'):
         candidate = parent / name
-        if not candidate.exists():
+        if not occupied(candidate):
             return candidate
         p = Path(name)
         stem, extension = (p.stem, p.suffix) if p.suffix else (name, '')
@@ -71,14 +99,23 @@ class Workspace:
         while True:
             tail = suffix if i == 1 else suffix + ' ' + str(i)
             candidate = parent / (stem + tail + extension)
-            if not candidate.exists():
+            if not occupied(candidate):
                 return candidate
             i += 1
 
     def _save_trash(self):
-        temp = self.index_file.with_suffix('.tmp')
-        temp.write_text(json.dumps(self.trash_index, indent=2))
-        temp.replace(self.index_file)
+        self._check_trash()
+        descriptor, filename = tempfile.mkstemp(prefix='.index-', suffix='.tmp', dir=self.trash)
+        temp = Path(filename)
+        try:
+            with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
+                json.dump(self.trash_index, stream, indent=2)
+                stream.flush()
+                os.fsync(stream.fileno())
+            self._check_trash()
+            temp.replace(self.index_file)
+        finally:
+            temp.unlink(missing_ok=True)
 
     def _record(self, title, inverse):
         self.undo_stack.append((title, inverse))
@@ -92,7 +129,7 @@ class Workspace:
         name = self.name(name)
         target = parent / name
         counter = 2
-        while target.exists():
+        while occupied(target):
             target = parent / f'{name} {counter}'
             counter += 1
         target.mkdir()
@@ -106,9 +143,9 @@ class Workspace:
         target = source.with_name(self.name(name))
         if target == source:
             return relative
-        if target.exists():
+        if occupied(target):
             raise FileError('An item with that name already exists.')
-        source.rename(target)
+        rename_exclusive(source, target)
         self._record('Rename', [('move', self.rel(target), relative)])
         return self.rel(target)
 
@@ -133,7 +170,7 @@ class Workspace:
             target = parent / source.name
             if move and source == target:
                 continue
-            if target.exists() or target in reserved:
+            if occupied(target) or target in reserved:
                 if move and not duplicate:
                     raise FileError('A destination item has the same name. Nothing was moved.')
                 target = self.unique(parent, source.name)
@@ -150,18 +187,12 @@ class Workspace:
         try:
             for source, target in planned:
                 if move:
-                    source.rename(target)
-                elif source.is_dir():
-                    shutil.copytree(source, target)
+                    rename_exclusive(source, target)
                 else:
-                    shutil.copy2(source, target)
-                if not move:
-                    self._copy_tags(source, target)
+                    copy_exclusive(source, target, self._copy_tags)
                 completed.append((source, target))
         except OSError as exc:
             # Keep successful operations reversible even after a disk error.
-            if not move and target.exists() and (source, target) not in completed:
-                completed.append((source, target))
             if completed:
                 self._record('Partial Move' if move else 'Partial Copy', [
                     ('move', self.rel(t), self.rel(s)) if move else ('trash', self.rel(t))
@@ -175,6 +206,8 @@ class Workspace:
 
     def _copy_tags(self, source, target):
         # copy2 on Apple's Python does not preserve extended attributes.
+        if source.is_symlink() or target.is_symlink():
+            return
         tag = self.tag(self.rel(source))
         if tag:
             file_tags.write(target, tag)
@@ -183,15 +216,22 @@ class Workspace:
                 self._copy_tags(child, target / child.name)
 
     def _trash_one(self, source):
-        token = uuid.uuid4().hex + '-' + source.name
+        self._check_trash()
+        # Keep storage names short even when the original uses NAME_MAX bytes.
+        token = uuid.uuid4().hex
         original = self.rel(source)
-        source.rename(self.trash / token)
         self.trash_index[token] = {'original': original, 'name': source.name}
         try:
+            # Persist the recovery location before moving any user data.
             self._save_trash()
         except OSError:
-            (self.trash / token).rename(source)
             del self.trash_index[token]
+            raise
+        try:
+            rename_exclusive(source, self.trash / token)
+        except OSError:
+            del self.trash_index[token]
+            self._save_trash()
             raise
         return token
 
@@ -207,30 +247,42 @@ class Workspace:
                 self._record('Move to Trash', inverse)
 
     def _restore_one(self, token):
+        self._check_trash()
         if '/' in token or token not in self.trash_index:
             raise FileError('This Trash item is not available.')
         entry = self.trash_index[token]
         source = self.trash / token
+        if not occupied(source) or source.is_symlink():
+            raise FileError('This Trash item is no longer available.')
         destination = self.path(entry['original'])
         destination.parent.mkdir(parents=True, exist_ok=True)
-        if destination.exists():
+        if occupied(destination):
             raise FileError('Put Back would replace an existing item. Rename that item first.')
-        source.rename(destination)
+        rename_exclusive(source, destination)
         del self.trash_index[token]
         try:
             self._save_trash()
         except OSError:
-            destination.rename(source)
+            rename_exclusive(destination, source)
             self.trash_index[token] = entry
             raise
         return self.rel(destination)
 
     def restore(self, relatives):
+        # Validate the complete selection before restoring its first item.
+        tokens = []
+        for relative in dict.fromkeys(relatives):
+            path = Path(relative)
+            if path.parent != Path('.Trash') or path.name not in self.trash_index:
+                raise FileError('Choose an item from this workspace’s Trash.')
+            destination = self.path(self.trash_index[path.name]['original'])
+            if occupied(destination):
+                raise FileError('Put Back would replace an existing item. Rename that item first.')
+            tokens.append(path.name)
         inverse = []
         restored = []
         try:
-            for rel in relatives:
-                token = Path(rel).name
+            for token in tokens:
                 result = self._restore_one(token)
                 restored.append(result)
                 inverse.insert(0, ('trash', result))
@@ -279,9 +331,9 @@ class Workspace:
                 self._restore_one(action[1])
             else:
                 source, target = self.path(action[1]), self.path(action[2])
-                if target.exists():
+                if occupied(target):
                     raise FileError('Undo would replace an existing item.')
-                source.rename(target)
+                rename_exclusive(source, target)
             actions.pop(0)
         self.undo_stack.pop()
 

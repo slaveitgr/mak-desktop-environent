@@ -15,7 +15,6 @@ from PySide6.QtQml import QQmlApplicationEngine
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = {
     'restore': ('deja-dup', ['--restore']),
-    'install': ('cutefish-installer', []),
     'browser': ('chromium', []),
     'disks': ('gnome-disks', []),
     'terminal': ('cutefish-terminal', []),
@@ -59,21 +58,26 @@ class RecoveryController(QObject):
 
     @Slot(str)
     def launch(self, kind):
-        if kind not in TOOLS or self._process is not None: return
+        if kind not in (*TOOLS, 'install') or self._process is not None: return
         if kind == 'disks': self.openDisks.emit(); return
-        if not self._live:
-            details = {
-                'install':'Boot the makOS live image to select a destination disk and start installation.',
-                'restore':'Boot the makOS live image to restore a Déjà Dup backup. Apple Time Machine backups are not supported.',
-                'disks':'Boot the makOS live image to inspect and manage disks.',
-                'browser':'The live image opens its web browser here.',
-                'terminal':'The live image opens its terminal here.'}
-            self.message.emit('Recovery Preview', details[kind]); return
-        program, arguments = TOOLS[kind]
-        executable = self._resolver(program)
-        if not executable:
-            self.message.emit('Utility Unavailable', 'This live image is missing ' + program + '.'); return
-        arguments = list(arguments)
+        if kind == 'install':
+            installer = ROOT / 'installer/makos_install.py'
+            if not installer.is_file():
+                self.message.emit('Installer Unavailable', 'The makOS installer is missing from this image.'); return
+            executable = sys.executable
+            arguments = [str(installer), '--native-shell'] + ([] if self._live else ['--preview'])
+        else:
+            if not self._live:
+                details = {
+                    'restore':'Boot the makOS live image to restore a Déjà Dup backup. Apple Time Machine backups are not supported.',
+                    'browser':'The live image opens its web browser here.',
+                    'terminal':'The live image opens its terminal here.'}
+                self.message.emit('Recovery Preview', details[kind]); return
+            program, arguments = TOOLS[kind]
+            executable = self._resolver(program)
+            if not executable:
+                self.message.emit('Utility Unavailable', 'This live image is missing ' + program + '.'); return
+            arguments = list(arguments)
         if kind == 'browser':
             if self._browser_profile is None: self._browser_profile = tempfile.TemporaryDirectory(prefix='makos-recovery-browser-')
             arguments = ['--new-window', '--user-data-dir=' + self._browser_profile.name,
@@ -101,7 +105,7 @@ class RecoveryController(QObject):
 
     @Slot(str)
     def command(self, command):
-        if command in TOOLS: self.launch(command)
+        if command in (*TOOLS, 'install'): self.launch(command)
         elif command == 'about': self.message.emit('About makOS Recovery', 'makOS Recovery · Development build\nA recovery environment for makOS on Linux.')
         elif command == 'help': self.message.emit('Recovery Help', 'Select a utility, then choose Continue. Installation and disk changes are confirmed inside their utilities. Restore from Backup supports Déjà Dup backups, not Time Machine.')
         elif command == 'desktop' and not self._external: self.quitting.emit()

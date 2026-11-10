@@ -25,6 +25,13 @@ def main():
         destination=target/name;destination.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,destination)
     bridge=root/'tmp/makos/source/cutefish/build/qml'
     shutil.copytree(bridge,target/'cutefish/build/qml')
+    helper=root/'tmp/makos/source/cutefish/build/settings/makos-settings-backend'
+    if not helper.is_file() or not os.access(helper,os.X_OK):
+        raise SystemExit('The compiled Cutefish Settings backend is missing or not executable.')
+    installed_helper=target/'cutefish/build/settings/makos-settings-backend'
+    installed_helper.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(helper,installed_helper)
+    installed_helper.chmod(0o755)
     (root/'etc/makos').mkdir(exist_ok=True)
     original=(root/'usr/lib/os-release').read_text()
     (root/'etc/makos/base-os-release').write_text(original)
@@ -50,6 +57,28 @@ Icon=/opt/makos/installer/assets/install.svg
 Terminal=false
 Categories=System;
 ''')
+    # Keep the installed package/daemon for its privileged backend, but never
+    # expose its old graphical wizard in the application launcher.
+    (root/'usr/share/applications/cutefish-installer.desktop').write_text("""[Desktop Entry]
+Type=Application
+Name=Install makOS
+Exec=/opt/makos/cutefish/build/venv/bin/python /opt/makos/installer/makos_install.py --native-shell
+Icon=/opt/makos/installer/assets/install.svg
+Hidden=true
+NoDisplay=true
+Terminal=false
+Categories=System;
+""")
+    (root/'usr/share/applications/org.makos.Installer.desktop').write_text("""[Desktop Entry]
+Type=Application
+Name=Install makOS
+Exec=/opt/makos/cutefish/build/venv/bin/python /opt/makos/installer/makos_install.py --native-shell
+TryExec=/opt/makos/cutefish/build/venv/bin/python
+Icon=/opt/makos/installer/assets/install.svg
+Terminal=false
+StartupNotify=true
+Categories=System;
+""")
     print('Staged makOS source, native plugin, Recovery autostart and image identity.')
 
 

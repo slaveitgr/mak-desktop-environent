@@ -1,0 +1,475 @@
+{
+  "date": "2026-11-10",
+  "branch": "makos-cutefish",
+  "scope": "Implementation and reference gap audit; no complete app or desktop parity claim",
+  "common_limits": [
+    "Current suite views are independently implemented; they are not Apple executable applications.",
+    "21 dedicated Cutefish desktop launch identities: 20 native window applications plus Apps as a shell modal overlay. Registry shape is source/test verified; native-window preview checks and actual Linux startup remain separate runtime gates.",
+    "Existing static REA evidence for 25 app/shell targets is reused rather than counted as new reverse engineering.",
+    "Resource records and window-load smoke checks do not prove feature completeness.",
+    "No cloud account, private message library, or real calling service was accessed in this audit."
+  ],
+  "verified_this_pass": [
+    {
+      "test": "tests/test_suite.py",
+      "result": "22 passed",
+      "scope": "Local persistence, calculator, chess rules, MIME export, bounded media paths; no hardware/network"
+    },
+    {
+      "test": "tests/verify_browser_profiles.py",
+      "result": "passed",
+      "scope": "Local HTTP isolation/persistence across process restart, download window ownership and actual tab-overview input"
+    },
+    {
+      "test": "tests/test_system_info.py",
+      "result": "8 passed",
+      "scope": "Mocked Linux/host metadata; no real hardware mutations"
+    },
+    {
+      "test": "tests/verify_about_system_info.py",
+      "result": "passed",
+      "scope": "About dialog and Settings About actual-data layout, field order, wrapped GPUs and preview host"
+    }
+  ],
+  "applications": [
+    {
+      "id": "apps",
+      "backend": "XDG application registry and built-in application launcher",
+      "implemented_scope": [
+        "Search, category filtering, keyboard selection, launch"
+      ],
+      "missing_or_unverified": [
+        "Launch services and taxonomy not Tahoe-identical"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_9290f5dd587070f72f9d90f7ecbc7c25783f1ae927ae3bb791a7035bd05b1589",
+          "ev_a767d739589f7d6e45a9e1b3c4fa030e34de5eb9f16a04164c1a5b5909e0f77f",
+          "ev_c045c63c1ea4e366a9386ac4d993d84821e28d64847551a79fe1097aa013988e"
+        ],
+        "remaining_reference_questions": [
+          "No Interface Builder controls or localized UI strings were recovered.",
+          "AppIcon_Assets searchbar/magnifier/chiclet resources are icon artwork; they do not establish runtime category chips or search layout.",
+          "Actual category taxonomy, window geometry, sorting behavior and launch dismissal were not observed in this REA pass."
+        ]
+      }
+    },
+    {
+      "id": "safari",
+      "backend": "Qt WebEngine",
+      "implemented_scope": [
+        "Tabs/navigation/bookmarks/downloads",
+        "Normal persistent profile and separate per-private-window memory profiles",
+        "New Window / New Private Window commands",
+        "Tab overview search, select, close and new-tab controls",
+        "Origin-window routing of shared-profile downloads"
+      ],
+      "missing_or_unverified": [
+        "Safari WebKit behaviors/extensions/privacy parity",
+        "Full browser preferences, print and history UI"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_2ca78d647023a9f147c96fdcc37e14e11e550461e0047cc49274b21adeeccd39",
+          "ev_5cecd19c94f642c5f0952db10198309d3ea3f3a5763b9512928f4b1decb3771f",
+          "ev_9a97690112da7ddeb7a617beb5bbf362af241ea3e985c2c1b66d78190162c0ec"
+        ],
+        "remaining_reference_questions": [
+          "The shipped launcher imports SafariMain; private-framework compiled resources establish selected controls/actions, not recovered original source.",
+          "Controlled native blank-page menu and overview observations were captured; pixels and animation timing remain unmeasured.",
+          "WebKit migration, Safari privacy/service parity, media and Linux runtime remain unverified."
+        ],
+        "reconstruction_audit": "reference/safari-reconstruction-audit.json"
+      }
+    },
+    {
+      "id": "messages",
+      "backend": "Local SQLite drafts",
+      "implemented_scope": [
+        "Create/edit/delete/restore drafts"
+      ],
+      "missing_or_unverified": [
+        "No messaging transport, iMessage/account/pairing",
+        "Tether integration requires separate compatibility work"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_18f56082438b78ea0955297161ad2a0d81e90c5651eff63623e605e8cdbf3978",
+          "ev_3529dfbbd223ebf9a894a04a722fd395d6e9d2e3ef0e59e64cd922283d37dee8",
+          "ev_b614f5ce635e6b55f6f60a4fe1a5f1ce3190d1ebd4d50e754b3136166ef7c09d",
+          "ev_d61fd40f1da8de9ceed17dc036cea01b7c7e984d1b7cd3402823ea1cbade26ca"
+        ],
+        "remaining_reference_questions": [
+          "Partial static preference controls and localized attachment labels do not establish the modern conversation layout.",
+          "iMessage transport, encryption, accounts and message synchronization were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "mail",
+      "backend": "Local SQLite drafts and EML export",
+      "implemented_scope": [
+        "Compose and export MIME draft"
+      ],
+      "missing_or_unverified": [
+        "No IMAP/SMTP accounts, synchronization, send/receive"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_528d895fafd859c779498f1b6d423f0e21afa19f104e31a7b1003726574f21fe",
+          "ev_5f12d2b0296eaa165f777703909f18cd2fea6702e691f331caeb9bdacfe1f9c9",
+          "ev_7747bece2bb7840a6e75c83e1212e5d1201d6cab571361c213c632b9381b632f",
+          "ev_cbf6dc808acb05b631e33a6769eb4dd0f0ef38e32f735aa32538aed2a4555816",
+          "ev_d6e071a4e1e78409b96ae46a0b03055f73de925b0403e68f6b185ed4914cbbd3"
+        ],
+        "remaining_reference_questions": [
+          "Partial archives include many account/auxiliary sheets; final mailbox layout and menu visibility remain unverified.",
+          "Mail transport, credentials, filtering and account synchronization were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "maps",
+      "backend": "OpenStreetMap web view",
+      "implemented_scope": [
+        "Place search and web navigation"
+      ],
+      "missing_or_unverified": [
+        "No native routing/offline map/location backend",
+        "Apple Maps UI and service parity"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_1d8cb270b2bad3a33a53205f6383d4e7797473877a54c02cdfd84de70f514963",
+          "ev_788bffcee462a374a454b2c78d7942e59927de75156d8b83530b38517b0e25a2",
+          "ev_f68659bf606b15090914e11172c163180d80b329a72a5d292dd039d3012392ad"
+        ],
+        "remaining_reference_questions": [
+          "The small decoded graph covers a launch storyboard, not the main Maps interface.",
+          "Localizable.loctable decoding failed at the fixed binary-plist expansion budget; no useful Maps UI labels were recovered.",
+          "Map presentation, directions, routing and search service behavior are unknown from this pass."
+        ]
+      }
+    },
+    {
+      "id": "photos",
+      "backend": "Local media import and Qt image display",
+      "implemented_scope": [
+        "Import, browse, favorites"
+      ],
+      "missing_or_unverified": [
+        "Non-destructive editing, albums, metadata/search",
+        "iCloud Photos and face analysis"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_1a82d5f2646d4184da4cbf1ae2d37f7af79a273a21bccb7a769e97e5eb8c52f8",
+          "ev_50d8253724b0624a2eb77e1edf3edd818afdc6a06f496f8695cf5270a6cd4742",
+          "ev_9475abb3398992f0f046896574895a63909650eff5c56839f86e52c94b223d26",
+          "ev_f98efe7970826b5102ac0c70b7d5d9fd8d3be214d19d9445f443f01af171eed9"
+        ],
+        "remaining_reference_questions": [
+          "Many decoded controls belong to auxiliary/export views; MainMenu.loctable supplies labels but not the final main-window arrangement.",
+          "Photo analysis/edit pipelines, iCloud Photos and live sidebar ordering are unverified."
+        ]
+      }
+    },
+    {
+      "id": "facetime",
+      "backend": "Local contacts UI",
+      "implemented_scope": [
+        "Browse local contacts"
+      ],
+      "missing_or_unverified": [
+        "No calling/video transport or Apple service"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_0d72f62d0386908e28a2f2f2988e1faf3792c3fcad470a1f8833131fbd75213e",
+          "ev_9d2774d67f94f8474e4af6d89af119ffc3ada3c6c9ec8e8344bf99c979ec606d",
+          "ev_befbf2dc84bcd43c28512a29ec2dc38f70b57301d9530e70ab9e2d0d50455897",
+          "ev_ee774545feeadddd83ab5396ff2dfd78c62337219edcd1c60488db12f6ffd2dd"
+        ],
+        "remaining_reference_questions": [
+          "Most Interface Builder observations are from the RemotePeoplePicker extension; main-window geometry is not recovered.",
+          "Call/media transport, account sign-in and pairing state were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "phone",
+      "backend": "Local contacts and keypad",
+      "implemented_scope": [
+        "Number entry/copy and contact lookup"
+      ],
+      "missing_or_unverified": [
+        "No calls/voicemail/call forwarding",
+        "Tether provider not connected"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_536b271df4d3f68b70df7dd33e07ddcbeaf6b8e32c6a7b5d4ce0de7c277f4f2d",
+          "ev_dfe8f6c5895d59a0079b145985f81cddad96be2d54bdfb6f5cc0efaf95bc77e3",
+          "ev_ff9c187495658ab6c09848e2f32bc81cb65af8ad2e7222ca4bc03de87ad74323"
+        ],
+        "remaining_reference_questions": [
+          "Decoded controls are in the RemotePeoplePicker extension and include New FaceTime; they do not reconstruct the Phone main window.",
+          "Phone tab names occur in FaceTime localization; a shared implementation is plausible but is only an inference.",
+          "Calling, forwarding, voicemail and iPhone pairing behavior were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "calendar",
+      "backend": "Local SQLite events",
+      "implemented_scope": [
+        "Date validation, month view, event editing"
+      ],
+      "missing_or_unverified": [
+        "Calendar accounts/invitations, recurrence, alarms, timezone UI"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_2b182f0afca0db5ed86cf3b100a65c957818d23fe3322e92c9625a810315cd28",
+          "ev_5432c68b254223eec30e118e0b6584e11dd6fbb43d54cdd3d01faec9d4857a82",
+          "ev_a5d53e1f51243f6b2d52bb9e788c745e340ef2042bc4e0d605963d3bb694b5ab",
+          "ev_b20c47edb8696f34b75a50aa271369e72314a97cedb1fd77a34c74e4953f91b3",
+          "ev_c6fad9721bd0cace8e566d61ad5c507871ca8beffb07510af2ab7a35c7545aa8"
+        ],
+        "remaining_reference_questions": [
+          "Partial archives/localizations do not establish calendar geometry, date rules or interaction timing.",
+          "Account sync, invitations and notification scheduling were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "reminders",
+      "backend": "Local SQLite lists",
+      "implemented_scope": [
+        "CRUD, completion, restore, filters"
+      ],
+      "missing_or_unverified": [
+        "Scheduled notifications, recurrence, cloud lists"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_5571c96417d1d50411cd40e2d054b1fc30ae86ab2856d32797b9a4fd933b55ef",
+          "ev_55c939c0c4686ea0075c6774a8b80c1b2e44852aa4d68c87cebc4a41f8835846",
+          "ev_a358980a165bd699ba71fbedf13f514afb6cf11fab608cf16d00b8daee678127",
+          "ev_e73636a3d317adc66230a60d0a31cc2d4aa62462b291865c45c6f552c088e4e5"
+        ],
+        "remaining_reference_questions": [
+          "Partial archives contain label and menu references; dynamic list/card layouts and gesture behavior are unverified.",
+          "Cloud sync, notifications and scheduling behavior were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "notes",
+      "backend": "Local SQLite plain text",
+      "implemented_scope": [
+        "Autosave, pin, search, restore"
+      ],
+      "missing_or_unverified": [
+        "Rich text, attachments, Math Notes, collaboration"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_20841d526eb5ab301d7314315ae5420b05ff5004e052e051bb22b519dee6ec36",
+          "ev_664a65fda611c09c276e062d912938056b5b38d03e3f9b196652de4d76b29d43",
+          "ev_bc00e3522783df408fc4a3d92e3b53f4f47bd90bf90338ffb8ea967428f1fae9",
+          "ev_ef6a3a9c23cc2a9d95c8a1377e2417c5ebd11b1fbe75a9ad2ffb50ac5de9532f"
+        ],
+        "remaining_reference_questions": [
+          "Localizable.loctable decoding exceeded the fixed binary-plist expansion budget; MainMenu.loctable and partial archives remain usable.",
+          "Rich-text layout, attachments, Math Notes, collaboration and iCloud behavior are unverified."
+        ]
+      }
+    },
+    {
+      "id": "contacts",
+      "backend": "Local SQLite cards",
+      "implemented_scope": [
+        "Edit/search/favorites and cross-app lookup"
+      ],
+      "missing_or_unverified": [
+        "CardDAV/accounts, vCard import/export, groups and multi-value fields"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_15e6c239e2420b6e6e453ce4d0bed41b7c4e8b994ffb80abc8b4d9913f8b29a6",
+          "ev_2b030ed9e4c6e0c23331ba82409293554d7dd1dd36a905b79640d8ddb568c367",
+          "ev_987d0c7f4922ed0b17a182154a16d9a106391b797af655cf09e2364230e43477",
+          "ev_a76c493f5824f475cefa1e6620aef0dd6315367223e943907c015d2cb5c40fa5",
+          "ev_d03a241b73cc6db79cb1ea550c9b892d035b5fdf8e731e1dd08451cf9cbefef5"
+        ],
+        "remaining_reference_questions": [
+          "Debug/legacy menu objects exist; runtime menu visibility and grouping are unknown.",
+          "Contact sync/account services and dynamic card-field layout are unverified."
+        ]
+      }
+    },
+    {
+      "id": "music",
+      "backend": "Local media and Qt Multimedia",
+      "implemented_scope": [
+        "Import/library/playback controls"
+      ],
+      "missing_or_unverified": [
+        "Full playlists/library management, audio-device validation",
+        "Apple Music and DRM services"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_298b1e2208ddfbcd1f56dcca3927562244594aed2a1223cad676091ddeb2dafd",
+          "ev_336be9aa497da22cb3615ffd6a233f14c53c04588bb833feccc4ccd6eb8e74df",
+          "ev_7ee6a6e669e25d2d49ff5aeb704f9ccc3d9d2c47db52e8c5fea8b4bb61cc96bb",
+          "ev_98e99d800e7d3f1301e26bd696aa719e5664ac8f87f1acdd0bf51278e5834572"
+        ],
+        "remaining_reference_questions": [
+          "Legacy/debug/diagnostic menus coexist with visible user-facing labels; do not expose all archived menus.",
+          "Playback engine, streaming service and library synchronization were not reverse engineered."
+        ]
+      }
+    },
+    {
+      "id": "games",
+      "backend": "Built-in library view",
+      "implemented_scope": [
+        "Launch Chess"
+      ],
+      "missing_or_unverified": [
+        "Game Center, achievements, external game providers"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_1ea068ec35e05c8b714486766a695f555a0fd54b6fac33aef46ec4774a0bf542",
+          "ev_3422b8786e7bd92a7041be9944099a962b6fc044891c582833936da01068be90",
+          "ev_419dd4e566c2bf2e2debdccdce253cf038fce8f9c0b94d9af4be7464cda3598f",
+          "ev_5e9b361e1401bca23e4711f2b4a549e60debdbc99d1d925ead13414baaa3d879"
+        ],
+        "remaining_reference_questions": [
+          "Only Game Controller Input and Metrics localization labels were recovered; core Games browsing UI and Game Center integration remain unknown."
+        ]
+      }
+    },
+    {
+      "id": "appstore",
+      "backend": "Built-in app catalog",
+      "implemented_scope": [
+        "Explore/launch included apps"
+      ],
+      "missing_or_unverified": [
+        "No package installation/update or online store backend"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_314f8c6be951276ef122af8449677ffbe97873542a1dfa7382a086352a34a8f9",
+          "ev_7b7404450f4ddc13cbd3de96065d5a86c8b38a932f65879b4057cf06084d16ea",
+          "ev_aa6c241b875124a0dc9caa450c6d6dd3c98dbb437ddf4f283f9c9758c8a314df",
+          "ev_b694ec14021a82a0893fb78df5acc2b2a7d0fae301d1a7749f6d759d7c5eac80"
+        ],
+        "remaining_reference_questions": [
+          "Recovered menu labels and limited localizations do not establish the store browsing layout.",
+          "Catalog service, Apple account, purchases and installation behavior were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "terminal",
+      "backend": "Local PTY and pyte terminal model",
+      "implemented_scope": [
+        "Shell execution, resize, text input and cleanup"
+      ],
+      "missing_or_unverified": [
+        "Complete VT feature coverage, profiles, tabs, remote UI"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_28c02444be9723936cc7114f09460cb10f3ec697ee77e854fe70a4a177e3055f",
+          "ev_6ad70cd165d5196469156d4f951008aac45b8172570656aea8074f37fcbc364c",
+          "ev_811a28b05d043edf588a663b4ae325d55d1a6403bbbe9d674f5e1204159dca4e",
+          "ev_895d266af1239fe71388d8ba0278ce9365294b7b827ef913ef4ab4e3aaf4e274",
+          "ev_f93e9a724331ac4bba655324dfede9fc49991376d257b4c21c1bd94dd44b56d5"
+        ],
+        "remaining_reference_questions": [
+          "Preferences and main-menu strings were recovered, but Terminal rendering/input/emulation behavior was not reverse engineered.",
+          "Shell/session behavior and exact cursor/text metrics are unverified by the resource pass."
+        ]
+      }
+    },
+    {
+      "id": "calculator",
+      "backend": "Bounded decimal/scientific parser",
+      "implemented_scope": [
+        "Arithmetic, scientific operations, history"
+      ],
+      "missing_or_unverified": [
+        "Programmer/Math Notes and comprehensive Calculator behavior parity"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_439566f92fd866f35309d5393cd673c221deeff6e520e6bdffaf23e901a6c9ca",
+          "ev_bf72c74585092175b2f29ffe9935c747e0ff098a59706eec1cf1642f83c0a543",
+          "ev_e468b982c148ce4d72f2d6531b320262d2a3c52851ba03d93a2265ccffb2701b",
+          "ev_f08655b0982aaa93acb8d880fc4448808c042bcf8daf31922897b470164db336"
+        ],
+        "remaining_reference_questions": [
+          "SwiftUI/programmatic controls were not recovered from IB; localization and AccentColor are the usable reference.",
+          "Expression evaluation, history persistence and exact button geometry are not established by the static strings."
+        ]
+      }
+    },
+    {
+      "id": "chess",
+      "backend": "python-chess with bounded worker search",
+      "implemented_scope": [
+        "Legal moves, promotions, castling/en-passant, draw claims, undo/history"
+      ],
+      "missing_or_unverified": [
+        "Native 3D board, full engine settings and SharePlay"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_288db8134e3a2878a6083f93976b5512883b940d6552414bcd3a7c0c46a33938",
+          "ev_63df61a0581e8a544786b00c0111a7fe9d7e253d3cca61cfc69ef3978b9d81e1",
+          "ev_6f371d51792579358a39ea843004c28fa8b0753c3850c4bccc149d9dc20807c1",
+          "ev_ad8028a2677d126a25a37e047a0712e7cd980d4c72c8280dca6a3cc7ed70af10",
+          "ev_b7e6886c19e0617e95fb28f1fdbea6eb92bf74199c39dbc9b4f5067d40bef140"
+        ],
+        "remaining_reference_questions": [
+          "Archived Debug menus are not evidence of normal user-visible controls.",
+          "3D board renderer, engine strength, assistance and online SharePlay behavior were not inspected."
+        ]
+      }
+    },
+    {
+      "id": "photobooth",
+      "backend": "Qt camera and independent image effects",
+      "implemented_scope": [
+        "Capture/strip workflow, local output"
+      ],
+      "missing_or_unverified": [
+        "Physical camera validation on HP, exact Apple filter behavior, recording"
+      ],
+      "reference": {
+        "evidence_ids": [
+          "ev_1b942396bcbef1aeb99b42f5307e63408f9cd4ebc140f969fba84d90e33186fb"
+        ],
+        "remaining_reference_questions": [
+          "This reused capture contains partial Interface Builder observations, without an app Info.plist identity or asset-catalog sample.",
+          "Camera behavior, filter algorithms, countdown timing and contact-sheet capture semantics are not established by static selectors."
+        ]
+      }
+    }
+  ],
+  "application_inventory": {
+    "desktop_identities": 21,
+    "native_window_applications": 20,
+    "shell_modal_launchers": [
+      "apps"
+    ],
+    "source": "applications.py NATIVE_APPLICATIONS / NATIVE_WINDOW_APPLICATIONS",
+    "test": "tests/test_native_applications.py"
+  }
+}

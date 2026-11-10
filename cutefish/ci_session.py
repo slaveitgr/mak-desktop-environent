@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Headless integration with the compositor shipped in the verified ISO."""
+"""Headless integration with the pinned compositor and local branding patch."""
 import json
 import os
 from pathlib import Path
@@ -56,6 +56,20 @@ def main():
                     trace = path.read_text()
                     assert result.returncode == 0 and '.set_main_menu(' in trace and 'PASS: makOS Recovery' in trace, trace[-2500:]
                     assert not any(token in trace for token in ('TypeError:', 'ReferenceError:', 'Expected token', 'FAIL:')), trace[-2500:]
+                # Execute every registered client against this same real compositor.
+                # Startup coverage is separate from the Finder/Settings lifecycle checks.
+                with (results / 'all-app-startup.log').open('w') as startup_log:
+                    subprocess.run([sys.executable, str(root / 'tests/smoke_cutefish_applications.py'),
+                                    str(results / 'native-apps')], env=env, stdout=startup_log,
+                                   stderr=startup_log, timeout=660, check=True)
+                native_apps = json.loads((results / 'native-apps/native-app-startup.json').read_text())
+                passed['native_app_startup'] = {'result': 'passed', 'count': len(native_apps['applications']),
+                                               'report': 'native-apps/native-app-startup.json'}
+                if Path('/etc/makos/compositor-branding.json').is_file():
+                    log.flush()
+                    trace = (results / 'compositor.log').read_text()
+                    assert 'makOS menu-bar brand ready' in trace, 'Native menu-bar SVG did not decode; see compositor.log'
+                    passed['menu_bar_branding'] = {'result': 'native image decoded', 'note': 'Not a pixel-parity or physical display test'}
                 (results / 'integration.json').write_text(json.dumps(passed, indent=2) + '\n')
                 print('PASS: Finder and Settings native windows, app menus, glass requests and minimize/fullscreen/restore on Cutefish.')
             finally:

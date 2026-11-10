@@ -45,6 +45,8 @@ class Fixture:
 QtObject {
  id:desk
  property bool dark:false
+ property bool cutefishMode:false
+ property bool externalShellMode:false
  property bool showClock:true
  property bool showSearchIcon:true
  property var windows:[]
@@ -253,8 +255,8 @@ with TemporaryDirectory() as folder:
    button=require('statusButton_wifi');edge=button.mapToScene(QPointF(button.width(),button.height())).x()
    expected=max(8,min(desktop.width()-panel.property('width')-8,edge-panel.property('width')))
    assert abs(panel.property('x')-expected)<1,(panel.property('x'),expected)
-   assert require('controlUnavailableMessage').isVisible()
-   assert 'not connected' in require('controlUnavailableMessage').property('text')
+   assert require('controlWifiUnavailable').isVisible()
+   assert 'not connected' in require('controlWifiUnavailable').property('text')
    assert not require('controlFocusSwitch').isVisible()
    QTest.mouseMove(root,point(require('statusButton_bluetooth')));QTest.qWait(50)
    assert panel.property('visible') and panel.property('section')=='bluetooth',(panel.property('visible'),panel.property('section'),point(require('statusButton_bluetooth')),require('statusBarTracking').property('origin'),require('statusBarTracking').property('containsMouse'))
@@ -353,8 +355,8 @@ with TemporaryDirectory() as folder:
    click('batteryOptionsDone');assert not require('batteryOptionsPopup').property('visible')
    status=require('statusButton_battery').parentItem()
    labels=[item.property('text') for item in visual_children(status) if item.metaObject().indexOfProperty('text')>=0]
-   assert '—%' in labels and '100%' not in labels,labels
-   click('statusButton_battery');assert 'not available' in require('controlUnavailableMessage').property('text')
+   assert '—' in labels and '100%' not in labels,labels
+   click('statusButton_battery');assert 'not available' in require('controlBatteryUnavailable').property('text')
   else:raise AssertionError(case)
   assert not warnings,'\n'.join(warnings)
  finally:

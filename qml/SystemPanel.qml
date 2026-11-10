@@ -21,12 +21,13 @@ MaterialPopup {
     readonly property real brightness: { let r = revision; return Math.max(0.1, Math.min(1, Number(controls.preference("display.brightness", "1")))); }
     readonly property alias gridItem: controlGrid
     readonly property bool mainView: section === "control"
-    readonly property bool unavailable: ["wifi", "bluetooth", "airdrop", "mirroring", "battery", "weather", "keyboardbrightness", "lowpower", "musicrecognition", "stagemanager", "timemachine", "hearing", "users", "textinput"].indexOf(section) >= 0
-    width: 360
-    height: Math.min(Math.max(220, desktop.height - 48), mainView ? controlGrid.implicitHeight + (editing ? 142 : 98) : detailColumn.implicitHeight + 105)
+    readonly property bool nativeDetail: ["wifi", "bluetooth", "battery", "lowpower"].indexOf(section) >= 0
+    readonly property bool unavailable: !nativeDetail && ["wifi", "bluetooth", "airdrop", "mirroring", "battery", "weather", "keyboardbrightness", "lowpower", "musicrecognition", "stagemanager", "timemachine", "hearing", "users", "textinput", "capture"].indexOf(section) >= 0
+    width: mainView ? 306 : nativeDetail ? 306 : 320
+    height: Math.min(desktop.height - 48, mainView ? controlGrid.implicitHeight + (editing ? 105 : 66) : nativeDetail ? detailColumn.implicitHeight + 62 : detailColumn.implicitHeight + 105)
     x: Math.max(8, Math.min(desktop.width - width - 8, anchorX - width))
     y: 36
-    padding: 14
+    padding: mainView ? 8 : 12
     focus: true
     reducedMotion: desktop.reduceMotion
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -47,6 +48,11 @@ MaterialPopup {
         return Math.floor(value / 60) + ":" + (value % 60 < 10 ? "0" : "") + value % 60;
     }
     function captionFor(id) {
+        if (controls.nativeSystem) {
+            if (id === "wifi") return controls.systemState.network.available ? (controls.systemState.network.wifiEnabled ? "On" : "Off") : "Unavailable";
+            if (id === "bluetooth") return controls.systemState.bluetooth.available ? (controls.isActive(id) ? "On" : "Off") : "Unavailable";
+            if (id === "battery") return controls.systemState.battery.available ? Math.round(controls.systemState.battery.percent) + "%" : "Unavailable";
+        }
         if (id === "focus") return controls.isActive(id) ? "Do Not Disturb" : "Off";
         if (id === "darkmode") return desktop.dark ? "On" : "Off";
         if (id === "timer") return controls.timerRunning ? "Running" : controls.timerRemaining > 0 ? "Paused" : "Start a timer";
@@ -57,10 +63,25 @@ MaterialPopup {
         else if (id === "search") { close(); desktop.dispatch("search"); }
         else showDetail(id);
     }
+    function canToggle(id) {
+        if (id === "focus" || id === "darkmode") return true;
+        if (!controls.nativeSystem || !controls.systemBackend.ready || controls.systemBackend.busy) return false;
+        if (id === "wifi") return !!controls.systemState.network.wifiWritable;
+        if (id === "bluetooth") return !!(controls.systemState.bluetooth.adapters || []).find(adapter => adapter.writable);
+        return false;
+    }
+    function toggleControl(id) {
+        if (!canToggle(id)) { showDetail(id); return; }
+        if (id === "wifi") controls.systemBackend.apply("wifi.enabled", !controls.systemState.network.wifiEnabled, "");
+        else if (id === "bluetooth") {
+            let adapter = (controls.systemState.bluetooth.adapters || []).find(item => item.writable);
+            if (adapter) controls.systemBackend.apply("bluetooth.powered", !adapter.powered, adapter.id);
+        } else if (id === "focus") controls.setPreference("focus.doNotDisturb", !controls.isActive("focus"));
+        else if (id === "darkmode") desktop.setAppearance(desktop.dark ? "light" : "dark");
+    }
     function changeLevel(id, value) {
         if (id === "sound") {
-            controls.setPreference("sound.muted", "false");
-            controls.setPreference("sound.volume", String(Math.max(0, Math.min(1, value))));
+            controls.requestVolume(value);
         } else if (id === "display") controls.setPreference("display.brightness", String(Math.max(0.1, Math.min(1, value))));
     }
     function cycleSize(id, current) {
@@ -118,22 +139,23 @@ MaterialPopup {
             timemachine: "No backup service is connected to this desktop.",
             hearing: "Hearing device controls are not connected.",
             users: "User switching is managed by the host system.",
-            textinput: "Keyboard input sources are managed by the host system."
+            textinput: "Keyboard input sources are managed by the host system.",
+            capture: "Screen capture is not connected yet."
         };
         return messages[id] || "";
     }
     background: Glass {
-        objectName: "controlCenterMaterial"
+        objectName: "controlCenterMaterial"; visible: !panel.mainView
         backdrop: panel.backdrop; sampleX: panel.x; sampleY: panel.y
-        dark: panel.dark; corner: 27; tint: panel.dark ? 0.53 : 0.57; frost: 0.98; refraction: 3
+        dark: panel.dark; corner: panel.nativeDetail ? 14 : 23; tint: panel.dark ? 0.53 : 0.57; frost: 0.98; refraction: 3
         reveal: panel.materialization; reducedTransparency: desktop.reduceTransparency; shadowOpacity: 0.23
     }
     contentItem: Item {
         Item {
-            id: header; width: parent.width; height: 34
+            id: header; width: parent.width; height: panel.mainView || panel.nativeDetail ? 0 : 34; visible: height > 0
             ControlActionButton { objectName: "controlBack"; visible: !panel.mainView; x: -5; text: "Back to Control Center"; symbol: "back"; dark: panel.dark; onClicked: panel.showDetail("control") }
             Text { x: panel.mainView ? 2 : 31; anchors.verticalCenter: parent.verticalCenter; text: panel.definition.label; color: panel.ink; font.pixelSize: 15; font.weight: Font.DemiBold; elide: Text.ElideRight; width: parent.width - x - 66 }
-            ControlActionButton { objectName: "controlEdit"; visible: panel.mainView; anchors.right: parent.right; text: panel.editing ? "Done" : "Edit"; filled: panel.editing; dark: panel.dark; onClicked: panel.editing = !panel.editing }
+            ControlActionButton { objectName: "legacyControlEdit"; visible: panel.mainView; anchors.right: parent.right; text: panel.editing ? "Done" : "Edit"; filled: panel.editing; dark: panel.dark; onClicked: panel.editing = !panel.editing }
             ControlActionButton { objectName: "controlClose"; visible: !panel.mainView; anchors.right: parent.right; text: "Close"; symbol: "close"; dark: panel.dark; onClicked: panel.close() }
         }
         Flickable {
@@ -147,8 +169,8 @@ MaterialPopup {
                 id: controlGrid
                 property var controller: panel
                 visible: panel.mainView
-                x: 4; y: 6; width: parent.width - 8
-                columns: 4; columnSpacing: 8; rowSpacing: 8
+                x: 0; y: 0; width: parent.width
+                columns: 4; columnSpacing: 14; rowSpacing: 14
                 Repeater {
                     id: tileRepeater
                     model: panel.controls.layout
@@ -158,16 +180,18 @@ MaterialPopup {
                         objectName: "controlTile_" + modelData.id
                         panel: controlGrid.controller; entry: modelData; order: index
                         Layout.columnSpan: modelData.size === "large" ? 4 : modelData.size === "medium" ? 2 : 1
+                        Layout.rowSpan: modelData.id === "nowplaying" && modelData.size === "medium" ? 2 : 1
                         Layout.fillWidth: true
-                        Layout.preferredWidth: (Layout.columnSpan * 75) + (Layout.columnSpan - 1) * 8
+                        Layout.preferredWidth: (Layout.columnSpan * 62) + (Layout.columnSpan - 1) * 14
                         Layout.preferredHeight: implicitHeight
                     }
                 }
             }
             Column {
                 id: detailColumn
-                x: 4; y: 6; width: parent.width - 8; spacing: 14
+                x: panel.nativeDetail ? 0 : 4; y: panel.nativeDetail ? 0 : 6; width: parent.width - 2*x; spacing: 14
                 visible: !panel.mainView
+                NativeControlDetails { width: parent.width; visible: controlGrid.controller.nativeDetail; panel: controlGrid.controller }
                 Rectangle {
                     visible: panel.unavailable
                     width: parent.width; height: unavailableBody.implicitHeight + 40; radius: 19
@@ -190,9 +214,10 @@ MaterialPopup {
                 }
                 Column {
                     visible: panel.section === "sound"; width: parent.width; spacing: 10
-                    ControlSlider { objectName: "controlDetailVolume"; width: parent.width; dark: panel.dark; value: panel.soundMuted ? 0 : panel.volume; Accessible.name: Bridge.ddeAudio.available ? "System volume" : "Music volume"; onMoved: panel.changeLevel("sound", value) }
-                    Switch { objectName: "controlMuteSwitch"; text: "Mute"; checked: panel.soundMuted; onToggled: panel.controls.setPreference("sound.muted", checked) }
-                    Text { width: parent.width; text: Bridge.ddeAudio.available ? "Volume controls the system output through DDE." : "Volume applies to Music playback in this desktop."; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
+                    ControlSlider { objectName: "controlDetailVolume"; width: parent.width; dark: panel.dark; enabled: panel.controls.soundAvailable; value: panel.soundMuted ? 0 : panel.volume; Accessible.name: panel.controls.nativeSystem || Bridge.ddeAudio.available ? "System volume" : "Music volume"; onMoved: panel.changeLevel("sound", value) }
+                    Switch { objectName: "controlMuteSwitch"; text: "Mute"; enabled: panel.controls.soundAvailable && (!panel.controls.nativeSystem || !panel.controls.systemBackend.busy); checked: panel.soundMuted; onToggled: { panel.controls.setPreference("sound.muted", checked); checked = Qt.binding(() => panel.soundMuted); } }
+                    Text { width: parent.width; text: panel.controls.nativeSystem ? (panel.controls.systemOutput ? panel.controls.systemOutput.name : "No audio output available") : Bridge.ddeAudio.available ? "System output" : "Music playback volume"; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
+                    Text { width: parent.width; visible: panel.controls.nativeSystem && text !== ""; text: panel.controls.systemBackend.errorText; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
                 }
                 Column {
                     visible: panel.section === "nowplaying"; width: parent.width; spacing: 15
@@ -232,7 +257,7 @@ MaterialPopup {
                     DialogButton { text: "Open Calendar"; dark: panel.dark; onClicked: { panel.close(); desktop.openApplication("calendar"); } }
                 }
                 Row {
-                    visible: !!panel.definition.id
+                    visible: !!panel.definition.id && !panel.nativeDetail
                     width: parent.width; spacing: 8
                     Switch { objectName: "controlPinSwitch"; text: "Show in Menu Bar"; checked: panel.controls.inMenu(panel.section); onToggled: panel.controls.setInMenu(panel.section, checked) }
                 }
@@ -240,7 +265,7 @@ MaterialPopup {
         }
         Item {
             id: footer; anchors.bottom: parent.bottom; width: parent.width
-            height: panel.mainView ? (panel.editing ? 76 : 34) : 40
+            height: panel.mainView ? (panel.editing ? 88 : 42) : panel.nativeDetail ? 34 : 40
             Row {
                 visible: panel.mainView && panel.editing; spacing: 5; height: 34
                 ControlActionButton { objectName: "controlMoveEarlier"; text: "Move Earlier"; symbol: "back"; dark: panel.dark; enabled: panel.selectedControl !== "" && panel.controls.layout.findIndex(item => item.id === panel.selectedControl) > 0; onClicked: panel.moveSelected(-1) }
@@ -248,8 +273,16 @@ MaterialPopup {
                 ControlActionButton { objectName: "controlMoveLater"; text: "Move Later"; symbol: "forward"; dark: panel.dark; enabled: panel.selectedControl !== "" && panel.controls.layout.findIndex(item => item.id === panel.selectedControl) < panel.controls.layout.length - 1; onClicked: panel.moveSelected(1) }
                 ControlActionButton { objectName: "controlEditOptions"; text: "Control Options"; symbol: "more"; dark: panel.dark; enabled: panel.selectedControl !== ""; onClicked: panel.showTileMenu(panel.selectedControl, this) }
             }
-            ControlActionButton { objectName: "controlAddControls"; visible: panel.mainView; anchors.left: parent.left; anchors.bottom: parent.bottom; text: "Add Controls"; filled: true; dark: panel.dark; onClicked: { panel.close(); desktop.openControlGallery(); } }
-            ControlActionButton { objectName: "controlSettings"; anchors.right: parent.right; anchors.bottom: parent.bottom; text: panel.mainView ? "System Settings…" : panel.definition.settingsPage ? panel.definition.settingsPage + " Settings…" : "Done"; dark: panel.dark; onClicked: panel.mainView ? panel.settings("") : panel.definition.settingsPage ? panel.settings(panel.definition.settingsPage) : panel.close() }
+            ControlActionButton { objectName: "controlEdit"; visible: panel.mainView && !panel.editing; anchors.horizontalCenter: parent.horizontalCenter; anchors.bottom: parent.bottom; text: "Edit Controls"; filled: true; dark: panel.dark; onClicked: panel.editing = true }
+            ControlActionButton { objectName: "controlAddControls"; visible: panel.mainView && panel.editing; anchors.left: parent.left; anchors.bottom: parent.bottom; text: "Add Controls"; filled: true; dark: panel.dark; onClicked: { panel.close(); desktop.openControlGallery(); } }
+            ControlActionButton { visible: panel.mainView && panel.editing; anchors.right: parent.right; anchors.bottom: parent.bottom; text: "Done"; filled: true; dark: panel.dark; onClicked: panel.editing = false }
+            Rectangle { visible: panel.nativeDetail; width:parent.width; height:1; color:panel.dark?"#24ffffff":"#22000000" }
+            AbstractButton {
+                objectName: "controlSettings"; visible: !panel.mainView; width:parent.width; height:32; anchors.bottom:parent.bottom
+                onClicked: panel.definition.settingsPage ? panel.settings(panel.definition.settingsPage) : panel.close()
+                background:Rectangle { radius:6; color:parent.hovered?(panel.dark?"#20ffffff":"#16000000"):"transparent" }
+                contentItem:Text { text:panel.definition.settingsPage?panel.definition.settingsPage+" Settings…":"Done";leftPadding:6;verticalAlignment:Text.AlignVCenter;color:panel.ink;font.pixelSize:13 }
+            }
         }
     }
     GlassMenu {

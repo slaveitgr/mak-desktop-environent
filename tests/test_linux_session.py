@@ -82,6 +82,70 @@ class SessionTests(unittest.TestCase):
             self.assertFalse(session.launch('xdg:test.desktop'))
             run.assert_not_called()
 
+    def native_session(self, enabled=True):
+        from linux_session import LinuxSession
+        calls = []
+        with patch.object(sys, 'platform', 'linux'):
+            session = LinuxSession(enabled, cutefish_mode=True,
+                                   transport=lambda *args: calls.append(args))
+        return session, calls
+
+    def test_cutefish_actions_use_supervisor_and_real_lock_service(self):
+        session, calls = self.native_session()
+        with patch.object(session, '_run') as run, patch('linux_session.QGuiApplication.quit') as quit_app:
+            for action in ('logout', 'sleep', 'restart', 'shutdown', 'lock', 'unknown'):
+                session.perform(action)
+            run.assert_not_called()
+            quit_app.assert_not_called()
+        self.assertEqual([call[:-1] for call in calls], [
+            ('org.cutefish.Session', '/Session', 'org.cutefish.Session', method, [])
+            for method in ('logout', 'suspend', 'reboot', 'powerOff')
+        ] + [('org.freedesktop.ScreenSaver', '/ScreenSaver', 'org.freedesktop.ScreenSaver', 'Lock', [])])
+
+    def test_cutefish_failure_is_visible_without_unsafe_fallback(self):
+        session, calls = self.native_session()
+        errors = []
+        session.error.connect(errors.append)
+        with patch.object(session, '_run') as run:
+            session.perform('lock')
+            calls[-1][-1]('Session is not available for locking', [])
+            session.perform('sleep')
+            calls[-1][-1]('', [False])
+            run.assert_not_called()
+        self.assertIn('Session is not available for locking', errors[0])
+        self.assertIn('Sleep is not available', errors[1])
+        session.stop()
+        calls[-1][-1]('late reply', [])
+        self.assertEqual(len(errors), 2)
+
+    def test_native_flag_does_not_enable_preview_or_stopped_session(self):
+        session, calls = self.native_session(enabled=False)
+        for action in ('logout', 'sleep', 'restart', 'shutdown', 'lock'):
+            session.perform(action)
+        self.assertEqual(calls, [])
+        session, calls = self.native_session()
+        session.stop()
+        session.perform('logout')
+        self.assertEqual(calls, [])
+
+    def test_cutefish_start_needs_no_legacy_control_socket(self):
+        session, calls = self.native_session()
+        with patch.dict(os.environ, {}, clear=True), patch.object(session, 'refreshApplications') as refresh:
+            session.start()
+            refresh.assert_called_once()
+        self.assertIsNone(session._server)
+        self.assertEqual(calls, [])
+
+    def test_legacy_actions_keep_x11_session_behavior(self):
+        from linux_session import LinuxSession
+        with patch.object(sys, 'platform', 'linux'):
+            session = LinuxSession(True)
+        with patch.object(session, '_run') as run, patch('linux_session.QGuiApplication.quit') as quit_app:
+            session.perform('lock')
+            run.assert_called_once_with(['xset', 's', 'activate'])
+            session.perform('logout')
+            quit_app.assert_called_once()
+
     def test_external_launch_only_known_entry_and_no_shell_interpolation(self):
         from linux_session import LinuxSession
         with tempfile.TemporaryDirectory() as folder:

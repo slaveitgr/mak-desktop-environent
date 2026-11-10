@@ -18,6 +18,8 @@
 #include "qwayland-cutefish-main-menu-v1.h"
 #include "qwayland-cutefish-surface-blur-v1.h"
 #include "qwayland-cutefish-window-hints-v1.h"
+#include "shell_surface.h"
+#include "shell_state.h"
 
 class Menus : public QWaylandClientExtensionTemplate<Menus>, public QtWayland::cutefish_main_menu_manager_v1 {
 public:
@@ -202,8 +204,8 @@ private:
             m_glass.set_glass(s);
             m_glass.set_glass_material(s, wl_fixed_from_double(1.2), wl_fixed_from_double(19), wl_fixed_from_double(8),
                 wl_fixed_from_double(1.45), wl_fixed_from_double(4), wl_fixed_from_double(20), wl_fixed_from_double(0));
-            const uint32_t tone = m_dark ? 8500 : 65535;
-            m_glass.set_glass_tint(s, tone, tone, tone, m_dark ? 42000 : 38000);
+            const wl_fixed_t tone = wl_fixed_from_double(m_dark ? 0.13 : 1.0);
+            m_glass.set_glass_tint(s, tone, tone, tone, wl_fixed_from_double(m_dark ? 0.64 : 0.58));
         } else m_glass.unset(s);
         // Do not commit independently of Qt's buffer lifecycle. Ask Qt for a frame.
         m_window->requestUpdate();
@@ -224,6 +226,10 @@ class CutefishPlugin : public QQmlExtensionPlugin {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    void registerTypes(const char *uri) override { qmlRegisterType<CutefishWindow>(uri, 1, 0, "CutefishWindow"); }
+    void registerTypes(const char *uri) override {
+        qmlRegisterType<CutefishWindow>(uri, 1, 0, "CutefishWindow");
+        qmlRegisterType<CutefishShellSurface>(uri, 1, 0, "CutefishShellSurface");
+        qmlRegisterType<CutefishShellState>(uri, 1, 0, "CutefishShellState");
+    }
 };
 #include "integration.moc"

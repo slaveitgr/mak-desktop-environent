@@ -73,28 +73,28 @@ ApplicationWindow {
         Rectangle { width:parent.width;height:1;anchors.bottom:parent.bottom;color:"#0f0f10" }
     }
     Item {
-        x:sidebar.width+34;y:94;width:parent.width-x-34;height:parent.height-y-35;visible:disk.selectedPath!==""
-        Image { x:0;y:0;width:76;height:86;source:disk.selected.category==="External"?"assets/original/drive-external.png":"assets/original/drive-internal.png";fillMode:Image.PreserveAspectFit }
-        Text { x:96;y:8;width:parent.width-250;elide:Text.ElideRight;text:disk.selected.title||"";color:"#ececee";font.pixelSize:26;font.weight:Font.Bold }
-        Text { x:96;y:46;width:parent.width-100;elide:Text.ElideRight;text:disk.selected.subtitle||"";color:"#aaaab0";font.pixelSize:13 }
+        x:sidebar.width+34;y:82;width:parent.width-x-34;height:parent.height-y-35;visible:disk.selectedPath!==""
+        Image { x:0;y:0;width:70;height:78;source:disk.selected.category==="External"?"assets/original/drive-external.png":"assets/original/drive-internal.png";fillMode:Image.PreserveAspectFit }
+        Text { x:90;y:5;width:parent.width-250;elide:Text.ElideRight;text:disk.selected.title||"";color:"#ececee";font.pixelSize:26;font.weight:Font.Bold }
+        Text { x:90;y:40;width:parent.width-100;elide:Text.ElideRight;text:disk.selected.subtitle||"";color:"#aaaab0";font.pixelSize:13 }
         Rectangle { anchors.right:parent.right;y:13;width:130;height:39;radius:4;color:"transparent";border.color:"#77777c"; Text { anchors.centerIn:parent;text:disk.selected.capacity||"";color:"#ccc";font.pixelSize:18 } }
-        Rectangle { y:111;width:parent.width;height:1;color:"#38383c" }
-        Rectangle { y:140;width:parent.width;height:26;radius:5;color:"#29292d";border.color:"#77777c"
+        Rectangle { y:92;width:parent.width;height:1;color:"#38383c" }
+        Rectangle { y:116;width:parent.width;height:26;radius:5;color:"#29292d";border.color:"#77777c"
             Rectangle { x:1;y:1;height:parent.height-2;width:(parent.width-2)*(disk.selected.fraction||0);radius:4;color:"#207a94" }
         }
-        Row { y:178;width:parent.width;spacing:30
+        Row { y:153;width:parent.width;spacing:30
             Repeater { model:disk.selected.usageKnown?[{label:"Used",value:disk.selected.used,color:"#207a94"},{label:"Available",value:disk.selected.available,color:"#55555b"}]:[{label:"Usage not available for this device",value:"Select a mounted volume to view usage.",color:"#55555b"}]
                 Column { required property var modelData;spacing:7;Row{spacing:6;Rectangle{width:10;height:10;radius:3;color:modelData.color;anchors.verticalCenter:parent.verticalCenter}Text{text:modelData.label;color:"#ddd";font.pixelSize:12}}Text{text:modelData.value;color:"#99999f";font.pixelSize:12;leftPadding:16} }
             }
         }
         Rectangle {
-            y:254;width:parent.width;height:167;radius:4;color:"transparent";border.color:"#66666c"
+            y:210;width:parent.width;height:157;radius:4;color:"transparent";border.color:"#66666c"
             Grid {
                 x:10;y:3;width:parent.width-20;columns:2;columnSpacing:20
                 Repeater {
                     model:[['Mount Point',disk.selected.mount],['Type',disk.selected.kind],['Capacity',disk.selected.capacity],['Format',disk.selected.format],['Available',disk.selected.available],['Connection',disk.selected.transport],['Used',disk.selected.used],['Device',disk.selected.path],['Partition Map',disk.selected.scheme],['Read Only',disk.selected.readOnly?'Yes':'No']]
-                    Item { required property var modelData;width:(parent.width-20)/2;height:32
-                        Text { anchors.left:parent.left;anchors.verticalCenter:parent.verticalCenter;text:modelData[0];color:"#c8c8ce";font.pixelSize:11 }
+                    Item { required property var modelData;width:(parent.width-20)/2;height:30
+                        Text { anchors.left:parent.left;anchors.verticalCenter:parent.verticalCenter;text:modelData[0];color:"#c8c8ce";font.pixelSize:11;font.weight:Font.DemiBold }
                         Text { anchors.right:parent.right;anchors.verticalCenter:parent.verticalCenter;horizontalAlignment:Text.AlignRight;width:parent.width-95;elide:Text.ElideMiddle;text:modelData[1]||"—";color:"#d4d4d8";font.pixelSize:11 }
                         Rectangle { width:parent.width;height:1;anchors.bottom:parent.bottom;color:"#414146" }
                     }

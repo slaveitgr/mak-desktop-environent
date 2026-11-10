@@ -10,7 +10,7 @@ with iso.open_file_from_iso(rr_path='/boot/grub/grub.cfg') as f: config=f.read()
 config=config.replace('Live system (amd64)', 'makOS Recovery (amd64)').replace('Live system (amd64 fail-safe mode)', 'makOS Recovery (compatibility mode)').replace('hostname=cutefish', 'hostname=makos')
 (args.directory/'grub.cfg').write_text(config)
 with iso.open_file_from_iso(rr_path='/sha256sum.txt') as f: checksums=f.read().decode()
-updates={'live/filesystem.squashfs':'filesystem.squashfs','live/filesystem.packages':'filesystem.packages','boot/grub/grub.cfg':'grub.cfg'}
+updates={'live/filesystem.squashfs':'filesystem.squashfs','live/filesystem.packages':'filesystem.packages','boot/grub/grub.cfg':'grub.cfg','live/initrd.img-6.12.116+deb13-amd64':'initrd.img-6.12.116+deb13-amd64'}
 digests={}
 for path, local in updates.items():
  h=hashlib.sha256()

@@ -51,6 +51,23 @@ class Suite(QObject):
         self._revision = 0
         self._photo_effects = PhotoEffects(self.root)
         self._downloads = BrowserDownloads(self.root)
+        self._external_revision = self.db.execute('PRAGMA data_version').fetchone()[0]
+        self._external_timer = QTimer(self)
+        self._external_timer.setInterval(500)
+        self._external_timer.timeout.connect(self._poll_external_changes)
+
+    def watchExternalChanges(self):
+        self._external_timer.start()
+
+    def _poll_external_changes(self):
+        try:
+            version = self.db.execute('PRAGMA data_version').fetchone()[0]
+        except sqlite3.Error:
+            self._external_timer.stop()
+            return
+        if version != self._external_revision:
+            self._external_revision = version
+            self.notify()
 
     @Property(int, notify=changed)
     def revision(self): return self._revision

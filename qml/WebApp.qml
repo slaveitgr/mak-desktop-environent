@@ -17,6 +17,11 @@ Item {
         return downloadLoader.item;
     }
     readonly property bool maps: host.appKind === "maps"
+    readonly property bool privateBrowsing: !maps && host.privateBrowsing === true
+    property bool overviewVisible: false
+    property var previewImages: ({})
+    readonly property int tabCount: tabModel.count
+    property alias overviewQuery: overview.query
     property int currentTab: 0
     property int nextUid: 1
     property int pageRevision: 0
@@ -29,20 +34,57 @@ Item {
         return Bridge.suite.records("bookmarks", false);
     }
     property string feedback: ""
+    function ownsWebView(view) {
+        if (!view) return false;
+        for (let i = 0; i < pageRepeater.count; i++) {
+            let page = pageRepeater.itemAt(i).pageItem;
+            if (page && page.webView === view) return true;
+        }
+        return false;
+    }
+    function showOverview() {
+        if (maps) return;
+        overviewVisible = true;
+        if (currentPage) {
+            let uid = tabModel.get(currentTab).uid;
+            currentPage.capturePreview(function(result) {
+                previewImages[uid] = result;
+                for (let i = 0; i < tabModel.count; i++)
+                    if (tabModel.get(i).uid === uid) tabModel.setProperty(i, "previewUrl", result.url.toString());
+            });
+        }
+        overview.focusSearch();
+    }
+    function selectTab(index) {
+        if (index < 0 || index >= tabModel.count) return;
+        currentTab = index;
+        overviewVisible = false;
+    }
     readonly property string activeUrl: currentTab >= 0 && currentTab < tabModel.count ? tabModel.get(currentTab).pageUrl : ""
     readonly property bool bookmarked: bookmarks.some(item => item.url === activeUrl && activeUrl !== "")
     function flush() {
         if (downloadManager)
             downloadManager.flush();
         for (let i = 0; i < pageRepeater.count; i++) {
-            let page = pageRepeater.itemAt(i).pageItem;
-            if (page)
-                page.stop();
+            let row = pageRepeater.itemAt(i);
+            if (row.pageItem) row.pageItem.stop();
+            row.clear();
         }
+        previewImages = ({});
+        if (downloadManager) downloadManager.releaseProfile();
     }
     function command(name) {
         if (downloadManager && downloadManager.command(name))
             return;
+        if (name === "newWindow" || name === "newPrivateWindow") {
+            if (host.desktop.newBrowserWindow) host.desktop.newBrowserWindow(name === "newPrivateWindow");
+            return;
+        }
+        if (name === "tabOverview") {
+            if (overviewVisible) overviewVisible = false;
+            else showOverview();
+            return;
+        }
         if (name === "downloads") {
             let manager = ensureSession();
             if (manager)
@@ -106,8 +148,10 @@ Item {
         tabModel.append({
             uid: nextUid++,
             pageUrl: "",
+            previewUrl: "",
             pageTitle: maps ? "Maps" : "Start Page"
         });
+        overviewVisible = false;
         currentTab = tabModel.count - 1;
         address.text = "";
         address.forceActiveFocus();
@@ -120,6 +164,7 @@ Item {
             home();
             return;
         }
+        delete previewImages[tabModel.get(index).uid];
         tabModel.remove(index);
         if (currentTab >= tabModel.count)
             currentTab = tabModel.count - 1;
@@ -183,6 +228,7 @@ Item {
     Component.onCompleted: tabModel.append({
         uid: 0,
         pageUrl: "",
+        previewUrl: "",
         pageTitle: maps ? "Maps" : "Start Page"
     })
     ListModel {
@@ -209,14 +255,14 @@ Item {
                 symbol: "back"
                 tip: "Back"
                 dark: host.dark
-                enabled: root.currentPage && root.currentPage.canGoBack
+                enabled: !root.overviewVisible && root.currentPage && root.currentPage.canGoBack
                 onClicked: root.currentPage.back()
             }
             IconButton {
                 symbol: "forward"
                 tip: "Forward"
                 dark: host.dark
-                enabled: root.currentPage && root.currentPage.canGoForward
+                enabled: !root.overviewVisible && root.currentPage && root.currentPage.canGoForward
                 onClicked: root.currentPage.forward()
             }
             IconButton {
@@ -230,10 +276,10 @@ Item {
             id: address
             x: navigation.width + 14
             anchors.verticalCenter: parent.verticalCenter
-            width: Math.max(140, parent.width - x - 153)
+            width: Math.max(140, parent.width - x - 188)
             height: 33
-            color: host.ink
-            placeholderTextColor: host.muted
+            color: root.privateBrowsing ? "white" : host.ink
+            placeholderTextColor: root.privateBrowsing ? "#ded8e8" : host.muted
             font.pixelSize: 13
             horizontalAlignment: activeFocus || root.maps ? TextInput.AlignLeft : TextInput.AlignHCenter
             selectByMouse: true
@@ -243,7 +289,7 @@ Item {
             Accessible.name: root.maps ? "Search Maps" : "Search or enter website name"
             background: Rectangle {
                 radius: 11
-                color: host.dark ? "#374044" : "#e8ebee"
+                color: root.privateBrowsing ? "#51495f" : host.dark ? "#374044" : "#e8ebee"
                 border.width: address.activeFocus ? 2 : 0
                 border.color: "#4c9dec"
             }
@@ -275,7 +321,7 @@ Item {
                 height: 32
                 flat: true
                 text: root.bookmarked ? "★" : "☆"
-                enabled: root.activeUrl !== ""
+                enabled: !root.overviewVisible && root.activeUrl !== ""
                 Accessible.name: root.bookmarked ? "Remove Bookmark" : "Add Bookmark"
                 onClicked: root.toggleBookmark()
                 contentItem: Icon {
@@ -310,6 +356,14 @@ Item {
                 tip: "New Tab"
                 dark: host.dark
                 onClicked: root.newTab()
+            }
+            IconButton {
+                objectName: "browserOverviewButton"
+                visible: !root.maps
+                symbol: "grid"
+                tip: root.overviewVisible ? "Hide Tab Overview" : "Show Tab Overview"
+                dark: host.dark
+                onClicked: root.command("tabOverview")
             }
         }
     }
@@ -349,7 +403,7 @@ Item {
                 }
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: root.currentTab = index
+                    onClicked: root.selectTab(index)
                 }
                 IconButton {
                     anchors.right: parent.right
@@ -366,6 +420,7 @@ Item {
     }
     Item {
         id: webArea
+        enabled: !root.overviewVisible
         x: 8
         y: tabs.visible ? 88 : 48
         width: parent.width - 16
@@ -520,13 +575,13 @@ Item {
                                 Column {
                                     spacing: 6
                                     Text {
-                                        text: "Your own browsing session"
+                                        text: root.privateBrowsing ? "Private Browsing" : "Your browsing session"
                                         color: host.ink
                                         font.pixelSize: 15
                                         font.weight: Font.DemiBold
                                     }
                                     Text {
-                                        text: "Bookmarks are saved. Browsing data is cleared when this app closes."
+                                        text: root.privateBrowsing ? "Website data stays in memory for this window. Bookmarks and files you choose to save are kept." : "Website data is saved for your next visit. Private windows keep a separate session."
                                         color: host.muted
                                         font.pixelSize: 12
                                         width: Math.max(120, webArea.width - 230)
@@ -544,6 +599,15 @@ Item {
         id: downloadLoader
         anchors.fill: parent
         z: 100
+    }
+    BrowserTabOverview {
+        id: overview
+        owner: root
+        tabsModel: tabModel
+        x: 8; y: 48
+        width: parent.width - 16; height: parent.height - y - 8
+        visible: root.overviewVisible
+        z: 20
     }
     Text {
         visible: root.maps

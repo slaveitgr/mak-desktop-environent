@@ -41,12 +41,19 @@ Item {
                 required property var modelData
                 required property int index
                 property string idValue: modelData.id
-                readonly property string labelText: idValue === "users" && desktop.controls.preference("users.style","Icon") !== "Icon" ? Bridge.systemInfo.user : idValue === "battery" && desktop.controls.preference("battery.showPercentage","false") === "true" ? "—%" : ""
-                width: labelText ? label.implicitWidth + (idValue === "battery" ? 30 : 14) : 28
+                readonly property var batteryState: desktop.controls.systemState.battery || ({})
+                readonly property bool batteryAvailable: desktop.controls.nativeSystem && !!batteryState.available
+                readonly property string labelText: idValue === "users" && desktop.controls.preference("users.style","Icon") !== "Icon" ? Bridge.systemInfo.user : idValue === "battery" && desktop.controls.preference("battery.showPercentage","false") === "true" ? (batteryAvailable ? Math.round(batteryState.percent)+"%" : "—") : ""
+                width: labelText ? label.implicitWidth + (idValue === "battery" ? 38 : 14) : idValue === "battery" ? 34 : 28
                 height:30; radius:5
                 color: desktop.statusPanelVisible && desktop.statusPanel === idValue ? "#38ffffff" : button.containsMouse ? "#16ffffff" : "transparent"
-                Icon { anchors.verticalCenter:parent.verticalCenter; x:4; width:20; height:19; name:desktop.controls.iconFor(statusItem.idValue); color:"white"; visible:statusItem.idValue!=="users" || !statusItem.labelText }
-                Text {id:label; text:statusItem.labelText; anchors.verticalCenter:parent.verticalCenter; x:statusItem.idValue==="battery"?26:7; color:"white"; font.pixelSize:12}
+                Icon { anchors.verticalCenter:parent.verticalCenter; x:4; width:20; height:19; name:desktop.controls.iconFor(statusItem.idValue); color:"white"; visible:statusItem.idValue!=="battery" && (statusItem.idValue!=="users" || !statusItem.labelText);opacity:["wifi","bluetooth"].indexOf(statusItem.idValue)>=0 && desktop.controls.nativeSystem && !desktop.controls.isActive(statusItem.idValue)?0.5:1 }
+                Text {id:label;objectName:"statusLabel_"+statusItem.idValue;text:statusItem.labelText;anchors.verticalCenter:parent.verticalCenter;x:5;color:"white";font.pixelSize:12}
+                BatteryGlyph {
+                    visible:statusItem.idValue==="battery";anchors.right:parent.right;anchors.rightMargin:5;anchors.verticalCenter:parent.verticalCenter;width:25;height:12
+                    available:statusItem.batteryAvailable;level:available?statusItem.batteryState.percent/100:0;charging:available && !statusItem.batteryState.onBattery
+                    lowPower:desktop.controls.nativeSystem && desktop.controls.systemState.power.active==="power-saver"
+                }
                 MouseArea {
                     id: button
                     objectName: "statusButton_" + statusItem.idValue
@@ -79,7 +86,7 @@ Item {
                     }
                     onEntered: if(desktop.statusPanelVisible && desktop.statusPanel!==statusItem.idValue && statusItem.idValue!=="search")bar.open(statusItem.idValue,statusItem,true)
                     Accessible.role:Accessible.Button
-                    Accessible.name:statusItem.modelData.label
+                    Accessible.name:statusItem.modelData.label+(statusItem.idValue==="battery"?(statusItem.batteryAvailable?", "+Math.round(statusItem.batteryState.percent)+" percent":", unavailable"):"")
                     Accessible.onPressAction:clicked(null)
                 }
             }

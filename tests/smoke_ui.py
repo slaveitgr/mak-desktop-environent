@@ -96,6 +96,13 @@ with TemporaryDirectory() as folder:
     for entry in bridge.applicationCatalog:
         desktop.openApplication(entry['id'])
         QTest.qWait(60)
+        if entry['id'] == 'apps':
+            assert desktop.property('appsOverlayVisible')
+            assert len(desktop.property('windows').toVariant()) == 1
+            desktop.toggleApps()
+            QTest.qWait(150)
+            assert not desktop.property('appsOverlayVisible')
+            continue
         windows = desktop.property('windows').toVariant()
         target = windows[-1]
         assert target.property('appKind') == entry['id'], entry
@@ -120,4 +127,4 @@ with TemporaryDirectory() as folder:
     assert not warnings, '\n'.join(warnings)
     root.close()
     shiboken6.delete(engine)
-print('QML integration passed: all 19 suite windows (load, menus, singleton, minimize/restore and close), 32 settings categories and General routes, appearance, app routing, fullscreen, minimize/restore, close.')
+print('QML integration passed: 18 suite windows (load, menus, singleton, minimize/restore and close), Apps overlay, 32 settings categories and General routes, appearance, app routing, fullscreen, minimize/restore, close.')

@@ -2,7 +2,6 @@ name: makOS Recovery development image
 on:
   push:
     branches: [makos-cutefish]
-    paths: ['installer/**', '.github/workflows/recovery-image.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,6 +31,7 @@ jobs:
           path: |
             artifacts/SHA256SUMS
             artifacts/boot-layout.txt
+            artifacts/boot-verification.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

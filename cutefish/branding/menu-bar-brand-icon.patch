@@ -1,0 +1,78 @@
+--- a/src/shell/menubar/menu_bar_view.cpp
++++ b/src/shell/menubar/menu_bar_view.cpp
+@@ -4,10 +4,14 @@
+ 
+ #include "shell/menubar/menu_bar_view.h"
+ 
++#include <filesystem>
+ #include <pwd.h>
+ #include <unistd.h>
+ 
++#include "base/settings.h"
++#include "core/logging.h"
+ #include "core/main_loop.h"
++#include "core/preferences.h"
+ #include "cutefish/accounts/account_picture.h"
+ #include "cutefish/accounts/user_account.h"
+ #include "shell/shell.h"
+@@ -34,6 +38,13 @@
+             setInsets(BarContext::kEdgeMargin - (BarContext::kItemGap - BarContext::kHighlightGap) / 2,
+                       BarContext::kHighlightGap / 2);
+             setGlyphWidth(BarContext::kIconSize);
++            // Optional shell-only branding; the account's avatar is not changed.
++            const base::Settings settings(preferencesFile("shell"));
++            m_brandIcon = settings.stringValue("MenuBar/BrandIcon");
++            std::error_code error;
++            if (!std::filesystem::path(m_brandIcon).is_absolute()
++                || !std::filesystem::is_regular_file(m_brandIcon, error))
++                m_brandIcon.clear();
+             // The account's colour until the picture is decoded, or where
+             // there is none.
+             m_disc = addChild<Disc>();
+@@ -45,7 +56,15 @@
+             m_avatar->setCornerRadius(BarContext::kIconSize / 2);
+             m_avatar->setRendering(ui::ImageView::Rendering::MaskedLayer);
+             m_avatar->onStatusChanged = [this](ui::ImageView::Status status) {
+-                m_disc->setVisible(status != ui::ImageView::Status::Ready);
++                if (status == ui::ImageView::Status::Error && !m_brandIcon.empty()) {
++                    // An unreadable/unsupported branding image retains the avatar.
++                    m_brandIcon.clear();
++                    setAvatar(m_accountIcon, m_accountColor);
++                    return;
++                }
++                if (status == ui::ImageView::Status::Ready && !m_brandIcon.empty())
++                    CF_INFO(cfSession) << "makOS menu-bar brand ready";
++                m_disc->setVisible(m_brandIcon.empty() && status != ui::ImageView::Status::Ready);
+             };
+         } else {
+             setInsets(BarContext::kHighlightGap / 2, BarContext::kHighlightGap / 2);
+@@ -69,9 +88,17 @@
+     {
+         if (!m_avatar)
+             return;
++        m_accountIcon = file;
++        m_accountColor = color;
++        const bool branded = !m_brandIcon.empty();
+         m_disc->setColor(color);
+-        m_avatar->setSource(file);
+-        m_disc->setVisible(m_avatar->status() != ui::ImageView::Status::Ready);
++        m_avatar->setFillMode(branded ? ui::ImageView::FillMode::PreserveAspectFit
++                                     : ui::ImageView::FillMode::Stretch);
++        m_avatar->setCornerRadius(branded ? 0 : BarContext::kIconSize / 2);
++        m_avatar->setRendering(branded ? ui::ImageView::Rendering::Direct
++                                      : ui::ImageView::Rendering::MaskedLayer);
++        m_avatar->setSource(branded ? m_brandIcon : file);
++        m_disc->setVisible(m_brandIcon.empty() && m_avatar->status() != ui::ImageView::Status::Ready);
+     }
+ 
+     void updateLook()
+@@ -121,6 +148,9 @@
+     BarLabel *m_label = nullptr;
+     Disc *m_disc = nullptr;
+     ui::ImageView *m_avatar = nullptr;
++    std::string m_brandIcon;
++    std::string m_accountIcon;
++    ui::Color m_accountColor;
+ };
+ 
+ MenuBarView::MenuBarView(Shell *shell, StatusBarMenuBarHost host)

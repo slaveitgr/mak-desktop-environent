@@ -303,19 +303,36 @@ DesktopWindow {
             y: 52
             width: parent.width - x - 20
             height: parent.height - y - 18
-            contentHeight: contentLoader.height
+            contentHeight: contentColumn.implicitHeight
             clip: true
             boundsBehavior: Flickable.StopAtBounds
             ScrollBar.vertical: ScrollBar {
                 width: 7
                 policy: desktop.alwaysShowScrollbars ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded
             }
-            Loader {
-                id: contentLoader
+            Column {
+                id: contentColumn
                 width: scroller.width
-                sourceComponent: win.page === "Appearance" ? appearancePage : win.page === "Desktop & Dock" ? dockPage : win.page === "Accessibility" ? accessibilityPage : win.page === "Wallpaper" ? wallpaperPage : win.page === "Menu Bar" ? menuPage : win.page === "Displays" ? displayPage : win.page === "General" ? generalPage : win.page === "About" ? aboutPage : detailedPage
+                spacing: 14
+                Text {
+                    width: parent.width
+                    visible: desktop.cutefishMode === true
+                    text: visible && Bridge.linuxSettings ? Bridge.linuxSettings.scope(win.page) : ""
+                    color: win.muted
+                    font.pixelSize: 11
+                    wrapMode: Text.Wrap
+                }
+                Loader {
+                    id: contentLoader
+                    width: parent.width
+                    sourceComponent: desktop.cutefishMode && ["Wi-Fi", "Bluetooth", "Network", "Sound", "Battery", "Displays"].indexOf(win.page) >= 0 ? nativeSystemPage : win.page === "Appearance" ? appearancePage : win.page === "Desktop & Dock" ? dockPage : win.page === "Accessibility" ? accessibilityPage : win.page === "Wallpaper" ? wallpaperPage : win.page === "Menu Bar" ? menuPage : win.page === "Displays" ? displayPage : win.page === "General" ? generalPage : win.page === "About" ? aboutPage : detailedPage
+                }
             }
         }
+    }
+    Component {
+        id: nativeSystemPage
+        LinuxSystemSettings { host: win }
     }
     Component {
         id: appearancePage
@@ -424,6 +441,7 @@ DesktopWindow {
                     dark: win.dark
                     reducedMotion: desktop.reduceMotion
                     label: "Show items on the desktop"
+                    enabled: !desktop.cutefishMode
                     checked: desktop.showDesktopItems
                     onToggled: function (value) {
                         desktop.showDesktopItems = value;
@@ -449,7 +467,7 @@ DesktopWindow {
                     dark: win.dark
                     reducedMotion: desktop.reduceMotion
                     label: "Reduce motion"
-                    description: "Reduce animations and movement throughout the desktop."
+                    description: "Reduce animations in makOS application windows."
                     checked: desktop.reduceMotion
                     onToggled: function (value) {
                         desktop.reduceMotion = value;
@@ -459,7 +477,7 @@ DesktopWindow {
                     dark: win.dark
                     reducedMotion: desktop.reduceMotion
                     label: "Reduce transparency"
-                    description: "Use opaque surfaces for easier reading."
+                    description: "Use opaque surfaces in makOS application windows."
                     checked: desktop.reduceTransparency
                     onToggled: function (value) {
                         desktop.reduceTransparency = value;
@@ -504,6 +522,7 @@ DesktopWindow {
                     delegate: DialogButton {
                         required property var modelData
                         text: modelData.label
+                        enabled: !desktop.cutefishMode
                         dark: win.dark
                         primary: desktop.wallpaperMode === modelData.value
                         onClicked: desktop.wallpaperMode = modelData.value
@@ -562,6 +581,7 @@ DesktopWindow {
     Component {
         id: aboutPage
         Column {
+            property var information: Bridge.systemInfo
             spacing: 14
             Image {
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -571,30 +591,43 @@ DesktopWindow {
             }
             Text {
                 width: parent.width
-                text: "Tahoe Desktop"
+                objectName: "settingsComputerModel"
+                text: information.name
                 horizontalAlignment: Text.AlignHCenter
                 color: win.ink
                 font.pixelSize: 24
                 font.weight: Font.DemiBold
+                wrapMode: Text.Wrap
             }
             Text {
                 width: parent.width
-                text: "Prototype 0.4"
+                text: "makOS " + information.version
                 horizontalAlignment: Text.AlignHCenter
                 color: win.muted
                 font.pixelSize: 13
             }
             SettingsCard {
                 dark: win.dark
-                Text {
-                    width: parent.width
-                    topPadding: 12
-                    bottomPadding: 12
-                    text: "Workspace\n" + Bridge.rootPath
-                    color: win.ink
-                    font.pixelSize: 12
-                    wrapMode: Text.WrapAnywhere
+                Repeater {
+                    model: [{label:"Processor", value:information.processor},
+                            {label:"Graphics", value:information.graphics},
+                            {label:"Memory", value:information.memory},
+                            {label:"makOS", value:information.version}]
+                    delegate: Row {
+                        required property var modelData
+                        objectName: "settingsAboutRow:" + modelData.label
+                        width: parent.width; spacing: 20
+                        topPadding: 12; bottomPadding: 12
+                        Text { width: 110; text: modelData.label; color: win.muted; font.pixelSize: 13 }
+                        Text { width: parent.width - 130; text: modelData.value || "Not available"; color: win.ink; font.pixelSize: 13; wrapMode: Text.Wrap }
+                    }
                 }
+            }
+            Text {
+                visible: information.isPreview
+                width: parent.width
+                text: "Preview running on " + information.platform
+                color: win.muted; font.pixelSize: 12; wrapMode: Text.Wrap
             }
         }
     }

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=makOS
+Comment=makOS desktop on the Cutefish Wayland compositor
+Exec=/opt/makos/cutefish/run-session
+TryExec=/opt/makos/cutefish/run-session
+Type=Application
+DesktopNames=makOS;Cutefish;

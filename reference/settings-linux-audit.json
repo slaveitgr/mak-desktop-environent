@@ -1,0 +1,298 @@
+{
+  "schema": 1,
+  "implementation": "Cutefish native client libraries with a QtCore JSON adapter; makOS QML replaces the original C++ Settings UI. Not a fork of the complete Settings application.",
+  "source_app": {
+    "name": "cutefish-settings",
+    "repository": "https://github.com/cutefishos/settings",
+    "iso_version": "1.0~git20261107223125.d623dbd-1",
+    "iso_commit": "d623dbdd2b0913f0d7d9dc19cb5ce1abbcf85805",
+    "local_checkout": "work/upstream/cutefish-settings",
+    "license": "BSD-3-Clause",
+    "pages": [
+      "src/pages/sound/soundpage.cpp",
+      "src/pages/network/page.cmake",
+      "src/pages/bluetooth/bluetoothpage.cpp",
+      "src/pages/battery/batterypage.cpp",
+      "src/pages/power/powerpage.cpp",
+      "src/pages/display/displaypage.cpp"
+    ]
+  },
+  "backend": {
+    "repository": "https://github.com/cutefishos/framework",
+    "commit": "19712540d65ef7c270b4e937e3af674b860a0265",
+    "libraries": [
+      "Cutefish::AudioClient",
+      "Cutefish::NetworkManagerClient",
+      "Cutefish::BluezClient",
+      "Cutefish::PowerProfilesClient",
+      "Cutefish::UPowerClient",
+      "Cutefish::DisplayClient"
+    ],
+    "source_paths": [
+      "clients/audio",
+      "clients/networkmanager",
+      "clients/bluez",
+      "clients/powerprofiles",
+      "clients/upower",
+      "clients/display"
+    ],
+    "license": "BSD-3-Clause; display includes Chromium BSD-derived source notices",
+    "transport": "Cutefish ToolkitBase EventLoop + dbus::Proxy, not nmcli or subprocess shell commands"
+  },
+  "validation": {
+    "host_mutations": false,
+    "hardware_verified": false,
+    "write_confirmation": "Audio waits for actual PipeWire event properties; DBus Set requires successful Get readback and matching Cutefish client state. UI preserves observed values while pending.",
+    "authorization": "Unprivileged backend. Wi-Fi requires existing permission=yes; no authorization dialog, pairing, or credential handling implemented.",
+    "scope": "Only controls listed as operations are implemented; supported means code path exists, availability depends on actual Linux services."
+  },
+  "panels": {
+    "About": {
+      "status": "local-only",
+      "ui_notice": "This page describes the makOS development client, not the complete Linux system."
+    },
+    "Accessibility": {
+      "status": "local-only",
+      "ui_notice": "These accessibility preferences apply to makOS windows. System accessibility services are not connected."
+    },
+    "AirDrop & Continuity": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Appearance": {
+      "status": "local-only",
+      "ui_notice": "Appearance applies to makOS windows. Dock glass tint is also sent to Cutefish; global Cutefish theme synchronization is not connected."
+    },
+    "Apple Account": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "AppleCare & Warranty": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "AutoFill & Passwords": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Battery": {
+      "status": "supported",
+      "operations": [
+        "read charge/power source",
+        "read/set daemon power profile"
+      ],
+      "unimplemented": [
+        "sleep timers",
+        "charge limit",
+        "history"
+      ],
+      "ui_notice": "Live battery information and energy modes through the original Cutefish power backends.",
+      "hardware_verified": false
+    },
+    "Bluetooth": {
+      "status": "supported",
+      "operations": [
+        "read adapters/devices",
+        "set adapter power"
+      ],
+      "unimplemented": [
+        "discovery",
+        "pairing",
+        "device connect/disconnect",
+        "forget"
+      ],
+      "ui_notice": "Live Bluetooth state and adapter power through the original Cutefish BlueZ backend.",
+      "hardware_verified": false
+    },
+    "Date & Time": {
+      "status": "local-only",
+      "ui_notice": "Clock formatting applies to the desktop preview. System time, time zone and the native Cutefish clock are not connected."
+    },
+    "Desktop & Dock": {
+      "status": "local-only",
+      "ui_notice": "Dock size and automatic hiding are sent to Cutefish. Other preview-only desktop options are disabled in this session; shell readback is not implemented yet."
+    },
+    "Device Management": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Displays": {
+      "status": "supported",
+      "operations": [
+        "read compositor output layout/scale"
+      ],
+      "unimplemented": [
+        "apply/revert resolution",
+        "scaling",
+        "arrangement",
+        "brightness",
+        "night light"
+      ],
+      "ui_notice": "Read-only display information from the original Cutefish compositor backend. Display changes are not connected yet.",
+      "hardware_verified": false
+    },
+    "Family": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Focus": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Game Center": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "General": {
+      "status": "local-only",
+      "ui_notice": "Choose a settings panel. Each panel identifies its current Linux integration."
+    },
+    "Internet Accounts": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Keyboard": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Language & Region": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Lock Screen": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Login Items & Extensions": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Login Password": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Menu Bar": {
+      "status": "local-only",
+      "ui_notice": "These layout preferences currently apply to the desktop preview. Only battery percentage is sent to the native Cutefish status bar; native layout controls are not connected."
+    },
+    "Mouse": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Network": {
+      "status": "supported",
+      "operations": [
+        "read interfaces",
+        "set preauthorized Wi-Fi radio power"
+      ],
+      "unimplemented": [
+        "connection editor",
+        "VPN",
+        "DNS",
+        "proxy",
+        "firewall"
+      ],
+      "ui_notice": "Live network interfaces through the original Cutefish NetworkManager backend. Connection editing is not connected yet.",
+      "hardware_verified": false
+    },
+    "Notifications": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Printers & Scanners": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Privacy & Security": {
+      "status": "local-only",
+      "ui_notice": "Camera permission here applies only to makOS Photo Booth. Linux privacy and security services are not connected."
+    },
+    "Screen Time": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Sharing": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Siri": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Software Update": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Sound": {
+      "status": "supported",
+      "operations": [
+        "read input/output devices",
+        "set default input/output",
+        "set volume",
+        "set mute"
+      ],
+      "unimplemented": [
+        "effects",
+        "balance",
+        "input level"
+      ],
+      "ui_notice": "Live Linux audio settings through the original Cutefish sound backend. Unconnected options are marked below.",
+      "hardware_verified": false
+    },
+    "Spotlight": {
+      "status": "local-only",
+      "ui_notice": "Search is limited to this makOS workspace. System indexing is not connected."
+    },
+    "Startup Disk": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Storage": {
+      "status": "local-only",
+      "ui_notice": "Storage figures describe this workspace filesystem. Disk management and system cleanup are not connected."
+    },
+    "Time Machine": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Trackpad": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Transfer or Reset": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Users & Groups": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Wallet & Apple Pay": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    },
+    "Wallpaper": {
+      "status": "local-only",
+      "ui_notice": "This wallpaper selection affects the desktop preview only. Native Cutefish wallpaper changes are not connected; selection is disabled in this session."
+    },
+    "Wi-Fi": {
+      "status": "supported",
+      "operations": [
+        "read interfaces",
+        "set preauthorized Wi-Fi radio power"
+      ],
+      "unimplemented": [
+        "scan",
+        "join",
+        "credentials",
+        "authorization dialog"
+      ],
+      "ui_notice": "Live Wi-Fi state and radio power through the original Cutefish NetworkManager backend.",
+      "hardware_verified": false
+    },
+    "iCloud": {
+      "status": "unimplemented",
+      "ui_notice": "This panel has no Linux system backend yet. Its information does not change system settings."
+    }
+  }
+}

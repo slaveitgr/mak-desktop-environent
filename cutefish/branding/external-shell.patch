@@ -1,0 +1,644 @@
+--- a/src/core/compositor_options.h
++++ b/src/core/compositor_options.h
+@@ -28,6 +28,7 @@
+     bool wmDemoScript = false;
+     std::string shellControlSocket;
+     bool login = false;
++    bool externalShell = false;
+     // Session startup notification descriptor, -1 when the session passed none.
+     int readyFd = -1;
+     std::vector<std::string> clipboardClients;
+--- a/src/core/compositor_options.cpp
++++ b/src/core/compositor_options.cpp
+@@ -32,6 +32,7 @@
+                       "Path of the control socket the session passes trusted shell connections "
+                       "over.",
+                       "path"});
++    parser.addOption({"external-shell", "Use a trusted external desktop, menu bar and Dock."});
+     parser.addOption({"login", "Start the internal login screen for greetd session handoff."});
+     parser.addOption({"ready-fd", "Session startup notification file descriptor.", "fd"});
+     parser.addOption({"clipboard-client",
+@@ -112,6 +113,7 @@
+     options.wmDemoScript = parser.isSet("wm-demo-script");
+     options.shellControlSocket = parser.value("shell-control-socket");
+     options.login = parser.isSet("login");
++    options.externalShell = parser.isSet("external-shell");
+     options.clipboardClients = parser.values("clipboard-client");
+     options.captureClients = parser.values("capture-client");
+     options.computerControlClients = parser.values("computer-control-client");
+--- a/src/core/compositor_shell.cpp
++++ b/src/core/compositor_shell.cpp
+@@ -579,6 +579,7 @@
+ 
+         m_windowDebugService = std::make_unique<session::WindowDebugService>(&m_windowManager);
+         m_windowDebugService->setInput(&m_inputManager);
++        m_windowDebugService->setExternalShell(m_options.externalShell);
+         if (!m_options.noDrm)
+             m_windowDebugService->setInputGate("/etc/cutefish/window-debug-input");
+         m_windowDebugService->setOutputStats([this] {
+@@ -737,6 +738,26 @@
+     });
+     auto *osd = m_shell->addComponent(std::make_unique<shell::Osd>(
+             m_shell.get(), shell::createSessionOsdLevels(environment.bus)));
++    if (m_options.externalShell) {
++        // Window management, the fallback wallpaper and system prompts remain;
++        // the trusted external client is the only desktop chrome provider.
++        m_shell->addComponent(std::make_unique<shell::NotRespondingSheets>(m_shell.get()));
++        auto *secrets = m_shell->addComponent(shell::SecretPrompts::create(m_shell.get()));
++        auto *notifications = m_shell->addComponent(std::make_unique<shell::NotificationUi>(
++                m_shell.get(), std::make_unique<shell::Notifications>(environment.bus, m_shell->applications(),
++                                                                      &m_shell->tasks())));
++        if (!m_options.noDrm) {
++            osd->registerService();
++            secrets->start();
++            notifications->registerServices();
++        }
++        auto *capture = m_shell->addComponent(std::make_unique<shell::ScreenCapture>(
++                m_shell.get(), screenCaptureServices(nullptr, wallpaper)));
++        // The fresh headless test bus also uses the real compositor capture path.
++        capture->registerService();
++        CF_INFO(cfSession) << "makOS external shell: native Dock, menu bar, launcher and Control Center disabled";
++        return;
++    }
+     auto dock = std::make_unique<shell::Dock>(environment.bus, m_shell->tasks(), m_shell->launcher(),
+                                               preferencesFile("shell"));
+     shell::Dock *dockService = dock.get();
+@@ -824,6 +845,8 @@
+         return m_globals ? m_globals->privileged()->createCaptureConnection() : -1;
+     };
+     services.dock = [dockWindow]() -> std::optional<shell::CaptureDock> {
++        if (!dockWindow)
++            return std::nullopt;
+         shell::ShellWindow *window = dockWindow->window();
+         if (!window || !window->wmWindow())
+             return std::nullopt;
+--- a/protocols/cutefish-shell-v1.xml
++++ b/protocols/cutefish-shell-v1.xml
+@@ -20,7 +20,7 @@
+     bumping the interface version.
+   </description>
+ 
+-  <interface name="cutefish_shell_v1" version="1">
++  <interface name="cutefish_shell_v1" version="2">
+     <description summary="private shell interface">
+       A factory for cutefish_shell_surface_v1 objects.
+     </description>
+@@ -52,7 +52,7 @@
+     </request>
+   </interface>
+ 
+-  <interface name="cutefish_shell_surface_v1" version="1">
++  <interface name="cutefish_shell_surface_v1" version="2">
+     <description summary="shell metadata attached to a wl_surface">
+       Describes what the compositor should make of a shell surface. All state
+       here takes effect immediately rather than on the next wl_surface.commit:
+@@ -64,6 +64,9 @@
+       <entry name="invalid_role" value="0" summary="unknown role value"/>
+       <entry name="invalid_focus_policy" value="3" summary="unknown focus policy"/>
+       <entry name="invalid_output" value="4" summary="unknown logical output"/>
++      <entry name="invalid_geometry" value="5" since="2" summary="geometry outside supported bounds"/>
++      <entry name="invalid_edge" value="6" since="2" summary="unknown reservation edge"/>
++      <entry name="invalid_behavior" value="7" since="2" summary="unknown panel behavior"/>
+     </enum>
+ 
+     <enum name="role">
+@@ -72,6 +75,8 @@
+         compositor's wallpaper, and covering the output.
+       </description>
+       <entry name="desktop" value="0" summary="the desktop, below everything"/>
++      <entry name="panel" value="1" since="2" summary="a menu bar above application windows"/>
++      <entry name="dock" value="2" since="2" summary="a Dock above application windows"/>
+     </enum>
+ 
+     <enum name="focus_policy">
+@@ -134,5 +139,35 @@
+       <arg name="width" type="int"/>
+       <arg name="height" type="int"/>
+     </event>
++
++    <enum name="edge" since="2">
++      <entry name="top" value="0"/><entry name="bottom" value="1"/>
++      <entry name="left" value="2"/><entry name="right" value="3"/>
++    </enum>
++    <enum name="panel_behavior" since="2">
++      <entry name="stay_above" value="0"/><entry name="windows_can_cover" value="1"/>
++    </enum>
++    <request name="set_position" since="2">
++      <description summary="place the surface in global logical coordinates">
++        Applies before mapping and on later updates. Desktops stay at their
++        output origin; panels and Docks use this position. The xdg_toplevel's
++        committed buffer and window geometry determine size.
++      </description>
++      <arg name="x" type="int"/><arg name="y" type="int"/>
++    </request>
++    <request name="set_exclusive_zone" since="2">
++      <description summary="reserve work area on this surface's output">
++        Applies only to panel and Dock roles while the surface has contents.
++        A zero thickness clears the reservation. Resource or surface destruction
++        also clears it. The caller retains the requested zone across unmapping.
++      </description>
++      <arg name="edge" type="uint" enum="edge"/>
++      <arg name="thickness" type="int"/>
++      <arg name="yields_to_maximized" type="uint"/>
++    </request>
++    <request name="clear_exclusive_zone" since="2"/>
++    <request name="set_panel_behavior" since="2">
++      <arg name="behavior" type="uint" enum="panel_behavior"/>
++    </request>
+   </interface>
+ </protocol>
+--- a/src/wayland/protocols/cutefish_shell.h
++++ b/src/wayland/protocols/cutefish_shell.h
+@@ -17,7 +17,7 @@
+ 
+ class PrivilegedClients;
+ 
+-constexpr uint32_t kCutefishShellVersion = 1;
++constexpr uint32_t kCutefishShellVersion = 2;
+ 
+ // The per-display state the cutefish_shell_v1 global hands to its resources.
+ //
+--- a/src/wayland/protocols/cutefish_shell.cpp
++++ b/src/wayland/protocols/cutefish_shell.cpp
+@@ -34,6 +34,10 @@
+     switch (role) {
+     case CUTEFISH_SHELL_SURFACE_V1_ROLE_DESKTOP:
+         return WindowRole::Desktop;
++    case CUTEFISH_SHELL_SURFACE_V1_ROLE_PANEL:
++        return WindowRole::Panel;
++    case CUTEFISH_SHELL_SURFACE_V1_ROLE_DOCK:
++        return WindowRole::Dock;
+     default:
+         return std::nullopt;
+     }
+@@ -65,6 +69,7 @@
+         m_outputsChanged.reset();
+         m_zonesChanged.reset();
+         m_resource = nullptr;
++        m_manager->clearExclusiveZone(this);
+         if (m_surface) {
+             m_surface->removeSurfaceObserver(this);
+             // Only the stored metadata is dropped. A window that is still
+@@ -81,6 +86,9 @@
+     void setRole(WindowRole role)
+     {
+         m_metadata.role = role;
++        if (role == WindowRole::Panel || role == WindowRole::Dock)
++            m_metadata.focusPolicy = FocusPolicy::NoFocus;
++        updateExclusiveZone();
+         placeOnOutput();
+         apply();
+         sendWorkArea();
+@@ -94,22 +102,54 @@
+ 
+     bool setOutput(const std::string& name)
+     {
+-        auto* displays = m_manager->displayManager();
+-        if (!displays || !displays->applied())
+-            return false;
+-        const auto& logical = displays->applied()->logicalDisplays;
+-        if (std::none_of(logical.begin(), logical.end(), [&](const auto& output) {
+-                return output.waylandName == name;
++        const auto outputs = m_manager->outputAreas();
++        if (!name.empty() && std::none_of(outputs.begin(), outputs.end(), [&](const auto& output) {
++                return output.name == name;
+             })) {
+             return false;
+         }
+         m_metadata.outputName = name;
++        updateExclusiveZone();
+         placeOnOutput();
+         apply();
+         sendWorkArea();
+         return true;
+     }
+ 
++    void setPosition(int x, int y)
++    {
++        m_metadata.position = base::Point(x, y);
++        m_metadata.hasPosition = true;
++        placeOnOutput();
++        apply();
++    }
++
++    void setPanelBehavior(wm::PanelBehavior behavior)
++    {
++        m_metadata.panelBehavior = behavior;
++        apply();
++    }
++
++    void setExclusiveZone(wm::ScreenEdge edge, int thickness, bool yields)
++    {
++        m_zoneEdge = edge;
++        m_zoneThickness = thickness;
++        m_zoneYields = yields;
++        updateExclusiveZone();
++    }
++
++    void clearExclusiveZone()
++    {
++        m_zoneEdge.reset();
++        m_manager->clearExclusiveZone(this);
++    }
++
++    void onSurfaceCommit(compositor::Surface* surface) override
++    {
++        if (surface == m_surface)
++            updateExclusiveZone();
++    }
++
+     void activate()
+     {
+         if (!m_surface)
+@@ -125,11 +165,23 @@
+     {
+         if (surface != m_surface)
+             return;
++        m_manager->clearExclusiveZone(this);
+         m_manager->clearShellMetadata(m_surface);
+         m_surface = nullptr;
+     }
+ 
+ private:
++    void updateExclusiveZone()
++    {
++        if (!m_surface || !m_surface->hasContents() || !m_zoneEdge || m_zoneThickness == 0
++            || (m_metadata.role != WindowRole::Panel && m_metadata.role != WindowRole::Dock)) {
++            m_manager->clearExclusiveZone(this);
++            return;
++        }
++        m_manager->setExclusiveZone(this, *m_zoneEdge, m_zoneThickness,
++                                   m_metadata.outputName, m_zoneYields);
++    }
++
+     void apply()
+     {
+         if (m_surface)
+@@ -190,6 +242,9 @@
+     compositor::Surface* m_surface = nullptr;
+     wl_resource* m_resource = nullptr;
+     ShellWindowMetadata m_metadata;
++    std::optional<wm::ScreenEdge> m_zoneEdge;
++    int m_zoneThickness = 0;
++    bool m_zoneYields = false;
+     std::optional<base::Rect> m_sentWorkArea;
+     base::Subscription m_outputsChanged;
+     base::Subscription m_zonesChanged;
+@@ -243,12 +298,67 @@
+     }
+ }
+ 
++void shellSurfaceSetPosition(wl_client*, wl_resource* resource, int32_t x, int32_t y)
++{
++    if (x < -1048576 || x > 1048576 || y < -1048576 || y > 1048576) {
++        wl_resource_post_error(resource, CUTEFISH_SHELL_SURFACE_V1_ERROR_INVALID_GEOMETRY,
++                               "shell position is outside supported bounds");
++        return;
++    }
++    getUserDataAs<CutefishShellSurface>(resource)->setPosition(x, y);
++}
++
++void shellSurfaceSetExclusiveZone(wl_client*, wl_resource* resource, uint32_t edge,
++                                 int32_t thickness, uint32_t yields)
++{
++    if (thickness < 0 || thickness > 16384 || yields > 1) {
++        wl_resource_post_error(resource, CUTEFISH_SHELL_SURFACE_V1_ERROR_INVALID_GEOMETRY,
++                               "invalid exclusive zone");
++        return;
++    }
++    std::optional<wm::ScreenEdge> parsed;
++    switch (edge) {
++    case CUTEFISH_SHELL_SURFACE_V1_EDGE_TOP: parsed = wm::ScreenEdge::Top; break;
++    case CUTEFISH_SHELL_SURFACE_V1_EDGE_BOTTOM: parsed = wm::ScreenEdge::Bottom; break;
++    case CUTEFISH_SHELL_SURFACE_V1_EDGE_LEFT: parsed = wm::ScreenEdge::Left; break;
++    case CUTEFISH_SHELL_SURFACE_V1_EDGE_RIGHT: parsed = wm::ScreenEdge::Right; break;
++    default:
++        wl_resource_post_error(resource, CUTEFISH_SHELL_SURFACE_V1_ERROR_INVALID_EDGE,
++                               "invalid exclusive-zone edge");
++        return;
++    }
++    getUserDataAs<CutefishShellSurface>(resource)->setExclusiveZone(*parsed, thickness, yields != 0);
++}
++
++void shellSurfaceClearExclusiveZone(wl_client*, wl_resource* resource)
++{
++    getUserDataAs<CutefishShellSurface>(resource)->clearExclusiveZone();
++}
++
++void shellSurfaceSetPanelBehavior(wl_client*, wl_resource* resource, uint32_t behavior)
++{
++    wm::PanelBehavior parsed;
++    switch (behavior) {
++    case CUTEFISH_SHELL_SURFACE_V1_PANEL_BEHAVIOR_STAY_ABOVE: parsed = wm::PanelBehavior::StayAbove; break;
++    case CUTEFISH_SHELL_SURFACE_V1_PANEL_BEHAVIOR_WINDOWS_CAN_COVER: parsed = wm::PanelBehavior::WindowsCanCover; break;
++    default:
++        wl_resource_post_error(resource, CUTEFISH_SHELL_SURFACE_V1_ERROR_INVALID_BEHAVIOR,
++                               "invalid panel behavior");
++        return;
++    }
++    getUserDataAs<CutefishShellSurface>(resource)->setPanelBehavior(parsed);
++}
++
+ const struct cutefish_shell_surface_v1_interface kShellSurfaceImplementation = {
+     shellSurfaceDestroy,
+     shellSurfaceSetRole,
+     shellSurfaceSetFocusPolicy,
+     shellSurfaceActivate,
+     shellSurfaceSetOutput,
++    shellSurfaceSetPosition,
++    shellSurfaceSetExclusiveZone,
++    shellSurfaceClearExclusiveZone,
++    shellSurfaceSetPanelBehavior,
+ };
+ 
+ void shellDestroy(wl_client*, wl_resource* resource)
+--- a/src/session/window_debug_service.h
++++ b/src/session/window_debug_service.h
+@@ -10,6 +10,7 @@
+ #pragma once
+ 
+ #include "base/dbus.h"
++#include "base/signal.h"
+ #include <cstdint>
+ #include <functional>
+ #include <memory>
+@@ -38,7 +39,8 @@
+     bool registerService();
+ 
+     // The input methods below feed it as a device would.
+-    void setInput(input::InputManager *input) { m_input = input; }
++    void setInput(input::InputManager *input);
++    void setExternalShell(bool enabled) { m_externalShell = enabled; }
+     // A real session takes that input only while the file at `path` exists,
+     // belongs to root and only root may write it: whoever can make it can
+     // already inject input through uinput, so a caller gains nothing new.
+@@ -56,6 +58,13 @@
+     // Every window bottom to top, as a JSON array. Rects are [x, y, width,
+     // height] in logical output coordinates.
+     std::string ListWindows() const;
++    // Development external-shell bridge: real window/menu models, not input synthesis.
++    std::string GetWindowMenu(uint64_t id) const;
++    bool MenuEvent(uint64_t id, int32_t item, const std::string &event);
++    bool CloseWindow(uint64_t id);
++    bool SetWindowFullscreen(uint64_t id, bool fullscreen);
++    bool SetMinimizeTarget(uint64_t id, int x, int y, int width, int height);
++    std::string WorkAreas() const;
+     // Each goes through the window's state machine, as a user's move would.
+     // False when no window has that id.
+     bool MoveWindow(uint64_t id, int x, int y);
+@@ -83,6 +92,8 @@
+     base::dbus::Connection *m_bus;
+     std::unique_ptr<base::dbus::Object> m_object;
+     bool m_registered = false;
++    bool m_externalShell = false;
++    base::Subscription m_launcherShortcut;
+ };
+ 
+ } // namespace cutefish::session
+--- a/src/session/window_debug_service.cpp
++++ b/src/session/window_debug_service.cpp
+@@ -9,10 +9,13 @@
+ #include <algorithm>
+ #include <chrono>
+ #include <utility>
++#include <set>
+ 
+ #include <sys/stat.h>
+ 
+ #include "base/json.h"
++#include "compositor/menu_model.h"
++#include "compositor/surface.h"
+ #include "input/input_manager.h"
+ #include "scene/surface_node.h"
+ #include "scene/window_animation.h"
+@@ -133,6 +136,17 @@
+         m_bus->releaseName(serviceName);
+ }
+ 
++void WindowDebugService::setInput(input::InputManager *input)
++{
++    m_launcherShortcut.reset();
++    m_input = input;
++    if (m_input)
++        m_launcherShortcut = m_input->loneSuperReleased.connect([this] {
++            if (m_externalShell && m_object)
++                m_object->emitSignal("LauncherToggleRequested");
++        });
++}
++
+ bool WindowDebugService::registerService()
+ {
+     if (m_registered)
+@@ -142,7 +156,16 @@
+         return false;
+     }
+     auto object = std::make_unique<base::dbus::Object>(m_bus, objectPath, serviceName);
++    object->addSignal("LauncherToggleRequested", "");
+     object->addMethod("ListWindows", [this] { return ListWindows(); });
++    object->addMethod("GetWindowMenu", [this](uint64_t id) { return GetWindowMenu(id); });
++    object->addMethod("MenuEvent", [this](uint64_t id, int32_t item, std::string event) { return MenuEvent(id, item, event); });
++    object->addMethod("CloseWindow", [this](uint64_t id) { return CloseWindow(id); });
++    object->addMethod("SetWindowFullscreen", [this](uint64_t id, bool fullscreen) { return SetWindowFullscreen(id, fullscreen); });
++    object->addMethod("SetMinimizeTarget", [this](uint64_t id, int32_t x, int32_t y, int32_t width, int32_t height) {
++        return SetMinimizeTarget(id, x, y, width, height);
++    });
++    object->addMethod("WorkAreas", [this] { return WorkAreas(); });
+     object->addMethod("MoveWindow",
+                       [this](uint64_t id, int32_t x, int32_t y) { return MoveWindow(id, x, y); },
+                       base::dbus::ArgumentNames{{"id", "x", "y"}, {"result"}});
+@@ -189,6 +212,106 @@
+     return sortedMembers(Value(std::move(windows))).serialize();
+ }
+ 
++std::string WindowDebugService::GetWindowMenu(uint64_t id) const
++{
++    const wm::Window *window = m_manager->windowById(id);
++    const auto model = window && window->role() == wm::WindowRole::Normal && window->rootSurface()
++            ? window->rootSurface()->mainMenu() : nullptr;
++    Value::Array items;
++    if (model) {
++        std::vector<int32_t> pending {0};
++        std::set<int32_t> seen;
++        for (size_t i = 0; i < pending.size() && seen.size() < 4096; ++i) {
++            const int32_t key = pending[i];
++            if (!seen.insert(key).second)
++                continue;
++            const compositor::MenuItem *item = model->item(key);
++            if (!item)
++                continue;
++            Value::Array children, shortcuts;
++            for (int32_t child : item->children) {
++                children.push_back(child);
++                if (pending.size() < 8192)
++                    pending.push_back(child);
++            }
++            for (const auto &combination : item->shortcut) {
++                Value::Array keys;
++                for (const std::string &key : combination)
++                    keys.push_back(key);
++                shortcuts.push_back(std::move(keys));
++            }
++            items.push_back(Value::object({
++                {"id", item->id}, {"parent", item->parent},
++                {"label", compositor::plainMenuLabel(item->label)},
++                {"enabled", item->enabled}, {"visible", item->visible},
++                {"separator", item->separator}, {"iconName", item->iconName},
++                {"shortcut", std::move(shortcuts)}, {"toggle", int(item->toggle)},
++                {"toggleState", item->toggleState}, {"role", int(item->role)},
++                {"hasSubmenu", item->hasSubmenu}, {"childrenLoaded", item->childrenLoaded},
++                {"children", std::move(children)}
++            }));
++        }
++    }
++    return Value::object({{"windowId", std::to_string(id)}, {"available", bool(model)},
++                          {"source", model ? "cutefish-main-menu-v1" : "unavailable"},
++                          {"items", std::move(items)}}).serialize();
++}
++
++bool WindowDebugService::MenuEvent(uint64_t id, int32_t itemId, const std::string &event)
++{
++    const wm::Window *window = m_manager->windowById(id);
++    const auto model = window && window->role() == wm::WindowRole::Normal && window->rootSurface()
++            ? window->rootSurface()->mainMenu() : nullptr;
++    if (!model)
++        return false;
++    const compositor::MenuItem *item = model->item(itemId);
++    if (!item || !item->visible)
++        return false;
++    if (event == "prepare") model->prepare(itemId);
++    else if (event == "opened") model->opened(itemId);
++    else if (event == "closed") model->closed(itemId);
++    else if (event == "activate" && item->enabled && !item->separator) model->activate(itemId);
++    else return false;
++    return true;
++}
++
++bool WindowDebugService::CloseWindow(uint64_t id)
++{
++    wm::Window *window = m_manager->windowById(id);
++    if (!window || window->role() != wm::WindowRole::Normal || window->isPopup())
++        return false;
++    window->requestClose();
++    return true;
++}
++
++bool WindowDebugService::SetWindowFullscreen(uint64_t id, bool fullscreen)
++{
++    wm::Window *window = m_manager->windowById(id);
++    if (!window || window->role() != wm::WindowRole::Normal || window->isPopup())
++        return false;
++    window->setFullscreen(fullscreen);
++    return true;
++}
++
++bool WindowDebugService::SetMinimizeTarget(uint64_t id, int x, int y, int width, int height)
++{
++    wm::Window *window = m_manager->windowById(id);
++    if (!window || window->role() != wm::WindowRole::Normal || width < 0 || height < 0
++        || width > 16384 || height > 16384 || x < -1048576 || x > 1048576 || y < -1048576 || y > 1048576)
++        return false;
++    window->setMinimizedGeometry(base::Rect(x, y, width, height));
++    return true;
++}
++
++std::string WindowDebugService::WorkAreas() const
++{
++    Value::Array areas;
++    for (const auto &output : m_manager->outputAreas())
++        areas.push_back(Value::object({{"bounds", rectArray(output.bounds)},
++                                      {"workArea", rectArray(m_manager->restingWorkAreaForOutput(output.bounds))}}));
++    return Value(std::move(areas)).serialize();
++}
++
+ bool WindowDebugService::MoveWindow(uint64_t id, int x, int y)
+ {
+     wm::Window *window = m_manager->windowById(id);
+--- a/src/input/input_manager.h
++++ b/src/input/input_manager.h
+@@ -18,6 +18,7 @@
+ 
+ 
+ #include "input/gesture_filter.h"
++#include "input/lone_modifier_tap.h"
+ #include "base/geometry.h"
+ #include "base/signal.h"
+ #include "base/weak_ptr.h"
+@@ -146,6 +147,8 @@
+     void onTouchFrame(Timestamp timestamp);
+ 
+     base::Signal<> userActivity;
++    // A physical Super tap, delivered after normal release dispatch.
++    base::Signal<> loneSuperReleased;
+     // Every pointer move while the desktop has the input, clamped to the
+     // layout, before any sink, drag or grab sees it.
+     base::Signal<base::PointF> pointerMoved;
+@@ -178,6 +181,7 @@
+     // The gesture in progress went to the filter.
+     bool m_gestureClaimed = false;
+     std::set<uint32_t> m_secureKeys;
++    LoneModifierTap m_superTap;
+     // Physical key to the code it went down as, so that its release matches
+     // whatever convention is in force by then.
+     std::map<uint32_t, uint32_t> m_positionalKeys;
+--- a/src/input/input_manager.cpp
++++ b/src/input/input_manager.cpp
+@@ -276,6 +276,7 @@
+ 
+ void InputManager::onPointerButton(Timestamp timestamp, uint32_t evdevButton, bool pressed)
+ {
++    m_superTap.cancel();
+     userActivity();
+     if (pressed)
+         m_heldButtons.insert(evdevButton);
+@@ -344,6 +345,7 @@
+ 
+ void InputManager::onTouchDown(Timestamp timestamp, int32_t id, const base::PointF &normalized)
+ {
++    m_superTap.cancel();
+     userActivity();
+     const auto location = touchLocation(normalized);
+     if (!location)
+@@ -442,6 +444,7 @@
+ 
+ void InputManager::onPointerAxis(Timestamp timestamp, const base::PointF &offset, bool discrete)
+ {
++    m_superTap.cancel();
+     userActivity();
+     if (auto *gate = m_seat->sessionGate(); gate && gate->restrictsInput()) {
+         if (auto *sink = gate->secureInput())
+@@ -473,6 +476,7 @@
+ 
+ void InputManager::onPointerGestureBegin(Timestamp timestamp, GestureType type, uint32_t fingers)
+ {
++    m_superTap.cancel();
+     userActivity();
+     // Only the begin is gated: a gesture that began is ended by its own pointer
+     // when focus leaves its surface, lock screen included.
+@@ -536,6 +540,10 @@
+                          KeyboardModifierLayout layout)
+ {
+     userActivity();
++    const auto *sessionGate = m_seat->sessionGate();
++    const bool blocked = (sessionGate && sessionGate->restrictsInput()) || isPointerButtonHeld() || !m_touchLocations.empty() || m_gestureClaimed || m_seat->drag()->grabsInput();
++    const bool loneSuper = m_superTap.key(physicalCode, pressed,
++            physicalCode == KEY_LEFTMETA || physicalCode == KEY_RIGHTMETA, blocked);
+     uint32_t evdevCode = physicalCode;
+     if (pressed) {
+         evdevCode = m_positionalKeys.try_emplace(physicalCode, positionalKey(physicalCode, layout))
+@@ -547,6 +555,16 @@
+     const bool suppressed = m_seat->keySuppressed(evdevCode);
+     if (!m_seat->updateKeyState(evdevCode, pressed))
+         return;
++    if (loneSuper) {
++        // Finish normal key dispatch first; never steal a Super+key combination.
++        base::EventLoop::current()->post([weak = m_weakFactory.getWeakPtr()] {
++            if (auto *self = weak.get()) {
++                const auto *gate = self->m_seat->sessionGate();
++                if (!gate || !gate->restrictsInput())
++                    self->loneSuperReleased();
++            }
++        });
++    }
+     if (auto *gate = m_seat->sessionGate(); gate && gate->restrictsInput()) {
+         if ((!suppressed || m_secureKeys.contains(evdevCode))
+             && !(m_eventSink && m_eventSink->onSecureKey(timestamp, evdevCode, pressed))

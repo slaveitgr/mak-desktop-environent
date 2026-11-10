@@ -1,0 +1,40 @@
+{
+  "checked_at": "2026-11-10",
+  "tether_source": "https://github.com/zackb/tether/blob/adb03f60c9c69e2b439c751e2c24434a8abfffaa/README.md",
+  "tether_requirements_observed": {
+    "bluetooth_messages_notifications": "BlueZ 5.86+ with experimental bearer API; compatible controller required",
+    "clipboard": "wlr-data-control Wayland protocol",
+    "architecture": "tetherd daemon; CLI/GUI communicate over a UNIX socket",
+    "phone_target": "iPhone; Android support is not established by this README"
+  },
+  "base_iso": {
+    "filename": "cutefish-1.0-nightly-20261108-2229-amd64.iso",
+    "sha256": "bedebb9260e9b413980fc62f192b72a9d2ddeca7c7bc98d6042c9dda7978e933",
+    "package_evidence": "/var/lib/dpkg/status inside /live/filesystem.squashfs",
+    "bluez": "5.82-1.1",
+    "libbluetooth3": "5.82-1.1",
+    "cutefish_compositor": "1.0~git20261108143816.0e70913-1"
+  },
+  "compositor_source": {
+    "repository": "https://github.com/cutefishos/cutefish-compositor",
+    "commit": "0e709136bd7056136e74e981acffc4b88d659e0b",
+    "protocols": {
+      "ext_data_control_manager_v1": 1,
+      "zwlr_data_control_manager_v1": 2
+    },
+    "protocol_implementation": "src/wayland/protocols/data_control.cpp",
+    "restricted_globals": "src/wayland/protocol_globals.cpp:162",
+    "authorization": "src/wayland/security_delegate.cpp:80",
+    "default_allowed_executable": "/usr/bin/cutefish-services",
+    "allowlist_setup": "src/core/compositor_shell.cpp:846",
+    "additional_allowlist_argument": "--clipboard-client <absolute-executable-path>"
+  },
+  "assessment": {
+    "bluetooth_messages_notifications": "Base BlueZ is below the documented minimum; upgrade required before supported integration can be claimed.",
+    "clipboard": "Protocol is implemented but restricted; the actual Tether clipboard client must be explicitly authorized and tested.",
+    "hardware": "HP laptop Bluetooth controller capabilities and iPhone pairing are untested.",
+    "status": "Investigation only. Tether was not installed, paired, or granted clipboard access."
+  },
+  "tether_commit": "adb03f60c9c69e2b439c751e2c24434a8abfffaa",
+  "tether_readme_sha256": "ac93c40f104b95f4e5434294f4e1e0746bce83a738592fdac76604acbb0b6c24"
+}

@@ -45,6 +45,7 @@ FocusScope {
     property bool pathbarVisible: false
     property var selected: []
     property int anchorIndex: -1
+    property string anchorScope: ""
     property int focusedIndex: -1
     property var columns: []
     property string typeBuffer: ""
@@ -143,6 +144,20 @@ FocusScope {
             }
         ];
     }
+    function refreshColumns() {
+        if (!columns.length || columns[0].path !== browser.currentPath) {
+            resetColumns();
+            return;
+        }
+        let next = [{path: browser.currentPath, entries: browser.files}];
+        for (let i = 1; i < columns.length; i++) {
+            const path = columns[i].path;
+            if (!next[i - 1].entries.some(item => item.isDir && item.path === path))
+                break;
+            next.push({path: path, entries: Bridge.children(path)});
+        }
+        columns = next;
+    }
     function go(path) {
         browser.navigate(path);
     }
@@ -152,7 +167,11 @@ FocusScope {
         if (index < 0 || index >= files.length)
             return;
         const path = files[index].path;
-        if ((modifiers & Qt.ShiftModifier) && anchorIndex >= 0 && !entries) {
+        const scope = entries ? "column:" + path.substring(0, path.lastIndexOf("/")) : "browser:" + browser.currentPath;
+        if (anchorScope !== scope)
+            anchorIndex = -1;
+        anchorScope = scope;
+        if ((modifiers & Qt.ShiftModifier) && anchorIndex >= 0) {
             let all = [];
             for (let i = Math.min(anchorIndex, index); i <= Math.max(anchorIndex, index); i++)
                 all.push(files[i].path);
@@ -278,13 +297,17 @@ FocusScope {
             win.selected = [];
             win.focusedIndex = -1;
             win.anchorIndex = -1;
+            win.anchorScope = "";
             searchBox.text = "";
             win.resetColumns();
         }
         function onChanged() {
             if (win.viewMode === "columns")
-                win.resetColumns();
+                win.refreshColumns();
             let paths = win.browser.files.map(item => item.path);
+            if (win.viewMode === "columns")
+                for (let column of win.columns)
+                    paths = paths.concat(column.entries.map(item => item.path));
             win.selected = win.selected.filter(path => paths.indexOf(path) >= 0);
         }
     }
@@ -860,6 +883,7 @@ FocusScope {
             }
             TextField {
                 id: searchBox
+                objectName: "finderSearchInput"
                 selectionColor: desktop.highlightColor
                 x: 30
                 width: parent.width - 38
@@ -869,7 +893,13 @@ FocusScope {
                 font.pixelSize: 13
                 background: Item {}
                 selectByMouse: true
-                onTextChanged: browser.search(text)
+                onTextChanged: {
+                    searchTimer.stop();
+                    if (text.length)
+                        searchTimer.start();
+                    else
+                        browser.search("");
+                }
                 Keys.onEscapePressed: {
                     text = "";
                     searchBar.visible = false;
@@ -880,6 +910,7 @@ FocusScope {
         }
         FocusScope {
             id: fileArea
+            objectName: "finderFileArea"
             x: win.sideWidth + 10
             y: searchBar.visible ? 94 : 64
             width: win.width - x - 12
@@ -1348,6 +1379,7 @@ FocusScope {
                                 }
                                 delegate: Rectangle {
                                     id: columnEntry
+                                    objectName: "finderColumnEntry:" + modelData.path
                                     required property var modelData
                                     required property int index
                                     width: 214
@@ -1487,6 +1519,11 @@ FocusScope {
                     event.accepted = true;
                 }
             }
+        }
+        Timer {
+            id: searchTimer
+            interval: 180
+            onTriggered: browser.search(searchBox.text)
         }
         Timer {
             id: typeTimer

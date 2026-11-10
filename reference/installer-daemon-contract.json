@@ -1,0 +1,68 @@
+{
+  "source": {
+    "repository": "https://github.com/cutefishos/cutefish-installer",
+    "commit": "0cb8ef507f7be0f3dc26ce56d0a168f9210881a5",
+    "package": "1.0~git20261030043000.0cb8ef5-1",
+    "license": "BSD-3-Clause",
+    "files": [
+      "daemon/installerservice.cpp",
+      "daemon/installjob.cpp",
+      "common/installer.cpp",
+      "common/partitioning.cpp"
+    ]
+  },
+  "service": {
+    "bus": "system",
+    "name": "org.cutefish.Installer",
+    "path": "/org/cutefish/Installer",
+    "interface": "org.cutefish.Installer",
+    "read_only": {
+      "GetDisks": "() -> aa{sv}",
+      "GetLayout": "s -> a{sv}",
+      "GetFileSystems": "() -> as",
+      "Running": "org.freedesktop.DBus.Properties.Get -> v(bool)"
+    },
+    "mutating": {
+      "Install": "a{sv} -> ()"
+    },
+    "signals": {
+      "Progress": "sd",
+      "Finished": "bs"
+    }
+  },
+  "options": {
+    "disk": "string from GetDisks, revalidated",
+    "fullName": "string",
+    "userName": "string",
+    "password": "string, never stored in UI review, preferences, log or argv",
+    "hostName": "string",
+    "timeZone": "string from zoneinfo",
+    "partitioning": "omitted; original daemon interprets absence as whole-disk erase"
+  },
+  "implementation": {
+    "frontend": "installer/InstallWindow.qml",
+    "adapter": "installer/makos_install.py",
+    "mode": "whole-disk erase only; GPT + ext4, EFI/BIOS boot partition chosen by original daemon",
+    "commit_gates": [
+      "verified live image mount and marker",
+      "selected daemon-offered disk and read-only layout",
+      "valid account and timezone",
+      "explicit whole-disk erase checkbox",
+      "exact device-path text confirmation",
+      "fresh GetDisks + GetLayout fingerprint comparison + Running=false"
+    ],
+    "success": "Only Finished(true) after successful Install acknowledgement; Progress(1) alone is not success.",
+    "missing": [
+      "advanced partition editor",
+      "display-language/keyboard setup",
+      "automatic restart",
+      "install cancellation (original daemon exports none)"
+    ]
+  },
+  "validation": {
+    "host_disk_operations": false,
+    "mock_protocol_tests": 15,
+    "physical_install_tested": false,
+    "qt_dbus_wire_test": "tests/smoke_installer_dbus_wire.py; prepared for Linux private-bus CI, not executed on Mac host"
+  }
+}

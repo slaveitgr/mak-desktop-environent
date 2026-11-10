@@ -93,9 +93,14 @@ FocusScope {
     function launch(id) {
         if (!id)
             return;
+        if (launcher && host.dismiss) host.dismiss();
         host.desktop.openApplication(id);
-        if (launcher)
+        if (launcher && !host.dismiss)
             host.desktop.closeWindow(host);
+    }
+    function dismissOrClear() {
+        if (launcher && host.dismiss) host.dismiss();
+        else focusSearch(true);
     }
     function activateSelection() {
         if (filteredApps.length)
@@ -121,7 +126,7 @@ FocusScope {
         grid.positionViewAtBeginning();
     }
     Component.onCompleted: { search.forceActiveFocus(); if (launcher) Bridge.session.refreshApplications(); }
-    Keys.onEscapePressed: focusSearch(true)
+    Keys.onEscapePressed: dismissOrClear()
 
     Rectangle {
         anchors.fill: parent
@@ -184,7 +189,7 @@ FocusScope {
             Keys.onReturnPressed: library.activateSelection()
             Keys.onEnterPressed: library.activateSelection()
             Keys.onDownPressed: library.moveSelection(0)
-            Keys.onEscapePressed: library.focusSearch(true)
+            Keys.onEscapePressed: library.dismissOrClear()
         }
         ToolButton {
             id: sortButton
@@ -362,7 +367,7 @@ FocusScope {
             else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space)
                 library.activateSelection();
             else if (event.key === Qt.Key_Escape)
-                library.focusSearch(true);
+                library.dismissOrClear();
             else if (event.text.length && !(event.modifiers & (Qt.ControlModifier | Qt.MetaModifier | Qt.AltModifier))) {
                 library.focusSearch(false);
                 search.text = event.text;

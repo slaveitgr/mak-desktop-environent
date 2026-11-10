@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-10",
+  "claim": "Functional prototype with verified operations; not 100% Finder or Tahoe parity.",
+  "references": [
+    {
+      "path": "reference/native-ui-observations-2026-11-10.json",
+      "authority": "live native macOS UI observation",
+      "scope": "Context-menu visibility, selection state and adaptive view controls; no native file mutations or animation measurements"
+    },
+    {
+      "path": "../../work/rea-reference/finder.ui-reference.json",
+      "authority": "REA shipped-resource projection",
+      "finder_short_version": "26.4",
+      "scope": "Menu strings/actions/resources; not implementation or runtime behavior proof"
+    },
+    {
+      "url": "https://www.man7.org/linux/man-pages/man2/renameat2.2.html",
+      "scope": "RENAME_NOREPLACE destination preservation"
+    },
+    {
+      "url": "https://developer.apple.com/documentation/kernel/1646220-anonymous/vfs_rename_excl",
+      "scope": "Darwin exclusive rename flag"
+    }
+  ],
+  "path_model": {
+    "development_default": "demo-home or installed user-data workspace when no explicit --root is supplied",
+    "live_iso": "cutefish/run-app passes --root \"$HOME\" when installed at /opt/makos with /etc/makos/live.json; real home files are browsed, not only demo files",
+    "current_boundary": "Every Browser uses the one Bridge Workspace root; absolute paths, .. and symlinks are rejected; arbitrary volumes and directories outside that root cannot be navigated.",
+    "storage": "Suite application data and local indexed Trash are rooted in the same chosen workspace; do not change that root to / to simulate whole-system Finder.",
+    "next_architecture": [
+      "Separate application-data location from file-navigation locations.",
+      "Use absolute file URLs plus explicit backend/location objects per window; preserve existing default-root mapping for sidebars.",
+      "Support volume discovery and OS user permissions; handle links as links for mutations and resolve navigation separately.",
+      "Use the native Linux trash specification/GIO with per-volume trash and restoration metadata, rather than mapping system navigation to workspace/.Trash.",
+      "Add --open file-URL handling and forward requests to the existing Finder instance; only then switch inode/directory associations and hide the duplicate stock launcher."
+    ]
+  },
+  "changes": [
+    "Atomic no-replace rename on macOS/Linux; broken links count as occupied destinations.",
+    "Copy into private destination-side staging, publish complete copies atomically, retain undo for successful members of a failed batch.",
+    "Persist Trash recovery metadata before moving a source; unpredictable atomic index temp files; reject swapped Trash paths and malformed index records.",
+    "Preflight all restore collisions before restoring the first selected item; deduplicate repeated selections.",
+    "Bounded recursive filename search under the current folder; skip internal data, links and special files; expose truncation to the user.",
+    "Do not open FIFOs or symlinks for thumbnails; filter them from normal listings and Recents.",
+    "Column-view Shift range selection works; Ctrl/Command toggles persist; refresh preserves valid nested columns and their selection.",
+    "Search input debounce and accurate test import failures instead of masking broken project imports as missing Qt.",
+    "Short Trash storage tokens preserve long original filenames across restart and Put Back."
+  ],
+  "matrix": [
+    {
+      "feature": "Home/root navigation, history, view listing",
+      "status": "covered_with_limits",
+      "evidence": [
+        "tests/test_browser.py"
+      ],
+      "limit": "One configured filesystem root; no whole-system/volume browser."
+    },
+    {
+      "feature": "Create folder, rename, copy, duplicate, same-volume move",
+      "status": "covered",
+      "evidence": [
+        "tests/test_filesystem.py",
+        "tests/test_finder_backend.py",
+        "tests/test_browser.py"
+      ],
+      "limit": "macOS host execution verified; Linux syscall branch still needs Linux CI run."
+    },
+    {
+      "feature": "Collisions and partial I/O failures",
+      "status": "covered_with_limits",
+      "evidence": [
+        "tests/test_finder_backend.py"
+      ],
+      "limit": "Copy keeps both; move/rename/restore refuse replacement. No replace/merge dialog or cross-volume moves."
+    },
+    {
+      "feature": "Trash, Put Back, operation undo",
+      "status": "covered_with_limits",
+      "evidence": [
+        "tests/test_filesystem.py",
+        "tests/test_finder_backend.py",
+        "tests/test_finder_search.py"
+      ],
+      "limit": "Local indexed Trash, not freedesktop/native OS trash; no redo or persistent undo history."
+    },
+    {
+      "feature": "Symlink handling",
+      "status": "safe_rejection_tested_missing_navigation",
+      "evidence": [
+        "tests/test_filesystem.py",
+        "tests/test_finder_backend.py"
+      ],
+      "limit": "Links hidden/rejected; no Make Alias. Destination replacement races protected, not a comprehensive adversarial parent-directory race model."
+    },
+    {
+      "feature": "Filename search",
+      "status": "covered_with_limits",
+      "evidence": [
+        "tests/test_finder_backend.py",
+        "tests/test_finder_search.py",
+        "tests/verify_finder_selection.py"
+      ],
+      "limit": "Recursive names only; 50000 entry/5000 result bounds; no Spotlight content/metadata index; synchronous scan after debounce; inaccessible nested folders are skipped."
+    },
+    {
+      "feature": "Multi-selection and drag/drop",
+      "status": "covered_with_limits",
+      "evidence": [
+        "tests/test_desktop_interactions.py",
+        "tests/test_finder_search.py",
+        "tests/verify_finder_selection.py"
+      ],
+      "limit": "Internal Finder/Desktop move/copy and folder/background targets; external text/uri-list/native-app drag interop not verified."
+    },
+    {
+      "feature": "Quick Look, text/image previews, Get Info, color tags, Recents",
+      "status": "partial",
+      "evidence": [
+        "tests/test_browser.py"
+      ],
+      "limit": "Basic metadata/text/image preview and one color tag; native extensions, richer metadata, preview plugins and multi-tag parity absent."
+    },
+    {
+      "feature": "Open With, Compress, Make Alias, Share, Quick Actions",
+      "status": "missing",
+      "evidence": [
+        "qml/FinderMenus.js",
+        "reference/native-ui-observations-2026-11-10.json"
+      ],
+      "limit": "Native Finder exposes these; corresponding prototype actions remain disabled/missing."
+    },
+    {
+      "feature": "Default directory handler and single-instance open-path delivery",
+      "status": "missing",
+      "evidence": [
+        "main.py",
+        "cutefish_runtime.py"
+      ],
+      "limit": "Instance activation currently raises the app without file URLs; directory MIME association must follow functional open-path support."
+    },
+    {
+      "feature": "Network shares, mounted drives, eject, iCloud/AirDrop, permissions editor",
+      "status": "missing",
+      "evidence": [
+        "qml/FinderMenus.js"
+      ],
+      "limit": "Not supplied by cosmetic sidebar entries."
+    },
+    {
+      "feature": "Tahoe pixel/animation equivalence",
+      "status": "untested",
+      "evidence": [
+        "reference/native-ui-observations-2026-11-10.json"
+      ],
+      "limit": "No frame-by-frame comparison or animation timing measurements in this task."
+    },
+    {
+      "feature": "Long-running operation progress/cancellation",
+      "status": "missing",
+      "evidence": [
+        "finder_backend.py"
+      ],
+      "limit": "Operations/search are synchronous; no worker progress or cancellation UI yet."
+    }
+  ],
+  "verification": {
+    "environment": "macOS host, project Qt environment; temporary filesystem fixtures and offscreen Qt input only",
+    "tests": [
+      {
+        "command": "python -m unittest discover -s tests -p test_filesystem.py -v",
+        "passed": 12
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_finder_backend.py -v",
+        "passed": 19
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_browser.py -v",
+        "passed": 8
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_finder_search.py -v",
+        "passed": 5
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_desktop_interactions.py -v",
+        "passed": 10
+      },
+      {
+        "command": "python tests/verify_finder_selection.py",
+        "passed_scenarios": [
+          "Qt pointer Shift/Ctrl column selection",
+          "nested selection preserved after actual mkdir/refresh",
+          "recursive result entered through Qt key events"
+        ]
+      }
+    ],
+    "unit_and_integration_tests_passed": 54,
+    "skipped": 0,
+    "user_files_modified_by_tests": false,
+    "not_verified": [
+      "Linux rename syscall execution in CI",
+      "Physical login-session behavior after packaging",
+      "Native external-app drag interoperability",
+      "Cross-volume transfers",
+      "Complete Finder visual/behavior parity"
+    ]
+  }
+}

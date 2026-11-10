@@ -1,0 +1,1072 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-11-10",
+  "scope": "Primary-source repository and packaging survey for makOS app mechanisms; no implementation, clone, build, install or runtime validation performed.",
+  "source_inventory": {
+    "organization": "linuxdeepin",
+    "url": "https://github.com/orgs/linuxdeepin/repositories",
+    "repository_count": 266,
+    "pages": 3,
+    "source": "GitHub connector search_repositories org=linuxdeepin per_page=100, pages 1-3",
+    "names": [
+      ".bug-game",
+      ".github",
+      "DKapture",
+      "action-conventionalcommits-checker",
+      "action-cppcheck",
+      "action-doxygencheck",
+      "action-organization-manager",
+      "action-sync",
+      "action-teams-manager",
+      "asterinas",
+      "bbs-mobile-web",
+      "blur-effect",
+      "cla",
+      "contributor-assistant-github-action",
+      "dareader",
+      "dcc-insider-plugin",
+      "dci-icon-theme",
+      "dci-tool",
+      "dde",
+      "dde-account-faces",
+      "dde-api",
+      "dde-app-services",
+      "dde-appearance",
+      "dde-application-manager",
+      "dde-application-wizard",
+      "dde-calendar",
+      "dde-clipboard",
+      "dde-control-center",
+      "dde-cooperation",
+      "dde-daemon",
+      "dde-device-formatter",
+      "dde-dialog",
+      "dde-dock",
+      "dde-file-dialog-gtk",
+      "dde-file-manager",
+      "dde-file-manager-extensions",
+      "dde-file-manager-external",
+      "dde-file-manager-integration",
+      "dde-grand-search",
+      "dde-introduction",
+      "dde-kwin",
+      "dde-launcher",
+      "dde-launchpad",
+      "dde-manual-content",
+      "dde-network-core",
+      "dde-permission-manager",
+      "dde-polkit-agent",
+      "dde-printer",
+      "dde-qtintegration",
+      "dde-qtplatform-plugins",
+      "dde-seatd",
+      "dde-services",
+      "dde-session",
+      "dde-session-shell",
+      "dde-session-shell-snipe",
+      "dde-session-ui",
+      "dde-settings-default",
+      "dde-shell",
+      "dde-tray-loader",
+      "dde-wallpapers",
+      "dde-wayland-config",
+      "dde-widgets",
+      "dde-wldpms",
+      "dde-wloutput",
+      "dde-wloutput-daemon",
+      "ddm",
+      "deepin-ab-recovery",
+      "deepin-album",
+      "deepin-anything",
+      "deepin-auto-translation",
+      "deepin-boot-maker",
+      "deepin-browser",
+      "deepin-calculator",
+      "deepin-camera",
+      "deepin-codeporting",
+      "deepin-compatibility-mode",
+      "deepin-compressor",
+      "deepin-deb-installer",
+      "deepin-deepinid-client",
+      "deepin-deepinid-plugin",
+      "deepin-defender",
+      "deepin-desktop-base",
+      "deepin-desktop-schemas",
+      "deepin-desktop-theme",
+      "deepin-devicemanager",
+      "deepin-devscripts",
+      "deepin-diskmanager",
+      "deepin-downloader",
+      "deepin-draw",
+      "deepin-dummyapps",
+      "deepin-echoflow",
+      "deepin-editor",
+      "deepin-face",
+      "deepin-faq",
+      "deepin-fcitx5configtool-plugin",
+      "deepin-fcitxconfigtool-plugin",
+      "deepin-feedback",
+      "deepin-font-manager",
+      "deepin-fprintd",
+      "deepin-gettext-tools",
+      "deepin-github",
+      "deepin-global-translation",
+      "deepin-gomoku",
+      "deepin-graphics-driver-manager",
+      "deepin-gtk-theme",
+      "deepin-home",
+      "deepin-icon-theme",
+      "deepin-im",
+      "deepin-image-viewer",
+      "deepin-initramfs-enhance",
+      "deepin-input-method",
+      "deepin-kernel",
+      "deepin-kernel-tools",
+      "deepin-keyring",
+      "deepin-kglobalaccel",
+      "deepin-kwin",
+      "deepin-kwindowsystem",
+      "deepin-lang-selector",
+      "deepin-lianliankan",
+      "deepin-lkrg",
+      "deepin-log-viewer",
+      "deepin-m1",
+      "deepin-manual",
+      "deepin-movie-reborn",
+      "deepin-music",
+      "deepin-network-display-ui",
+      "deepin-network-displays",
+      "deepin-network-proxy",
+      "deepin-ocr",
+      "deepin-ocr-plugin-manager",
+      "deepin-osconfig",
+      "deepin-pc-manager",
+      "deepin-pdfium",
+      "deepin-picker",
+      "deepin-plymouth",
+      "deepin-power-control",
+      "deepin-prime",
+      "deepin-pw-check",
+      "deepin-reader",
+      "deepin-sbom-tools",
+      "deepin-scanner",
+      "deepin-screen-recorder",
+      "deepin-screensaver",
+      "deepin-service-manager",
+      "deepin-settings-default",
+      "deepin-shortcut-viewer",
+      "deepin-skf-tool",
+      "deepin-skills",
+      "deepin-sound-theme",
+      "deepin-specifications",
+      "deepin-styleguide",
+      "deepin-system-monitor",
+      "deepin-system-upgrade",
+      "deepin-terminal",
+      "deepin-translation-utils",
+      "deepin-turbo",
+      "deepin-tweak",
+      "deepin-update-manager",
+      "deepin-update-ui",
+      "deepin-upgrade-manager",
+      "deepin-voice-note",
+      "deepin-wallpapers",
+      "deepin-wallpapers-nonfree",
+      "deepin-wayland-protocols",
+      "deepin-wine-patch",
+      "default-settings",
+      "desktop-entry-editor",
+      "develop-manual",
+      "developer-center",
+      "disomaster",
+      "docparser",
+      "doxygen-theme",
+      "dpa-ext-gnomekeyring",
+      "dtk",
+      "dtk-template",
+      "dtk6core",
+      "dtk6declarative",
+      "dtk6gui",
+      "dtk6log",
+      "dtk6systemsettings",
+      "dtk6widget",
+      "dtkai",
+      "dtkaudiomanager",
+      "dtkbluetooth",
+      "dtkcommon",
+      "dtkcore",
+      "dtkcrypt",
+      "dtkdeclarative",
+      "dtkdevice",
+      "dtkgui",
+      "dtkio",
+      "dtklog",
+      "dtkmultimedia",
+      "dtknetworkmanager",
+      "dtknotifications",
+      "dtkprinter",
+      "dtksystemsettings",
+      "dtkwidget",
+      "dwayland",
+      "fcitx-configtool",
+      "fcitx5-theme-deepin",
+      "funnylog",
+      "gammaray-mcp-bridge",
+      "gio-qt",
+      "go-dbus-factory",
+      "go-gir",
+      "go-lib",
+      "go-x11-client",
+      "image-center",
+      "image-editor",
+      "internal-discussion",
+      "jenkins-bridge-client",
+      "kimpanel-dde",
+      "lastore-daemon",
+      "letmego",
+      "libqapt-qt6",
+      "linglong-builder-demo",
+      "linglong-pica",
+      "linyaps-tools",
+      "migration-tools",
+      "misc",
+      "ncnn",
+      "obs-build",
+      "obs-service-tar_scm",
+      "open-build-service",
+      "open-source-students",
+      "open-with-dialog",
+      "opencv-mobile",
+      "pdocr-rpc",
+      "pkgs-categorizer",
+      "qt6integration",
+      "qt6platform-plugins",
+      "release",
+      "rofd",
+      "seetaface-age-predictor",
+      "seetaface-anti-spoofing-x",
+      "seetaface-authorize",
+      "seetaface-boxes",
+      "seetaface-landmarker",
+      "seetaface-models",
+      "seetaface-open-role-zoo",
+      "seetaface-pose-estimation",
+      "seetaface-quality-assessor",
+      "seetaface-recognizer",
+      "seetaface-tennis",
+      "seetaface-tracker",
+      "shim-review",
+      "startdde",
+      "summer-ospp",
+      "treeland",
+      "treeland-protocols",
+      "treeland.private",
+      "ttf-deepin-opensymbol",
+      "udisks2-qt5",
+      "udisks2-qt6",
+      "unilang",
+      "upload-artifact",
+      "util-dfm",
+      "utshell",
+      "utsudo",
+      "warm-sched",
+      "wiki",
+      "wiki.deepin.org",
+      "xdg-desktop-portal-dde",
+      "xorg-server",
+      "youqu"
+    ]
+  },
+  "interpretation": {
+    "source_candidate": "An actual public application/mechanism was identified; integration and complete feature parity are not established.",
+    "no_suitable_public_repo_verified": "No suitable repository found in the bounded official-organization survey, not an assertion that no software exists elsewhere.",
+    "activity": "archived is the GitHub flag. Head commit time and repository push time are recorded separately; neither alone is a maintenance guarantee.",
+    "licenses": "README declarations and GitHub detection only; per-file and bundled dependency licenses require review before redistribution.",
+    "dependencies": "Prefer current debian/control over stale README Qt5 lists. Most inspected active application packages now target Qt6/DTK6, while voice-note/game README/package paths may remain Qt5.",
+    "shipped_vs_source": "Findings describe current public sources. This survey does not claim these exact revisions shipped in the previously inspected Deepin ISO."
+  },
+  "repositories": [
+    {
+      "name": "linuxdeepin/dde-file-manager",
+      "url": "https://github.com/linuxdeepin/dde-file-manager",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T11:12:51Z",
+      "observed_head_commit": "a64a70db36cde2325a5c3b4597ffacbc8e4166f2",
+      "observed_head_commit_date": "2026-11-10T11:12:50Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/dde-file-manager/blob/master/README.md",
+        "git_blob_sha": "3f5858bd9cb24483892ff8afb199339a322f06c5"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/dde-file-manager/blob/master/debian/control",
+        "git_blob_sha": "5ff35f83bcb7042486f3d3d9963c553daad155e8",
+        "build_depends": "Build-Depends:\n debhelper-compat (= 12),\n cmake,\n doxygen,\n pkg-config,\n libffmpegthumbnailer-dev,\n libpolkit-agent-1-dev,\n dde-tray-loader-dev,\n libtag1-dev,\n libdmr-dev,\n libicu-dev,\n libxcb-ewmh-dev,\n libdeepin-pdfium-dev,\n libssl-dev,\n libgtest-dev,\n libgmock-dev,\n liblucene++-dev (>= 3.0.8-deepin5),\n libboost-filesystem-dev,\n libsecret-1-dev,\n libpoppler-cpp-dev,\n libcryptsetup-dev,\n libpcre2-dev,\n libdde-shell-dev (>= 0.0.10),\n treeland-protocols,\n qt6-wayland-dev,\n qt6-base-dev,\n qt6-base-private-dev,\n qt6-svg-dev,\n qt6-multimedia-dev,\n qt6-tools-dev,\n qt6-tools-dev-tools,\n qt6-declarative-dev,\n qt6-5compat-dev,\n libdtk6widget-dev,\n libdtk6gui-dev,\n libdtk6core-dev,\n libdtk6core-bin,\n libdtk6declarative-dev,\n libdfm6-io-dev,\n libdfm6-mount-dev,\n libdfm6-burn-dev,\n libdfm6-search-dev,\n libpolkit-qt6-1-dev,\n libxcb-xfixes0-dev (>= 1.10~),\n libopenjp2-7-dev,\n liblcms2-dev,\n libmd4c-dev,\n libdeepin-service-framework-dev,\n libheif-dev,\n libappimage-dev,\n libkf6syntaxhighlighting-dev,\n libkf6idletime-dev,\n libnl-3-dev,\n libnl-genl-3-dev,\n libminizip-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/dde-control-center",
+      "url": "https://github.com/linuxdeepin/dde-control-center",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T12:15:44Z",
+      "observed_head_commit": "20ef77042d3100a38923dfacc013e1ad6136d39f",
+      "observed_head_commit_date": "2026-11-10T12:15:43Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/dde-control-center/blob/master/README.md",
+        "git_blob_sha": "1c2b6f20b7a00e3e2ee3882100341eaa4537035a"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/dde-control-center/blob/master/debian/control",
+        "git_blob_sha": "f2a11336973bc17fc9e41000725ae0e6a725221e",
+        "build_depends": "Build-Depends:\n debhelper-compat (= 12),\n pkg-config,\n cmake,\n qt6-base-dev,\n qt6-declarative-dev,\n qt6-tools-dev,\n qt6-declarative-private-dev,\n qt6-multimedia-dev,\n libpolkit-qt6-1-dev,\n libdtkcommon-dev,\n libdtk6gui-dev(>=6.0.21),\n libdtk6core-dev,\n libdtk6core-bin,\n doxygen,\n libgtest-dev,\n extra-cmake-modules,\n libqt6svg6,\n deepin-gettext-tools,\n qml6-module-qtquick-layouts,\n qml6-module-qtquick-window,\n qml6-module-qt-labs-qmlmodels,\n qt6-wayland-dev,\n qt6-wayland-private-dev,\n qt6-wayland-dev-tools,\n wlr-protocols,\n treeland-protocols (>= 0.6.0),\n systemd,\n libdareader-dev,\n libdeepin-pw-check-dev,\n libicu-dev,\n libwayland-dev,\n libssl-dev,\n libdde-shell-dev(>= 1.99.20),\n libdpkg-dev,\n libffmpegthumbnailer-dev,\n dde-api-dev (>> 6.0.39)",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/dde-daemon",
+      "url": "https://github.com/linuxdeepin/dde-daemon",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T13:45:16Z",
+      "observed_head_commit": "e15920d6431e6ac2f878982b70f7f26de5941840",
+      "observed_head_commit_date": "2026-11-10T13:45:15Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/dde-daemon/blob/master/README.md",
+        "git_blob_sha": "61b4f0645b437cdd0b80f4b88cbd865c7eb7c41a"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/dde-daemon/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/dde-calendar",
+      "url": "https://github.com/linuxdeepin/dde-calendar",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T08:15:24Z",
+      "observed_head_commit": "10491cff7da7f870e3501f11f4368c0dac2118ce",
+      "observed_head_commit_date": "2026-11-10T08:15:23Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/dde-calendar/blob/master/README.md",
+        "git_blob_sha": "1ebc5e4a219e76e08ac48dee331ef2f403d3d6bf"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/dde-calendar/blob/master/debian/control",
+        "git_blob_sha": "5a29590c53d46e6d762d30f999401b1b2d986f19",
+        "build_depends": "Build-Depends:\n debhelper-compat (=11),\n cmake,\n pkg-config,\n deepin-gettext-tools,\n qt6-base-dev,\n qt6-tools-dev,\n qt6-tools-dev-tools,\n qt6-svg-dev,\n libdtk6gui-dev,\n libdtk6widget-dev,\n libdtk6core-dev,\n libgtest-dev,\n libical-dev,\n libgcrypt20-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-music",
+      "url": "https://github.com/linuxdeepin/deepin-music",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T11:03:00Z",
+      "observed_head_commit": "a3897e51da474e1150309605d4afbdb19d9dc61d",
+      "observed_head_commit_date": "2026-11-10T11:02:59Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-music/blob/master/README.md",
+        "git_blob_sha": "1ca5c097ad4b060a0d5a00ac875328b320103e0c"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-music/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-album",
+      "url": "https://github.com/linuxdeepin/deepin-album",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T02:15:50Z",
+      "observed_head_commit": "eb5f56923ee895fb460c807a7e36a524c1137e85",
+      "observed_head_commit_date": "2026-11-10T02:15:49Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-album/blob/master/README.md",
+        "git_blob_sha": "1bbe8fbc4dc4c9ef24b1064741bc050175a4e252"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-album/blob/master/debian/control",
+        "git_blob_sha": "fb74cdd597bc339a3a3f1c200fa0238ed1b89902",
+        "build_depends": "Build-Depends:\n debhelper (>= 11),\n cmake,\n pkg-config,\n# Qt6\n qt6-base-dev,\n qt6-tools-dev,\n qt6-tools-dev-tools,\n qt6-svg-dev,\n qt6-declarative-dev,\n# Dtk\n libdtk6gui-dev,\n libdtk6widget-dev,\n libdtk6declarative-dev,\n# Deepin\n# null\n# 3rd party\n libexif-dev,\n libstartup-notification0-dev,\n libudev-dev,\n libfontconfig1-dev,\n libglib2.0-dev,\n libxrender-dev,\n#libgio-qt-dev,\n#libudisks2-qt5-dev,\n libdfm6-mount-dev,\n libavformat-dev,\n libffmpegthumbnailer-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-image-viewer",
+      "url": "https://github.com/linuxdeepin/deepin-image-viewer",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T08:16:06Z",
+      "observed_head_commit": "d3fbf507f4ec240fae4b801c729659f4e3287f53",
+      "observed_head_commit_date": "2026-11-10T08:16:05Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-image-viewer/blob/master/README.md",
+        "git_blob_sha": "00053a9209f8860698308a6b54f26e5d2569c500"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-image-viewer/blob/master/debian/control",
+        "git_blob_sha": "04c96f0a8d023e8a864323ccf9135337067ff699",
+        "build_depends": "Build-Depends:\n debhelper (>= 11),\n cmake,\n pkg-config,\n# Qt6\n qt6-base-dev,\n qt6-tools-dev,\n qt6-tools-dev-tools,\n qt6-svg-dev,\n qt6-declarative-dev,\n# Dtk\n libdtk6gui-dev,\n libdtk6widget-dev,\n libdtk6declarative-dev,\n# Deepin\n libdeepin-ocr-plugin-manager-dev,\n# 3rd party\n libraw-dev,\n libexif-dev,\n libncnn-dev,\n libopencv-mobile-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-camera",
+      "url": "https://github.com/linuxdeepin/deepin-camera",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T05:23:01Z",
+      "observed_head_commit": "e7ea2f7dc2cf13f834b47c5c683fbee013ee9d6d",
+      "observed_head_commit_date": "2026-11-10T05:22:41Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-camera/blob/master/README.md",
+        "git_blob_sha": "0ef2f58d4a371bfad7462d5d31f8f27c06a559d4"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-camera/blob/master/debian/control",
+        "git_blob_sha": "40c74a97a25ea1e83a6c09fa98bc2b72cdde6587",
+        "build_depends": "Build-Depends:\n    debhelper (>=9),\n    cmake,\n    pkg-config,\n    libavutil-dev,\n    libavformat-dev,\n    libavcodec-dev,\n    libavfilter-dev,\n    deepin-gettext-tools,\n    libv4l-dev,\n    libsdl2-dev,\n    portaudio19-dev,\n    libpng-dev,\n    libasound2-dev,\n    libpciaccess-dev,\n    libusb-1.0-0-dev,\n    zlib1g-dev,\n    libudev-dev,\n    libswscale-dev,\n    libswresample-dev,\n    libffmpegthumbnailer-dev,\n    libx11-dev,\n    libva-dev,\n    libimageeditor6-dev | libimageeditor-dev,\n    libgstreamer1.0-dev,\n    libgstreamer-plugins-base1.0-dev,\n    gstreamer1.0-plugins-good,\n# Qt\n    qt6-base-dev,\n    libdtk6gui-dev,\n    libdtk6widget-dev,\n    qt6-multimedia-dev,\n    qt6-tools-dev,\n    qt6-tools-dev-tools,\n    qt6-svg-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-screen-recorder",
+      "url": "https://github.com/linuxdeepin/deepin-screen-recorder",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-09T07:20:37Z",
+      "observed_head_commit": "060f3961b1bbfb54e5eefb20ba7107c2350335f1",
+      "observed_head_commit_date": "2026-11-09T07:20:36Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-screen-recorder/blob/master/README.md",
+        "git_blob_sha": "e6e4fb8aef742197743ef48a0c031631a42de061"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-screen-recorder/blob/master/debian/control",
+        "git_blob_sha": "15cc3930ce183bdc4e300cd4a14dc9feb3f96c8c",
+        "build_depends": "Build-Depends: debhelper,\n pkg-config,\n# qt\n qt6-base-dev,\n qt6-base-dev-tools,\n qt6-base-private-dev,\n qt6-l10n-tools,\n qt6-svg-dev,\n qt6-tools-dev-tools,\n qt6-tools-dev,\n libqt6multimediawidgets6,\n qt6-multimedia-dev,\n qt6-wayland-dev,\n qt6-wayland-private-dev,\n libqt6waylandclient6,\n libqt6opengl6,\n libqt6openglwidgets6,\n# dde\n libdtk6gui-dev,\n libdtk6widget-dev,\n libdtk6tablerecognizer-dev,\n dde-tray-loader-dev | dde-dock-dev,\n libffmpegthumbnailer-dev,\n deepin-desktop-base,\n# opencv\n libopencv-mobile-dev,\n# gstreamer\n gstreamer1.0-clutter-3.0,\n gstreamer1.0-x,\n libgstreamer1.0-dev,\n libgstreamer-plugins-base1.0-dev,\n gstreamer1.0-plugins-good,\n# kwayland\n# libkf5windowsystem-dev,\n# libkf5wayland-dev,\n# libkf5i18n-dev,\n# libkf5config-dev,\n# ffmpeg\n libavcodec-dev,\n libavdevice-dev,\n libavfilter-dev,\n libavformat-dev,\n libavutil-dev,\n libswscale-dev,\n libxcb-util0-dev,\n libxtst-dev,\n libxcursor-dev,\n libxfixes-dev,\n libxss1,\n libgbm-dev,\n libepoxy-dev,\n libxrandr-dev,\n libxinerama-dev,\n libepoxy-dev,\n libusb-1.0-0-dev,\n libudev-dev,\n libprocps-dev | libproc2-dev,\n portaudio19-dev,\n libv4l-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-voice-note",
+      "url": "https://github.com/linuxdeepin/deepin-voice-note",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T11:09:36Z",
+      "observed_head_commit": "9d7b86ce859a0416feb80b20702fcdbc56b482f1",
+      "observed_head_commit_date": "2026-11-05T05:35:24Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-voice-note/blob/master/README.md",
+        "git_blob_sha": "9405ab1216734a4913c7952c061a4a08305d8ee3"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-voice-note/blob/master/debian/control",
+        "git_blob_sha": "5d300aab5189e63788494c11a98ed76da513e76e",
+        "build_depends": "Build-Depends:\n debhelper (>= 11),\n cmake,\n qttools5-dev-tools,\n libutf8proc-dev,\n qtbase5-dev,\n pkg-config,\n libsqlite3-dev,\n qtmultimedia5-dev,\n libglib2.0-dev,\n libdtkwidget-dev,\n libdframeworkdbus-dev,\n libgstreamer1.0-dev,\n libpulse-dev,\n libvlc-dev,\n libvlccore-dev,\n libqt5webchannel5-dev,\n qtwebengine5-dev,\n libgtest-dev,\n libffmpegthumbnailer-dev,\n libdmr-dev (< 6.5.0),\n deepin-desktop-base",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-calculator",
+      "url": "https://github.com/linuxdeepin/deepin-calculator",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-05T13:32:01Z",
+      "observed_head_commit": "6ae1d9227f314abc3d20702b1827c92be07e625f",
+      "observed_head_commit_date": "2026-10-30T07:42:33Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-calculator/blob/master/README.md",
+        "git_blob_sha": "09d885d5ba4dfce90dc4586567cc51939c4978e4"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-calculator/blob/master/debian/control",
+        "git_blob_sha": "c907f72b4bde9a3d4adf695ddb4a5c98e15cac3e",
+        "build_depends": "Build-Depends: \n    debhelper (>= 9),\n    cmake,\n    pkg-config,\n    libdtk6gui-dev,\n    libdtk6widget-dev,\n    qt6-svg-dev,\n    qt6-tools-dev,\n    qt6-tools-dev-tools,\n    libgtest-dev,\n    libgmock-dev,\n    qt6-base-dev,\n    qt6-base-dev-tools,\n    qt6-base-private-dev,\n    qt6-l10n-tools",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-terminal",
+      "url": "https://github.com/linuxdeepin/deepin-terminal",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-10-30T06:39:27Z",
+      "observed_head_commit": "1a92f25d470a2be0150d62c27e9ed4aa11112bcb",
+      "observed_head_commit_date": "2026-10-30T06:39:00Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-terminal/blob/master/README.md",
+        "git_blob_sha": "6938d17d5e45fab51c743e86af475cec08f5c9cc"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-terminal/blob/master/debian/control",
+        "git_blob_sha": "a97e65081609d0b2d40c9ba0e4085aac1af05c00",
+        "build_depends": "Build-Depends:\n debhelper(>= 11),\n cmake,\n pkg-config,\n qt6-5compat-dev,\n qt6-base-dev,\n qt6-tools-dev,\n qt6-tools-dev-tools,\n qt6-base-private-dev,\n libdtk6widget-dev,\n lxqt-build-tools(>= 0.6.0~),\n libutf8proc-dev,\n libglib2.0-dev,\n libsecret-1-dev,\n libgtest-dev,\n libgmock-dev,\n libxcb-ewmh-dev,\n libchardet-dev,\n libuchardet-dev (>= 0.0.6),\n libicu-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-gomoku",
+      "url": "https://github.com/linuxdeepin/deepin-gomoku",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-08-19T08:05:14Z",
+      "observed_head_commit": "f35006f369c8c343b24db7d59bfcb3a375eeda14",
+      "observed_head_commit_date": "2026-08-19T08:05:13Z",
+      "license_github": null,
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-gomoku/blob/master/README.md",
+        "git_blob_sha": "a91c0d971e45504e263307fdf5f1e93bc792a584"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-gomoku/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-lianliankan",
+      "url": "https://github.com/linuxdeepin/deepin-lianliankan",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-08-19T08:05:58Z",
+      "observed_head_commit": "840f97b6604622d900a3c02fc3e9d4a330e3a8cf",
+      "observed_head_commit_date": "2026-08-19T08:05:55Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-lianliankan/blob/master/README.md",
+        "git_blob_sha": "1749e139b9c10faa07892b1879ba7884288c4790"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-lianliankan/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/lastore-daemon",
+      "url": "https://github.com/linuxdeepin/lastore-daemon",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-09T09:48:04Z",
+      "observed_head_commit": "8f36ee8eba5d829b7932809fb1829b282d8fd76c",
+      "observed_head_commit_date": "2026-11-09T08:15:27Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/lastore-daemon/blob/master/README.md",
+        "git_blob_sha": "fcd906af0adaf2bf93b74feae92e2f25882b8743"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/lastore-daemon/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-ab-recovery",
+      "url": "https://github.com/linuxdeepin/deepin-ab-recovery",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2024-07-11T09:13:30Z",
+      "observed_head_commit": "ec69f573bf30a2892157418d0b51c3c78014625b",
+      "observed_head_commit_date": "2023-07-10T06:20:21Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-ab-recovery/blob/master/README.md",
+        "git_blob_sha": "08ce405f0a98f9746b63e4bfb8755c578dcf3b0f"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-ab-recovery/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-boot-maker",
+      "url": "https://github.com/linuxdeepin/deepin-boot-maker",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-03T12:02:04Z",
+      "observed_head_commit": "89a6165899fd4cd904d83d3e409fcb6b61117ffc",
+      "observed_head_commit_date": "2026-10-30T05:09:15Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-only",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-boot-maker/blob/master/README.md",
+        "git_blob_sha": "0ea7780fbcfb6a2d283bbb477d205067f39bf091"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-boot-maker/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-deb-installer",
+      "url": "https://github.com/linuxdeepin/deepin-deb-installer",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-05T08:43:24Z",
+      "observed_head_commit": "82ed57c0058b120ab17d98ec717046a2585f3c5f",
+      "observed_head_commit_date": "2026-10-29T13:32:16Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-deb-installer/blob/master/README.md",
+        "git_blob_sha": "3ff3ddb1e62be8ea74baa6efd4ec8d77fc3275aa"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/deepin-deb-installer/blob/master/debian/control",
+        "git_blob_sha": "0005e4381a9542d767d8de1d735976c5e84f30a7",
+        "build_depends": "Build-Depends:\n debhelper (>= 9),\n pkg-config,\n cmake,\n qt6-5compat-dev,\n qt6-base-dev,\n qt6-tools-dev-tools,\n qt6-tools-dev,\n qt6-svg-dev,\n libdtk6widget-dev,\n libdtk6gui-dev,\n libdtk6core-dev,\n libqapt-qt6-dev,\n libpolkit-qt6-1-dev,\n libgtest-dev,\n deepin-gettext-tools,\n dde-file-manager-dev,",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    },
+    {
+      "name": "linuxdeepin/dde-cooperation",
+      "url": "https://github.com/linuxdeepin/dde-cooperation",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-11-10T01:12:47Z",
+      "observed_head_commit": "4d68f00dd78aa7b3bb9b625fec402cf279829916",
+      "observed_head_commit_date": "2026-11-10T01:12:46Z",
+      "license_github": null,
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/dde-cooperation/blob/master/README.md",
+        "git_blob_sha": "28281cda043d70ea83d738f7cfb2ee9e611cd56b"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/dde-cooperation/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-im",
+      "url": "https://github.com/linuxdeepin/deepin-im",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2024-07-11T07:56:22Z",
+      "observed_head_commit": "833819192c2116a031a17e24c0714f68bfae5f7d",
+      "observed_head_commit_date": "2024-01-30T09:51:39Z",
+      "license_github": null,
+      "license_readme": null,
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-im/blob/master/README.md",
+        "git_blob_sha": "80d017af5d7e699686735067068595fa77a60c33"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-im/blob/master/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/deepin-browser",
+      "url": "https://github.com/linuxdeepin/deepin-browser",
+      "archived": false,
+      "default_branch": "main",
+      "last_push_at": "2023-11-16T06:49:24Z",
+      "observed_head_commit": "33eadb0e819058484111e373525f9e502051478e",
+      "observed_head_commit_date": "2023-11-16T06:49:24Z",
+      "license_github": null,
+      "license_readme": null,
+      "readme": {
+        "url": "https://github.com/linuxdeepin/deepin-browser/blob/main/README.md",
+        "git_blob_sha": "ccfe84e55a48c50832b6dfc80ee6c8d768c227e1"
+      },
+      "dependency_evidence": {
+        "type": "README",
+        "url": "https://github.com/linuxdeepin/deepin-browser/blob/main/README.md",
+        "caveat": "README dependency versions may lag the current source."
+      }
+    },
+    {
+      "name": "linuxdeepin/util-dfm",
+      "url": "https://github.com/linuxdeepin/util-dfm",
+      "archived": false,
+      "default_branch": "master",
+      "last_push_at": "2026-10-23T07:17:58Z",
+      "observed_head_commit": "caa01bed18c74fad3e469e31351916ee53dc1f52",
+      "observed_head_commit_date": "2026-10-21T06:34:56Z",
+      "license_github": "GPL-3.0",
+      "license_readme": "GPL-3.0-or-later",
+      "readme": {
+        "url": "https://github.com/linuxdeepin/util-dfm/blob/master/README.md",
+        "git_blob_sha": "451ccbf9c66fd9b8bb40a43e9767901a821f725b"
+      },
+      "dependency_evidence": {
+        "type": "debian/control",
+        "url": "https://github.com/linuxdeepin/util-dfm/blob/master/debian/control",
+        "git_blob_sha": "69a941197f4be690a6d3d1b0c8aa1c26d587b4c8",
+        "build_depends": "Build-Depends:\n debhelper (>=9),\n cmake,\n pkg-config,\n qt6-base-dev | qtbase5-dev,\n qt6-base-private-dev | qtbase5-private-dev,\n libdtk6core-dev | libdtkcore-dev,\n libglibmm-2.4-dev,\n qt6-tools-dev-tools | qttools5-dev-tools,\n libglib2.0-dev,\n libudisks2-dev,\n libisoburn-dev,\n libssl-dev,\n libmediainfo-dev,\n libsecret-1-dev,\n liblucene++-dev,\n libboost-filesystem-dev,\n libboost-system-dev",
+        "caveat": "Packaging declarations; not an integration/build validation."
+      }
+    }
+  ],
+  "archived_legacy_installers": [
+    {
+      "name": "deepin-installer",
+      "full_name": "martyr-deepin/deepin-installer",
+      "url": "https://github.com/martyr-deepin/deepin-installer",
+      "archived": true,
+      "branch": "master",
+      "pushed_at": "2017-06-23T08:57:31Z",
+      "license": "GPL-3.0",
+      "official_referrer": "https://www.deepin.org.cn/en/original/deepin-installer/",
+      "observed_head_commit": null
+    },
+    {
+      "name": "deepin-installer-reborn",
+      "full_name": "martyr-deepin/deepin-installer-reborn",
+      "url": "https://github.com/martyr-deepin/deepin-installer-reborn",
+      "archived": true,
+      "branch": "master",
+      "pushed_at": "2019-09-11T15:18:44Z",
+      "license": "GPL-3.0",
+      "official_referrer": "https://www.deepin.org.cn/en/original/deepin-installer/",
+      "observed_head_commit": null
+    },
+    {
+      "name": "deepin-windows-installer",
+      "full_name": "martyr-deepin/deepin-windows-installer",
+      "url": "https://github.com/martyr-deepin/deepin-windows-installer",
+      "archived": true,
+      "branch": "master",
+      "pushed_at": "2018-08-01T13:00:07Z",
+      "license": "GPL-3.0",
+      "official_referrer": "https://www.deepin.org.cn/en/original/deepin-installer/",
+      "observed_head_commit": null
+    }
+  ],
+  "applications": [
+    {
+      "id": "finder",
+      "app": "Finder",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/dde-file-manager",
+        "linuxdeepin/util-dfm"
+      ],
+      "purpose": "File operations, search, Trash, archives, properties; reusable I/O, mount and search libraries.",
+      "limitations": "Source candidate for mechanisms. DDE shell/services and Qt6/DTK6 integration need adaptation; no Tahoe UI/animation parity established.",
+      "evidence_urls": []
+    },
+    {
+      "id": "settings",
+      "app": "System Settings",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/dde-control-center",
+        "linuxdeepin/dde-daemon"
+      ],
+      "purpose": "Modular settings frontend plus session/system settings services.",
+      "limitations": "Current control-center packaging couples to dde-services, DDE shell, Treeland protocols and system privileges; not a drop-in generic Settings backend.",
+      "evidence_urls": []
+    },
+    {
+      "id": "browser",
+      "app": "Safari-like browser",
+      "status": "placeholder_repository",
+      "repositories": [
+        "linuxdeepin/deepin-browser"
+      ],
+      "purpose": "Official named repository exists.",
+      "limitations": "Default branch contains only README.md (39 bytes, TODO); no renderer or complete browser implementation available in this repo.",
+      "evidence_urls": [
+        "https://api.github.com/repos/linuxdeepin/deepin-browser/contents",
+        "https://github.com/linuxdeepin/deepin-browser/blob/33eadb0e819058484111e373525f9e502051478e/README.md"
+      ]
+    },
+    {
+      "id": "messages",
+      "app": "Messages",
+      "status": "no_suitable_public_repo_verified",
+      "repositories": [
+        "linuxdeepin/dde-cooperation",
+        "linuxdeepin/deepin-im"
+      ],
+      "purpose": "Related repos checked to avoid false matches.",
+      "limitations": "dde-cooperation handles file transfer/device cooperation; deepin-im is an input method. Neither supplies a verified messaging service/client.",
+      "evidence_urls": []
+    },
+    {
+      "id": "mail",
+      "app": "Mail",
+      "status": "package_exists_source_unverified",
+      "repositories": [],
+      "purpose": "deepin-mail is listed in an official Deepin non-free package index.",
+      "limitations": "No suitable public source repository located in the audited linuxdeepin inventory; engine and reuse license not established.",
+      "evidence_urls": [
+        "https://community-packages.deepin.com/pool/non-free/d/"
+      ]
+    },
+    {
+      "id": "maps",
+      "app": "Maps",
+      "status": "no_suitable_public_repo_verified",
+      "repositories": [],
+      "purpose": "No corresponding maps/navigation project found.",
+      "limitations": "Bounded to the audited official organization; not a claim about all Linux mapping software.",
+      "evidence_urls": []
+    },
+    {
+      "id": "photos",
+      "app": "Photos",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-album",
+        "linuxdeepin/deepin-image-viewer"
+      ],
+      "purpose": "Album photo timelines, collections/albums; viewer for image display.",
+      "limitations": "Qt6/DTK6 and EXIF/RAW/image-format components; no iCloud Photos or complete Apple Photos feature equivalence established.",
+      "evidence_urls": []
+    },
+    {
+      "id": "facetime",
+      "app": "FaceTime",
+      "status": "no_suitable_public_repo_verified",
+      "repositories": [],
+      "purpose": "No matching video-call backend/client found.",
+      "limitations": "Device cooperation is not a verified video-call backend; no FaceTime protocol interoperability established.",
+      "evidence_urls": []
+    },
+    {
+      "id": "phone",
+      "app": "Phone",
+      "status": "package_name_only_source_unverified",
+      "repositories": [],
+      "purpose": "Official non-free index includes deepin-phone-assistant.",
+      "limitations": "Name alone does not establish telephony/SMS functionality; no suitable public counterpart or reusable calling backend verified.",
+      "evidence_urls": [
+        "https://community-packages.deepin.com/pool/non-free/d/"
+      ]
+    },
+    {
+      "id": "calendar",
+      "app": "Calendar",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/dde-calendar"
+      ],
+      "purpose": "Calendar events/scheduling with alarm-manager and CalDAV account-sync source.",
+      "limitations": "CalDAV API/source was inspected; no server interoperability or runtime test performed. README app license is GPL-3.0-or-later; inspected alarm/CalDAV headers carry LGPL-3.0-or-later.",
+      "evidence_urls": [
+        "https://github.com/linuxdeepin/dde-calendar/blob/10491cff7da7f870e3501f11f4368c0dac2118ce/src/calendar-service/src/caldav/dcaldavaccountsync.h"
+      ]
+    },
+    {
+      "id": "reminders",
+      "app": "Reminders",
+      "status": "partial_source_candidate",
+      "repositories": [
+        "linuxdeepin/dde-calendar"
+      ],
+      "purpose": "Schedule alarm manager supports event notifications and remind-later operations.",
+      "limitations": "No standalone task-list app or full Reminders counterpart verified; bundled kcalendarcore Todo class alone does not prove an exposed task product.",
+      "evidence_urls": [
+        "https://github.com/linuxdeepin/dde-calendar/blob/10491cff7da7f870e3501f11f4368c0dac2118ce/src/calendar-service/src/alarmManager/dalarmmanager.h"
+      ]
+    },
+    {
+      "id": "notes",
+      "app": "Notes",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-voice-note"
+      ],
+      "purpose": "Text notes and voice recordings; SQLite and audio libraries in packaging.",
+      "limitations": "Suitable notes/audio mechanisms, but complete Apple Notes rich-content, sync and collaboration parity unverified.",
+      "evidence_urls": []
+    },
+    {
+      "id": "contacts",
+      "app": "Contacts",
+      "status": "no_suitable_public_repo_verified",
+      "repositories": [],
+      "purpose": "No standalone address-book/contacts backend found.",
+      "limitations": "Bounded to audited public organization; contacts support inside closed packages not assessed.",
+      "evidence_urls": []
+    },
+    {
+      "id": "music",
+      "app": "Music",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-music"
+      ],
+      "purpose": "Local music player; Qt6/DTK6, VLC/FFmpeg, TagLib and MPRIS dependencies.",
+      "limitations": "Local playback candidate, not an Apple Music subscription/catalog service.",
+      "evidence_urls": []
+    },
+    {
+      "id": "games",
+      "app": "Games",
+      "status": "partial_source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-gomoku",
+        "linuxdeepin/deepin-lianliankan"
+      ],
+      "purpose": "Gomoku and tile-matching puzzle games.",
+      "limitations": "Individual games, not a Games/Game Center library, achievements or account service.",
+      "evidence_urls": []
+    },
+    {
+      "id": "appstore",
+      "app": "App Store",
+      "status": "partial_source_candidate",
+      "repositories": [
+        "linuxdeepin/lastore-daemon"
+      ],
+      "purpose": "APT/D-Bus package/update service; official Deepin Store product supports app browsing/installing/rating.",
+      "limitations": "lastore-daemon is not the store GUI/catalog. Store package is listed in non-free index; suitable public storefront source not located.",
+      "evidence_urls": [
+        "https://www.deepin.org/en/original/deepin-appstore/",
+        "https://community-packages.deepin.com/pool/non-free/d/"
+      ]
+    },
+    {
+      "id": "terminal",
+      "app": "Terminal",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-terminal"
+      ],
+      "purpose": "Real terminal emulator with workspaces, windows and remote management; bundled terminalwidget backend.",
+      "limitations": "Qt6 preferred/Qt5 fallback in current CMake; backend extraction and Linux PTY behavior still need integration testing.",
+      "evidence_urls": [
+        "https://github.com/linuxdeepin/deepin-terminal/blob/1a92f25d470a2be0150d62c27e9ed4aa11112bcb/CMakeLists.txt"
+      ]
+    },
+    {
+      "id": "calculator",
+      "app": "Calculator",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-calculator"
+      ],
+      "purpose": "Calculator application with Qt6/DTK6 packaging.",
+      "limitations": "A calculator mechanism candidate; Apple Math Notes/unit-conversion feature parity not assessed.",
+      "evidence_urls": []
+    },
+    {
+      "id": "chess",
+      "app": "Chess",
+      "status": "no_exact_source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-gomoku"
+      ],
+      "purpose": "Gomoku is available as a board game.",
+      "limitations": "Gomoku/five-in-a-row is not western chess; no exact Chess engine/application found in the audited organization.",
+      "evidence_urls": []
+    },
+    {
+      "id": "photobooth",
+      "app": "Photo Booth",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-camera"
+      ],
+      "purpose": "USB camera photos/videos; README identifies Guvcview heritage; current packaging uses Qt6, FFmpeg and GStreamer.",
+      "limitations": "Camera capture candidate; Photo Booth filters/layout/animation equivalence not established.",
+      "evidence_urls": []
+    },
+    {
+      "id": "screenrecorder",
+      "app": "Screen Recorder",
+      "status": "source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-screen-recorder"
+      ],
+      "purpose": "Region recording with stop/save UI; current Qt6/Wayland, FFmpeg and GStreamer dependencies.",
+      "limitations": "Wayland compositor/portal compatibility must be validated on makOS; no tested drop-in integration.",
+      "evidence_urls": []
+    },
+    {
+      "id": "backup",
+      "app": "Backup / Time Machine-like",
+      "status": "partial_source_candidate",
+      "repositories": [
+        "linuxdeepin/deepin-ab-recovery"
+      ],
+      "purpose": "A/B root filesystem backup/rollback service using rsync and GRUB.",
+      "limitations": "Requires current/candidate root partitions plus /boot and /home. Design excludes /home from root copy, so this does not supply Time Machine-like personal-file history. Last default-branch commit 2023; non-archived is not proof of active maintenance.",
+      "evidence_urls": [
+        "https://github.com/linuxdeepin/deepin-ab-recovery/blob/master/docs/design.md"
+      ]
+    },
+    {
+      "id": "installer",
+      "app": "OS Installer",
+      "status": "archived_historical_source",
+      "repositories": [
+        "martyr-deepin/deepin-installer-reborn",
+        "martyr-deepin/deepin-installer",
+        "linuxdeepin/deepin-deb-installer",
+        "linuxdeepin/deepin-boot-maker"
+      ],
+      "purpose": "Historical OS-installer sources linked by official site; current .deb package installer and bootable-USB writer also exist.",
+      "limitations": "Official legacy installer links redirect to archived martyr-deepin projects. deepin-deb-installer installs packages, and deepin-boot-maker writes boot media; neither is a complete current OS installer.",
+      "evidence_urls": [
+        "https://www.deepin.org.cn/en/original/deepin-installer/",
+        "https://github.com/martyr-deepin/deepin-installer-reborn"
+      ]
+    }
+  ],
+  "recommended_initial_mechanisms": [
+    "util-dfm for file I/O/mount/search",
+    "dde-calendar events/alarms/CalDAV",
+    "deepin-music local playback",
+    "deepin-album/image-viewer",
+    "deepin-terminal terminalwidget",
+    "deepin-camera capture"
+  ],
+  "integration_note": "Treat Deepin components as backend/library/service candidates behind a unified makOS frontend. Reskinning an app does not create Tahoe behavior or Apple service compatibility."
+}

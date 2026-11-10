@@ -26,8 +26,13 @@ class Store(QObject):
         self.prefs[key] = value; self._revision += 1; self.changed.emit()
     @Slot(result='QVariantMap')
     def storage(self): return dict(total=1000000000, free=800000000, photos=0, songs=0, documents=0, path='/isolated-settings-test')
+class DisabledAudio(QObject):
+    @Property(bool, constant=True)
+    def available(self): return False
 class Bridge(QObject):
-    def __init__(self): super().__init__(); self.store = Store()
+    def __init__(self): super().__init__(); self.store = Store(); self.audio = DisabledAudio()
+    @Property(QObject, constant=True)
+    def ddeAudio(self): return self.audio
     @Property(QObject, constant=True)
     def suite(self): return self.store
     @Property(str, constant=True)
@@ -51,6 +56,7 @@ ApplicationWindow {
     width: 1100; height: 1040; visible: true
     Item {
         id: desk; objectName: "desktop"; anchors.fill: parent
+        property bool cutefishMode: false
         property bool dark: true
         property bool shellActive: true
         property bool reduceMotion: true

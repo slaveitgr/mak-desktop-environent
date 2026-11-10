@@ -5,7 +5,7 @@ Item {
     id: dock
     required property var desktop
     required property Item backdrop
-    readonly property var minimizedWindows: desktop.windows.filter(w => w.minimized && !w.closing)
+    readonly property var minimizedWindows: desktop.dockWindows.filter(w => w.minimized && !w.closing)
     property var entries: []
     onMinimizedWindowsChanged: rebuildEntries()
     Component.onCompleted: rebuildEntries()
@@ -23,7 +23,7 @@ Item {
                 image: "finder.png",
                 action: "finder"
             }
-        ].concat(Bridge.applicationCatalog.filter(a=>desktop.hiddenDockApps.indexOf(a.id)<0 || desktop.windows.some(w=>w.appKind===a.id && !w.closing)).map(app => ({
+        ].concat(Bridge.applicationCatalog.filter(a=>a.id==="apps" || desktop.hiddenDockApps.indexOf(a.id)<0 || desktop.dockWindows.some(w=>w.appKind===a.id && !w.closing)).map(app => ({
                     name: app.label,
                     image: app.image,
                     action: "app:" + app.id
@@ -234,7 +234,7 @@ Item {
                     radius: 2
                     x: (parent.width - width) / 2 - (entry.index === dock.applicationCount - 1 ? 5 : 0)
                     y: dock.baseIconSize + 11
-                    visible: desktop.dockIndicators && desktop.windows.some(w => !w.closing && (entry.modelData.action === w.appKind || entry.modelData.action === "app:" + w.appKind))
+                    visible: desktop.dockIndicators && desktop.dockWindows.some(w => !w.closing && (entry.modelData.action === w.appKind || entry.modelData.action === "app:" + w.appKind))
                     color: desktop.dark ? "#e6ffffff" : "#a6242930"
                 }
                 Glass {
@@ -281,11 +281,11 @@ Item {
                         if (entry.isWindow) {
                             desktop.focusWindow(entry.modelData.window);
                         } else if (entry.modelData.action === "finder") {
-                            if (!desktop.windows.some(w => w.appKind === "finder" && !w.closing) && !desktop.reduceMotion && desktop.dockLaunchAnimation)
+                            if (!desktop.dockWindows.some(w => w.appKind === "finder" && !w.closing) && !desktop.reduceMotion && desktop.dockLaunchAnimation)
                                 launchBounce.restart();
                             desktop.activateFinder();
                         } else if (entry.modelData.action === "settings") {
-                            if (!desktop.windows.some(w => w.appKind === "settings" && !w.closing) && !desktop.reduceMotion && desktop.dockLaunchAnimation)
+                            if (!desktop.dockWindows.some(w => w.appKind === "settings" && !w.closing) && !desktop.reduceMotion && desktop.dockLaunchAnimation)
                                 launchBounce.restart();
                             desktop.openSettings("");
                         } else if (entry.modelData.action.startsWith("app:")) {

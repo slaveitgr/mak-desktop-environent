@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+. /usr/lib/live/config.sh
+if component_was_executed "makos-session"; then exit 0; fi
+test -x /opt/makos/cutefish/run-session || exit 0
+test -f /usr/share/wayland-sessions/makos.desktop || exit 0
+# 0086-cutefish-dm owns the live username and noautologin policy. Preserve them.
+python3 - <<'PY'
+import configparser
+from pathlib import Path
+path=Path('/etc/cutefish-dm.conf')
+config=configparser.ConfigParser(interpolation=None);config.optionxform=str
+config.read(path)
+if not config.has_section('Session'):config.add_section('Session')
+config['Session']['Default']='makos'
+if config.has_section('Autologin') and config['Autologin'].get('User',''):
+    config['Autologin']['Session']='makos'
+with path.open('w') as stream:config.write(stream,space_around_delimiters=False)
+PY
+touch /var/lib/live/config/makos-session

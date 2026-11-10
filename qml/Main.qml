@@ -11,9 +11,13 @@ ApplicationWindow {
     id: app
     signal shellClosing()
     property bool layerShellMode: false
+    property var nativeShellState: null
+    readonly property bool externalShellMode: typeof useCutefishShell !== "undefined" && useCutefishShell
     property alias controller: desktop
     property alias topbarView: topChrome
     property alias dockView: dock
+    readonly property bool appsOverlayVisible: appsOverlay.visible
+    function toggleAppsLauncher() { desktop.toggleApps(); }
     readonly property bool cutefishMode: typeof cutefishApp !== "undefined" && cutefishApp !== ""
     visible: !cutefishMode
     width: comparisonMode ? Math.floor(Screen.width / 2) : Math.min(1360, Screen.width - 50)
@@ -62,6 +66,36 @@ ApplicationWindow {
         objectName: "desktop"
         anchors.fill: parent
         readonly property bool cutefishMode: app.cutefishMode
+        readonly property bool externalShellMode: app.externalShellMode
+        readonly property var shellState: app.nativeShellState
+        readonly property bool appsOverlayVisible: appsOverlay.visible
+        function toggleApps() {
+            if (appsOverlay.visible) appsOverlay.close();
+            else { menu.close(); subMenu.close(); systemPanel.close(); searchOverlay.close(); appsOverlay.open(); }
+        }
+        readonly property var dockWindows: externalShellMode && shellState ? shellState.windows.map(function(w) {
+            let id = String(w.appId || "");
+            let info = Bridge.applicationCatalog.find(a => a.desktopId === id);
+            let kind = id === "org.makos.Finder" ? "finder" : id === "org.makos.Settings" ? "settings" : info ? info.id : "apps";
+            return {foreignId:String(w.id),appKind:kind,windowTitle:w.title || (info ? info.name : id),minimized:w.state==="minimized",isFullscreen:w.state==="fullscreen",closing:false,appHidden:false,nativeWindow:true,nativeThumbnail:""};
+        }) : windows
+        readonly property var foreignMenuItems: shellState ? shellState.menus : []
+        readonly property var foreignMenuNames: {
+            let root = foreignMenuItems.find(i => i.id === 0);
+            return root ? root.children.map(id => foreignMenuItems.find(i => i.id === id)).filter(i => i && i.visible).map(i => i.label) : [];
+        }
+        function foreignMenuRows(name) {
+            let top = foreignMenuItems.find(i => i.label === name && i.parent === 0);
+            function rows(ids, depth) {
+                if (depth > 12) return [];
+                return ids.map(id => foreignMenuItems.find(i => i.id === id)).filter(i => i && i.visible).map(function(i) {
+                    let row = {label:i.label,enabled:i.enabled,separator:i.separator,checked:i.toggleState===1,command:"foreign-menu:"+shellState.activeId+":"+i.id};
+                    if(i.hasSubmenu) row.submenu=rows(i.children || [],depth+1);
+                    return row;
+                });
+            }
+            return top ? rows(top.children || [],0) : [];
+        }
         readonly property bool shellActive: app.active
         readonly property bool nativeWindows: typeof startNativeWindows !== "undefined" && startNativeWindows
         readonly property var hostPalette: app.palette
@@ -172,12 +206,13 @@ ApplicationWindow {
         function toggleDockPin(id) {let hidden=hiddenDockApps.slice();let i=hidden.indexOf(id);if(i>=0)hidden.splice(i,1);else hidden.push(id);Bridge.suite.setPreference("dock.hidden",JSON.stringify(hidden));}
         function openDockMenu(entry, x, y) {
             let id=entry.action.startsWith("app:")?entry.action.slice(4):entry.action;
-            let running=windows.filter(w=>w.appKind===id && !w.closing);
+            let running=dockWindows.filter(w=>w.appKind===id && !w.closing);
             let rows=[];
-            if(entry.window) rows=[row("Open","window:"+windows.indexOf(entry.window))];
+            function windowCommand(w) { return w.foreignId ? "foreign-window:"+w.foreignId : "window:"+windows.indexOf(w); }
+            if(entry.window) rows=[row("Open",windowCommand(entry.window))];
             else if(id==="downloads" || id==="trash")rows=[row("Open in Finder","go:"+(id==="trash"?".Trash":"Downloads"))];
             else {
-                rows=running.map(w=>row(w.windowTitle,"window:"+windows.indexOf(w),"",true,w===activeWindow));
+                rows=running.map(w=>row(w.windowTitle,windowCommand(w),"",true,w.foreignId ? shellState.activeId===w.foreignId : w===activeWindow));
                 if(rows.length)rows.push(sep());
                 rows.push({label:"Options",submenu:[row("Keep in Dock","dockpin:"+id,"",id!=="finder" && id!=="apps" && id!=="settings",hiddenDockApps.indexOf(id)<0),row("Open at Login","", "",false),row("Show in Finder","revealapp:"+id)]});
                 rows.push(row("Show All Windows","dockshow:"+id,"",running.length>0));
@@ -228,7 +263,7 @@ ApplicationWindow {
             if(!w) { w=aboutComponent.createObject(windowLayer,{desktop:desktop}); if(!w)return; w.x=(desktop.width-w.width)/2;w.y=65;windows=windows.concat([w]); }
             focusWindow(w);
         }
-        readonly property string activeAppName: activeWindow ? (activeWindow.appKind === "settings" ? "System Settings" : activeWindow.appKind === "finder" ? "Finder" : activeWindow.windowTitle) : "Finder"
+        readonly property string activeAppName: externalShellMode && foreignMenuNames.length ? foreignMenuNames[0] : activeWindow ? (activeWindow.appKind === "settings" ? "System Settings" : activeWindow.appKind === "finder" ? "Finder" : activeWindow.windowTitle) : "Finder"
         function setAppearance(mode) {
             appearanceMode = mode === "auto" ? "auto" : "manual";
             dark = mode === "auto" ? (now.getHours() >= 18 || now.getHours() < 7) : mode === "dark";
@@ -298,24 +333,7 @@ ApplicationWindow {
                 onHoveredChanged: desktop.updateDockVisibility()
             }
         }
-        Settings {
-            category: "Appearance"
-            property alias appearanceMode: desktop.appearanceMode
-            property alias glassTinted: desktop.glassTinted
-            property alias wallpaperTint: desktop.wallpaperTint
-            property alias alwaysShowScrollbars: desktop.alwaysShowScrollbars
-            property alias dockMagnification: desktop.dockMagnification
-            property alias dockAutoHide: desktop.dockAutoHide
-            property alias dockIndicators: desktop.dockIndicators
-            property alias dockLaunchAnimation: desktop.dockLaunchAnimation
-            property alias showDesktopItems: desktop.showDesktopItems
-            property alias wallpaperMode: desktop.wallpaperMode
-            property alias showClock: desktop.showClock
-            property alias showSearchIcon: desktop.showSearchIcon
-            property alias dark: desktop.dark
-            property alias reduceMotion: desktop.reduceMotion
-            property alias reduceTransparency: desktop.reduceTransparency
-        }
+        SharedAppearance { desktop: desktop }
         property var windows: []
         property var activeWindow: null
         property int highestZ: 10
@@ -334,6 +352,7 @@ ApplicationWindow {
         readonly property bool editing: promptBox.opened || searchOverlay.opened || infoBox.opened || appearance.opened || (activeWindow && activeWindow.searchFocused)
 
         function focusWindow(window, keepFocus) {
+            if (window && window.foreignId && shellState) { shellState.activate(window.foreignId); return; }
             if (!window || window.closing)
                 return;
             ensureNativeWindow(window);
@@ -352,6 +371,7 @@ ApplicationWindow {
                 window.forceActiveFocus();
         }
         function newWindow(path) {
+            if (externalShellMode) { Bridge.launchCutefishApp("finder"); return; }
             if (cutefishMode && cutefishApp !== "finder") { Bridge.launchCutefishApp("finder"); return; }
             let browser = Bridge.createBrowser(path === undefined ? Bridge.initialFolder : path);
             let w = finderComponent.createObject(windowLayer, {
@@ -368,6 +388,7 @@ ApplicationWindow {
             focusWindow(w);
         }
         function openSettings(page) {
+            if (externalShellMode) { Bridge.launchCutefishApp("settings"); return; }
             if (cutefishMode && cutefishApp !== "settings") { Bridge.launchCutefishApp("settings"); return; }
             let w = windows.find(item => item.appKind === "settings" && !item.closing);
             if (!w) {
@@ -387,6 +408,18 @@ ApplicationWindow {
                 w.navigate(page);
         }
         function openApplication(id) {
+            if (id === "apps") {
+                if (cutefishMode) Bridge.launchCutefishApp("apps");
+                else toggleApps();
+                return;
+            }
+            if ((typeof externalShellMode !== "undefined" && externalShellMode) || (cutefishMode && id !== cutefishApp)) {
+                let running = dockWindows.find(w=>w.appKind===id && !w.closing);
+                if (externalShellMode && running) { focusWindow(running); return; }
+                if (id.startsWith("xdg:")) Bridge.session.launch(id);
+                else Bridge.launchCutefishApp(id);
+                return;
+            }
             if (id.startsWith("xdg:")) { Bridge.session.launch(id); return; }
             if (id === "finder") { activateFinder(); return; }
             if (id === "settings") { openSettings(""); return; }
@@ -405,7 +438,15 @@ ApplicationWindow {
             }
             focusWindow(w);
         }
+        function newBrowserWindow(privateMode) {
+            let w = suiteComponent.createObject(windowLayer, {desktop:desktop,appKind:"safari",windowTitle:privateMode ? "Safari — Private Browsing" : "Safari",privateBrowsing:!!privateMode});
+            if (!w) return;
+            w.width=Math.min(1020,desktop.width-40); w.height=Math.min(680,desktop.height-130);
+            w.x=Math.max(20,(desktop.width-w.width)/2+(windows.length%3)*12); w.y=55+(windows.length%3)*16;
+            windows=windows.concat([w]); focusWindow(w);
+        }
         function closeWindow(w) {
+            if (w && w.foreignId && shellState) { shellState.closeWindow(w.foreignId); return; }
             if (!w || w.closing)
                 return;
             if (fullscreenState.window === w)
@@ -436,6 +477,7 @@ ApplicationWindow {
                 focusWindow(remaining[remaining.length - 1]);
         }
         function minimizeWindow(w) {
+            if (w && w.foreignId && shellState) { shellState.minimize(w.foreignId); return; }
             if (!w || w.isFullscreen)
                 return;
             w.minimized = true;
@@ -514,7 +556,7 @@ ApplicationWindow {
                 separator: true
             };
         }
-        function menuRows(name) { return menuRowsFor(name, activeWindow); }
+        function menuRows(name) { return externalShellMode && name !== "apple" ? foreignMenuRows(name) : menuRowsFor(name, activeWindow); }
         function menuRowsFor(name, target) {
             let w = target;
             let has = !!w;
@@ -534,7 +576,7 @@ ApplicationWindow {
             if (has && w.appKind !== "finder" && name !== "apple")
                 return AppMenus.rows(w.appKind,name,w,desktop);
             if (name === "apple")
-                return [row("About This Mac", "aboutmac"), sep(), row("System Settings…", "settings"), row("App Store…", "launch:appstore"), sep(), {label:"Recent Items", submenu: recentMenuRows()}, sep(), row("Force Quit…", "forcequit", "⌥⌘⎋"), sep(), row("Sleep", "session:sleep"), row("Restart…", "session:restart"), row("Shut Down…", "session:shutdown"), sep(), row("Lock Screen", "session:lock", "⌃⌘Q"), row("Log Out " + Bridge.systemInfo.user + "…", "session:logout", "⇧⌘Q")];
+                return [row("About This Mak", "aboutmac"), sep(), row("System Settings…", "settings"), row("App Store…", "launch:appstore"), sep(), {label:"Recent Items", submenu: recentMenuRows()}, sep(), row("Force Quit…", "forcequit", "⌥⌘⎋"), sep(), row("Sleep", "session:sleep"), row("Restart…", "session:restart"), row("Shut Down…", "session:shutdown"), sep(), row("Lock Screen", "session:lock", "⌃⌘Q"), row("Log Out " + Bridge.systemInfo.user + "…", "session:logout", "⇧⌘Q")];
             return FinderMenus.rows(name,w || desktopFiles,desktop,Bridge);
         }
         function nativeMenuRows(w) {
@@ -553,6 +595,10 @@ ApplicationWindow {
             }));
         }
         function openTopMenu(name, x) {
+            if (externalShellMode && shellState && name !== "apple") {
+                let nativeMenu=foreignMenuItems.find(i=>i.parent===0 && i.label===name);
+                if(nativeMenu) shellState.menuEvent(shellState.activeId,nativeMenu.id,"prepare");
+            }
             systemPanel.close();
             searchOverlay.close();
             subMenu.close();
@@ -583,6 +629,8 @@ ApplicationWindow {
             contextMenu.open();
         }
         function dispatch(command) {
+            if (command.startsWith("foreign-menu:") && shellState) { let parts=command.split(":");shellState.menuEvent(parts[1],Number(parts[2]),"activate");return; }
+            if (command.startsWith("foreign-window:") && shellState) { shellState.activate(command.slice(15)); return; }
             let w = activeWindow;
             if (command === "search") { openStatusPanel("search"); return; }
             if (command.startsWith("controlhide:")) { controls.setInMenu(command.slice(12),false); return; }
@@ -591,9 +639,9 @@ ApplicationWindow {
             if(command.startsWith("dockpin:")){toggleDockPin(command.slice(8));return;}
             if(command==="dockhiding"){dockAutoHide=!dockAutoHide;return;}
             if(command==="dockmagnification"){dockMagnification=!dockMagnification;return;}
-            if(command.startsWith("dockshow:")){for(let window of windows.filter(i=>i.appKind===command.slice(9)&&!i.closing))focusWindow(window);return;}
-            if(command.startsWith("revealapp:")){openFolder("@applications");activeWindow.selected=["@app:"+command.slice(10)];return;}
-            if(command.startsWith("dockquit:")){let id=command.slice(9);for(let window of windows.filter(i=>i.appKind===id))closeWindow(window);if(id==="finder")newWindow();return;}
+            if(command.startsWith("dockshow:")){for(let window of dockWindows.filter(i=>i.appKind===command.slice(9)&&!i.closing))focusWindow(window);return;}
+            if(command.startsWith("revealapp:")){openFolder("@applications");if(activeWindow)activeWindow.selected=["@app:"+command.slice(10)];return;}
+            if(command.startsWith("dockquit:")){let id=command.slice(9);for(let window of dockWindows.filter(i=>i.appKind===id))closeWindow(window);if(id==="finder" && !externalShellMode)newWindow();return;}
             if (command === "aboutmac") { openAbout(); return; }
             if (command.startsWith("launch:")) { openApplication(command.slice(7)); return; }
             if (command === "clearrecent") { recentApps=[]; Bridge.suite.setPreference("menubar.recentFiles","[]"); return; }
@@ -887,7 +935,7 @@ ApplicationWindow {
                 height: 30
                 Repeater {
                     id: topMenuItems
-                    model: desktop.activeAppName === "Finder" ? ["apple", "Finder", "File", "Edit", "View", "Go", "Window", "Help"] : desktop.activeAppName === "System Settings" ? ["apple", "System Settings", "Edit", "View", "Window", "Help"] : ["apple"].concat(AppMenus.names(desktop.activeWindow ? desktop.activeWindow.appKind : "finder", desktop.activeAppName))
+                    model: desktop.externalShellMode ? ["apple"].concat(desktop.foreignMenuNames) : desktop.activeAppName === "Finder" ? ["apple", "Finder", "File", "Edit", "View", "Go", "Window", "Help"] : desktop.activeAppName === "System Settings" ? ["apple", "System Settings", "Edit", "View", "Window", "Help"] : ["apple"].concat(AppMenus.names(desktop.activeWindow ? desktop.activeWindow.appKind : "finder", desktop.activeAppName))
                     delegate: Rectangle {
                         id: menuLabel
                         required property string modelData
@@ -903,16 +951,18 @@ ApplicationWindow {
                             font.weight: menuLabel.modelData === desktop.activeAppName ? Font.DemiBold : Font.Normal
                             color: "white"
                         }
-                        Icon {
+                        Image {
                             visible: menuLabel.modelData === "apple"
                             anchors.centerIn: parent
-                            width: 17
-                            height: 19
-                            name: "apple"
-                            color: "white"
+                            width: 23
+                            height: 18
+                            source: "../installer/branding/makos-ck-symbol.svg"
+                            fillMode: Image.PreserveAspectFit
+                            sourceSize: Qt.size(92, 72)
                         }
                         MouseArea {
                             id: menuHover
+                            objectName: "topMenuItem_" + menuLabel.modelData
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
@@ -952,6 +1002,23 @@ ApplicationWindow {
             desktop: desktop
             backdrop: scene
         }
+        Timer {
+            interval:300; repeat:true; running:desktop.externalShellMode && !!desktop.shellState
+            onTriggered: {
+                let minimized=desktop.dockWindows.filter(w=>w.minimized);
+                for(let w of desktop.dockWindows) {
+                    let index=w.minimized?minimized.findIndex(i=>i.foreignId===w.foreignId):minimized.length;
+                    let x=(desktop.width-dock.restWidth)/2+22+(dock.applicationCount+1+Math.max(0,index))*dock.pitch;
+                    desktop.shellState.minimizeTarget(w.foreignId,Math.round(x),Math.round(desktop.height-dock.baseIconSize-12),Math.round(dock.baseIconSize),Math.round(dock.baseIconSize*0.7));
+                }
+            }
+        }
+        Connections {
+            target:desktop.shellState
+            function onChanged(){if(menu.opened && desktop.externalShellMode && desktop.openMenuName!=="apple")menu.rows=desktop.menuRows(desktop.openMenuName);}
+            function onLauncherToggleRequested(){desktop.toggleApps();}
+        }
+        AppsOverlay { id: appsOverlay; desktop: desktop; backdrop: scene; parent: desktop.shellOverlay }
 
         // Qt Quick Popups receive pointer events in Overlay.overlay. Track the
         // bar in that same overlay while a menu is open, so hovering adjacent
@@ -1467,7 +1534,8 @@ ApplicationWindow {
             SettingsWindow {}
         }
         Component.onCompleted: {
-            if (cutefishMode && cutefishApp === "settings") openSettings("");
+            if (typeof externalShellMode !== "undefined" && externalShellMode) { /* The shell opens native clients on demand. */ }
+            else if (cutefishMode) openApplication(cutefishApp);
             else newWindow();
             if (startSettings && !cutefishMode)
                 openSettings("");

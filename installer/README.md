@@ -11,7 +11,7 @@ the corresponding macOS installer resource was not found on this machine. It is 
 ./installer/run --preview
 ```
 
-A preview cannot launch installation or disk tools. In a live image, startup
+A preview can open the makOS installer interface, but cannot discover real destination disks or start installation. In a live image, startup
 requires both the mounted `/run/live/medium` and the image's `/etc/makos/live.json`.
 The image's Cutefish autostart entry opens Recovery. Its window uses the actual
 Cutefish menu bar through the same native bridge as Finder and Settings; the
@@ -23,14 +23,19 @@ to its previous auto-hide setting when choosing Try makOS.
 | Choice | Live utility | Current boundary |
 | --- | --- | --- |
 | Restore from Backup | Déjà Dup restore wizard | Compatible file backups; no Apple Time Machine restoration |
-| Install makOS | The ISO's Cutefish installer | Copies the remastered makOS filesystem; its installation wizard still uses Cutefish's interface and confirmation flow |
+| Install makOS | makOS installer interface + original Cutefish system daemon | Whole-disk erase only; account/time zone, explicit disk confirmation and fresh layout verification |
 | Web Browser | Chromium in a separate temporary profile | No Safari or Apple account services |
 | Disk Utility | makOS Disk Utility | Read-only Linux inventory; explicit handoff to GNOME Disks for changes |
 
 Utilities also exposes Cutefish Terminal. These processes start only when the
 user selects them. Closing a utility returns to Recovery. Starting Recovery
-itself does not select, partition, erase or install to any disk. The launch
-adapter never calls the privileged installer `Install` method directly.
+itself does not select, partition, erase or install to any disk. The makOS installer adapter calls the privileged daemon’s `Install` method only after the user reviews and confirms the exact destination. The original Cutefish installer window is not launched. Progress and completion come from daemon signals; a disconnected or timed-out request is not reported as success.
+
+The image also installs `org.makos.Installer.desktop` for this interface. The
+stock Cutefish wizard's desktop entry is hidden and replaced with the makOS
+command; its privileged service stays installed. The welcome panel follows
+the observed light Tahoe installer layout, while Recovery and Disk Utility
+keep the supplied dark reference appearance.
 
 The original Cutefish installer package is
 `1.0~git20261030043000.0cb8ef5-1`, from commit

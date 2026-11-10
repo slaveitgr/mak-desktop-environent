@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/cutefishos/cutefish-compositor",
+  "commit": "0e709136bd7056136e74e981acffc4b88d659e0b",
+  "url": "https://codeload.github.com/cutefishos/cutefish-compositor/tar.gz/0e709136bd7056136e74e981acffc4b88d659e0b",
+  "archive_bytes": 1989931,
+  "archive_sha256": "e00080ebc3371d3e84aa2a39cfefdaf30bc1634343b45532542584837d677fe3",
+  "upstream_license": "BSD-3-Clause",
+  "scope": "Optional shell-only MenuBar/BrandIcon setting; account avatars and native menu actions are preserved."
+}

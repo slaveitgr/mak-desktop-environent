@@ -5,6 +5,12 @@ Item {
     id: state
     objectName: "controlState"
     required property var desktop
+    readonly property bool nativeSystem: desktop.cutefishMode || desktop.externalShellMode
+    readonly property var systemBackend: Bridge.linuxSettings
+    readonly property var systemState: systemBackend.state
+    readonly property var systemOutput: ((systemState.audio || {}).outputs || []).find(device => device.default) || null
+    readonly property bool soundAvailable: !nativeSystem || (systemBackend.ready && !!systemOutput && !!systemOutput.writable)
+    property real queuedVolume: -1
     readonly property int revision: Bridge.suite.revision
     readonly property var catalog: Catalog.controls
     readonly property string menuControlIds: catalog.filter(c => c.menu || inMenu(c.id)).map(c=>c.id).join(",")
@@ -12,6 +18,10 @@ Item {
     readonly property var registeredApps: []
     function preference(key, fallback) {
         let r = revision;
+        if (nativeSystem) {
+            if (key === "sound.volume") return String(systemOutput ? systemOutput.volume : 0);
+            if (key === "sound.muted") return String(systemOutput ? systemOutput.muted : true);
+        }
         if (Bridge.ddeAudio.available) {
             if (key === "sound.volume") return String(Bridge.ddeAudio.volume);
             if (key === "sound.muted") return String(Bridge.ddeAudio.muted);
@@ -19,11 +29,36 @@ Item {
         return Bridge.suite.preference(key, fallback);
     }
     function setPreference(key, value) {
+        if (nativeSystem) {
+            if (key === "sound.volume") { requestVolume(Number(value)); return; }
+            if (key === "sound.muted") { if (soundAvailable) systemBackend.apply("audio.muted", String(value) === "true", systemOutput.id); return; }
+        }
         if (Bridge.ddeAudio.available) {
             if (key === "sound.volume") { Bridge.ddeAudio.setVolume(Number(value)); return; }
             if (key === "sound.muted") { Bridge.ddeAudio.setMuted(String(value) === "true"); return; }
         }
         Bridge.suite.setPreference(key, String(value));
+    }
+    function requestVolume(value) {
+        if (!soundAvailable || !Number.isFinite(value)) return;
+        if (!nativeSystem) { setPreference("sound.muted", false); setPreference("sound.volume", value); return; }
+        queuedVolume = Math.max(0, Math.min(1, value));
+        volumeWrite.restart();
+    }
+    Timer {
+        id: volumeWrite; interval: 80
+        onTriggered: {
+            if (state.queuedVolume < 0 || !state.soundAvailable || state.systemBackend.busy) return;
+            let desired = state.queuedVolume; state.queuedVolume = -1;
+            state.systemBackend.apply("audio.volume", desired, state.systemOutput.id);
+        }
+    }
+    Connections {
+        target: state.systemBackend
+        function onChanged() {
+            if (!state.soundAvailable) state.queuedVolume = -1;
+            else if (!state.systemBackend.busy && state.queuedVolume >= 0) volumeWrite.restart();
+        }
     }
     function info(id) { return catalog.find(c => c.id === id) || null; }
     function iconFor(id) {
@@ -59,6 +94,11 @@ Item {
         else desktop.openApplication("music");
     }
     function isActive(id) {
+        if (nativeSystem) {
+            if (id === "wifi") return !!systemState.network.wifiEnabled;
+            if (id === "bluetooth") return (systemState.bluetooth.adapters || []).some(adapter => adapter.powered);
+            if (id === "lowpower") return systemState.power.active === "power-saver";
+        }
         if (id === "focus") return preference("focus.doNotDisturb", "false") === "true";
         if (id === "nowplaying" || id === "sound") return nowPlaying.playing;
         if (id === "timer") return timerRunning || timerRemaining > 0;

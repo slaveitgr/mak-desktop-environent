@@ -62,7 +62,7 @@ ApplicationWindow {
                     required property string modelData
                     width:modelData==="system"?34:menuLabel.implicitWidth+22; height:29; radius:4
                     color: root.openMenu===modelData && topMenu.opened ? "#424246" : "transparent"
-                    Image { visible:modelData==="system"; anchors.centerIn:parent; source:"assets/original/apple-logo-dark.png"; width:16; height:19; fillMode:Image.PreserveAspectFit }
+                    Image { visible:modelData==="system"; anchors.centerIn:parent; source:"branding/makos-ck-symbol.svg"; width:23; height:18; fillMode:Image.PreserveAspectFit; sourceSize:Qt.size(92,72) }
                     Text { id:menuLabel; visible:modelData!=="system"; anchors.centerIn:parent; text:modelData; color:"#ededee"; font.pixelSize:13; font.weight:modelData==="Recovery"?Font.DemiBold:Font.Normal }
                     MouseArea { anchors.fill:parent; hoverEnabled:true; onClicked:root.showMenu(modelData,parent.mapToItem(root.contentItem,0,0).x); onEntered:if(topMenu.opened)root.showMenu(modelData,parent.mapToItem(root.contentItem,0,0).x) }
                 }
@@ -77,32 +77,39 @@ ApplicationWindow {
     }
     Rectangle {
         id: panel
-        width:520; height:458; radius:10
+        width:430; height:382; radius:10
         anchors.centerIn:parent
         color:"#161618"; border.color:"#48484c"; border.width:1
         Column {
-            x:20; y:20; width:parent.width-40; spacing:6
+            x:16; y:14; width:parent.width-32; spacing:4
             Repeater {
                 model:RecoveryBackend.choices
                 delegate: Rectangle {
                     required property var modelData
                     required property int index
                     objectName:"recoveryChoice_"+modelData.id
-                    width:parent.width; height:86; radius:6
+                    width:parent.width; height:74; radius:6
                     color:root.selected===index?"#29292e":optionPointer.containsMouse?"#222226":"transparent"
                     border.width:0
-                    Image { x:13; anchors.verticalCenter:parent.verticalCenter; width:56; height:56; source:modelData.icon; fillMode:Image.PreserveAspectFit; mipmap:true }
-                    Column { x:88; width:parent.width-100; anchors.verticalCenter:parent.verticalCenter; spacing:4
-                        Text { text:modelData.title; font.pixelSize:14; font.weight:Font.DemiBold; color:"#ededee" }
-                        Text { text:modelData.description; width:parent.width; wrapMode:Text.WordWrap; font.pixelSize:12; color:"#a7a7ac" }
+                    Image { x:9; anchors.verticalCenter:parent.verticalCenter; width:46; height:46; source:modelData.icon; fillMode:Image.PreserveAspectFit; mipmap:true }
+                    Column { x:70; width:parent.width-80; anchors.verticalCenter:parent.verticalCenter; spacing:3
+                        Text { text:modelData.title; font.pixelSize:13; font.weight:Font.DemiBold; color:"#ededee" }
+                        Text { text:modelData.description; width:parent.width; wrapMode:Text.WordWrap; font.pixelSize:11; color:"#a7a7ac" }
                     }
                     MouseArea { id:optionPointer; anchors.fill:parent; hoverEnabled:true; onClicked:root.selected=index; onDoubleClicked:{ root.selected=index; root.continueSelection(); } }
                 }
             }
         }
         Button {
+            objectName:"tryMakOSButton"
+            x:20; y:parent.height-40; width:104; height:24
+            text:"Try makOS"; onClicked:RecoveryBackend.command("desktop")
+            contentItem:Text { text:parent.text; color:"white"; font.pixelSize:13; horizontalAlignment:Text.AlignHCenter; verticalAlignment:Text.AlignVCenter }
+            background:Rectangle { radius:5; color:parent.down?"#65656b":"#49494f"; border.color:"#64646a" }
+        }
+        Button {
             objectName:"continueButton"
-            x:parent.width-width-24; y:412; width:84; height:25
+            x:parent.width-width-20; y:parent.height-40; width:80; height:24
             text:"Continue"; onClicked:root.continueSelection()
             contentItem:Text { text:parent.text; color:"white"; font.pixelSize:13; horizontalAlignment:Text.AlignHCenter; verticalAlignment:Text.AlignVCenter }
             background:Rectangle { radius:5; color:parent.down?"#65656b":"#49494f"; border.color:"#64646a" }

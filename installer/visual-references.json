@@ -4,16 +4,24 @@
   "observations": {
     "recovery": "Dark background, compact centered utility list with four rows, icons on the left, Continue at lower right, menus at the top. The supplied image labels macOS Sequoia.",
     "disk_utility": "Dark sidebar with device/volume hierarchy, toolbar actions, capacity badge, storage bar and a two-column detail table. View offers sidebar and device/volume filters. Erase is a modal sheet.",
-    "tahoe_installer": "Centered large circular operating-system mark, title, short instruction and Continue; a subsequent screen selects the installation destination.",
+    "tahoe_installer": "The linked Tahoe welcome screenshot shows a light gray panel, large circular operating-system artwork, compact bold title, short instruction and centered blue Continue. The image was observed enlarged in native Safari; complete window geometry was not measured. A subsequent guide image selects the installation destination.",
     "tahoe_first_start": "Wallpaper behind a light rounded panel, back navigation, country list or local-account form, Continue at lower right. Screens visually inspected in the browser."
   },
   "sources": [
     "https://www.idownloadblog.com/2026/06/16/install-macos-27-on-partition/",
     "https://www.idownloadblog.com/2025/06/10/install-macos-tahoe-on-another-partition/"
   ],
+  "implemented_visual_pass_2026_11_10": {
+    "recovery": "Compact 430 x 382 chooser, 74 px rows, 46 px icon areas, 13 px titles, 11 px descriptions and lower-right Continue. Try makOS remains a Linux live-session addition.",
+    "disk_utility": "Compressed header, storage bar, usage legend and detail table toward the supplied reference proportions; original drive and toolbar resources remain in use.",
+    "installer": "Light gray panel, bold welcome title, centered Continue, clean light account/review forms and readable erase warnings. Preview rendered locally; QTest exercises stage transitions and confirmation gates with an injected daemon."
+  },
   "boundaries": [
     "These are visual references, not authorization to run their disk-operation instructions.",
     "No Apple account authentication, APFS formatting, or Time Machine compatibility is implemented.",
-    "First-start assistant and full installer restyling remain unimplemented."
+    "The OS-installation artwork is custom makOS artwork: no Install macOS.app or matching original artwork was found in the available local installer frameworks and apps.",
+    "Original Disk Utility resources come from the locally installed current version; its icon differs from the older supplied screenshots. See assets/original/provenance.json for identities and hashes.",
+    "First-start assistant, license screen, language and keyboard setup, advanced partition selection, full transition timing and exact pixel parity remain unimplemented or unverified.",
+    "Actual installation and QtDBus wire compatibility require Linux CI and disposable-VM validation; no host installation or partition change was executed."
   ]
 }

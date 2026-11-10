@@ -10,6 +10,7 @@ DesktopWindow {
     searchFocused: true
     property alias pageItem: content.item
     property bool closePrepared: false
+    property bool privateBrowsing: false
     function command(name) {
         if (content.item && content.item.command) content.item.command(name);
     }

@@ -8,7 +8,7 @@ Item {
     objectName: "browserDownloads"
     required property var owner
     readonly property var host: owner.host
-    property alias profile: browsingProfile
+    property var profile: null
     property var entries: []
     property var pendingEntry: null
     property alias proposedName: fileName.text
@@ -59,6 +59,10 @@ Item {
         Bridge.resolveDownloadDecision(manager, save);
     }
     function requested(download) {
+        // A regular profile is shared between windows. Only the page that
+        // originated the download may show its prompt or cancel the request.
+        if (!owner.ownsWebView(download.view))
+            return;
         // Qt 6.8 destroys an unaccepted request when this signal returns.
         // The bridge's nested event loop keeps this request alive while the
         // in-desktop confirmation remains interactive, without writing a file.
@@ -182,12 +186,17 @@ Item {
         savePrompt.close();
         downloadList.close();
     }
-    WebEngineProfile {
-        id: browsingProfile
-        offTheRecord: true
-        httpCacheType: WebEngineProfile.MemoryHttpCache
-        persistentCookiesPolicy: WebEngineProfile.NoPersistentCookies
-        onDownloadRequested: function (download) {
+    function releaseProfile() {
+        if (profile) {
+            Bridge.browserProfiles.release(profile);
+            profile = null;
+        }
+    }
+    Component.onCompleted: profile = Bridge.browserProfiles.acquire(owner.privateBrowsing)
+    Component.onDestruction: releaseProfile()
+    Connections {
+        target: manager.profile
+        function onDownloadRequested(download) {
             manager.requested(download);
         }
     }

@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+MAKOS_SOURCE=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+exec "$MAKOS_SOURCE/cutefish/build/venv/bin/python" "$MAKOS_SOURCE/cutefish/session.py" "$@"

@@ -12,7 +12,13 @@ Item {
     property alias canGoForward: web.canGoForward
     property alias loading: web.loading
     property alias loadProgress: web.loadProgress
+    property alias pageTitle: web.title
+    property alias webView: web
     property string loadError: ""
+    function capturePreview(callback) {
+        if (web.Window.window && web.Window.window.visible)
+            web.grabToImage(callback, Qt.size(360, 220));
+    }
     function load(address) {
         web.url = address;
     }

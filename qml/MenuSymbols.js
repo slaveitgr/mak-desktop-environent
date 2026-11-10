@@ -66,6 +66,7 @@ var archivedLabels = {
 
 var inferredLabels = {
     "About This Mac": "display",
+    "About This Mak": "display",
     "App Store…": "bag",
     "Bring All to Front": "rectangle.on.rectangle",
     "Clean Up By": "square.grid.3x3",

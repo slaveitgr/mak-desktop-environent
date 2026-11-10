@@ -1,0 +1,117 @@
+# Original makOS Plymouth theme. API checked against Plymouth 24.004.60-5.
+# Progress comes only from Plymouth; refresh handles display geometry, not time.
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+logo_original = Image("logo.png");
+track_original = Image("track.png");
+fill_original = Image("fill.png");
+logo = Sprite();
+track = Sprite();
+fill = Sprite();
+prompt_sprite = Sprite();
+entry_sprite = Sprite();
+message_sprite = Sprite();
+progress_value = 0;
+last_width = 0;
+last_height = 0;
+status = "normal";
+
+fun show_progress()
+{
+    width = Math.Int(bar_width * progress_value);
+    if (width > 0)
+    {
+        fill.SetImage(fill_original.Scale(width, bar_height));
+        fill.SetOpacity(status == "normal");
+    }
+    else fill.SetOpacity(0);
+    track.SetOpacity(status == "normal");
+}
+
+fun layout()
+{
+    width = Window.GetWidth();
+    height = Window.GetHeight();
+    if (width <= 0 || height <= 0) return;
+    if (width == last_width && height == last_height) return;
+    global.last_width = width;
+    global.last_height = height;
+    edge = Math.Int(Math.Clamp(height * 0.25, 160, 240));
+    ratio = logo_original.GetHeight() / logo_original.GetWidth();
+    logo_image = logo_original.Scale(edge, Math.Int(edge * ratio));
+    logo.SetImage(logo_image);
+    logo.SetPosition(Window.GetX() + (width - edge) / 2,
+                     Window.GetY() + height * 0.43 - logo_image.GetHeight() / 2, 10);
+    global.bar_width = Math.Int(Math.Clamp(width * 0.16, 160, 240));
+    global.bar_height = 4;
+    global.bar_x = Window.GetX() + (width - bar_width) / 2;
+    global.bar_y = Window.GetY() + height * 0.60;
+    track.SetImage(track_original.Scale(bar_width, bar_height));
+    track.SetPosition(bar_x, bar_y, 20);
+    fill.SetPosition(bar_x, bar_y, 21);
+    prompt_sprite.SetZ(30);
+    entry_sprite.SetZ(31);
+    message_sprite.SetZ(32);
+    show_progress();
+}
+
+fun centered_text(sprite, text, y, size)
+{
+    image = Image.Text(text, 0.92, 0.92, 0.92, 1, "Sans " + size, "center");
+    max_width = Window.GetWidth() - 48;
+    if (image.GetWidth() > max_width)
+        image = image.Scale(max_width, Math.Int(image.GetHeight() * max_width / image.GetWidth()));
+    sprite.SetImage(image);
+    sprite.SetPosition(Window.GetX() + (Window.GetWidth() - image.GetWidth()) / 2, y, 30);
+    sprite.SetOpacity(1);
+}
+
+fun normal()
+{
+    global.status = "normal";
+    prompt_sprite.SetOpacity(0);
+    entry_sprite.SetOpacity(0);
+    show_progress();
+}
+
+fun password(prompt, bullets)
+{
+    global.status = "password";
+    show_progress();
+    centered_text(prompt_sprite, prompt, bar_y - 14, 14);
+    text = "";
+    for (index = 0; index < Math.Min(bullets, 64); index++) text += "●";
+    centered_text(entry_sprite, text, bar_y + 22, 16);
+}
+
+fun question(prompt, entry)
+{
+    global.status = "question";
+    show_progress();
+    centered_text(prompt_sprite, prompt, bar_y - 14, 14);
+    centered_text(entry_sprite, entry, bar_y + 22, 16);
+}
+
+fun boot_progress(duration, progress)
+{
+    global.progress_value = Math.Clamp(progress, 0, 1);
+    show_progress();
+}
+
+fun message(text)
+{
+    centered_text(message_sprite, text, Window.GetY() + Window.GetHeight() - 64, 13);
+}
+fun hide_message(text) { message_sprite.SetOpacity(0); }
+fun quit() { normal(); }
+
+layout();
+normal();
+Plymouth.SetRefreshFunction(layout);
+Plymouth.SetBootProgressFunction(boot_progress);
+Plymouth.SetDisplayNormalFunction(normal);
+Plymouth.SetDisplayPasswordFunction(password);
+Plymouth.SetDisplayQuestionFunction(question);
+Plymouth.SetDisplayMessageFunction(message);
+Plymouth.SetHideMessageFunction(hide_message);
+Plymouth.SetQuitFunction(quit);

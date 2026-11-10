@@ -6,11 +6,12 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 try:
     from PySide6.QtCore import QCoreApplication
-    from main import Bridge
-    from filesystem import Workspace
     HAS_QT = True
 except ImportError:
     HAS_QT = False
+if HAS_QT:
+    from main import Bridge
+    from filesystem import Workspace
 
 
 @unittest.skipUnless(HAS_QT, 'Run with the project Qt environment for browser tests')

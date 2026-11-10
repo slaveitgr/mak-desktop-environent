@@ -1,0 +1,22 @@
+{
+  "asset": "makos-ck-white.png",
+  "sha256": "e9130af4dc8f560b629101f8886f9dc8521788264f29c4fcecb4c45abd161bc8",
+  "intent": "Connected ck monogram: a curved c replaces the vertical stem of K, white on black for boot.",
+  "source_reference": "User-supplied joined ck wordmark, 2026-11-10",
+  "creation": "imagegen, refined opaque black-background output; original generated file copied unchanged.",
+  "pixels": [
+    1254,
+    1254
+  ],
+  "background": "black",
+  "generated_source": "exec-999efa10-ac4b-419a-8db2-9199ff6b9996.png",
+  "topbar": {
+    "asset": "makos-ck-symbol.svg",
+    "creation": "Code-native vector geometry of the connected ck design, drawn for small-size shell rendering; transparent background.",
+    "intended_render_size": [
+      23,
+      18
+    ],
+    "comparison": "Same connected C/K concept as boot raster; separately drawn vector, not a pixel-identical trace."
+  }
+}

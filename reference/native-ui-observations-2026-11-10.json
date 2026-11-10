@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-10",
+  "host_os": "macOS 26.7.2",
+  "method": "Native CUA accessibility and Finder screenshot; read-only control inspection",
+  "settings_executable_sha256": "864a83b85ab286e87c96fef55628184193cacdd0f6cc1b10627920eb04ea131e",
+  "rea_runtime": {
+    "status": "unavailable",
+    "reason": "REA host Accessibility permission denied; native CUA access works",
+    "decompilation_performed": false,
+    "recorded_runtime_evidence_id": null
+  },
+  "settings": {
+    "Sound": {
+      "observed": [
+        "Sound Effects: alert sound, effect output device, alert volume, startup sound, interface effects, volume feedback",
+        "Output/Input tab switch changes device table and controls",
+        "Output: name/type device table, volume, mute, balance",
+        "Input: device table, input volume/level"
+      ],
+      "action": "Switched from Input to Output tab only; no device/value change"
+    },
+    "Appearance": {
+      "observed": [
+        "Appearance: Auto, Light, Dark",
+        "Liquid Glass: Clear and Tinted",
+        "Theme color and text highlight",
+        "Icon and widget style: Default, Dark, Clear, Tinted; folder color",
+        "Sidebar icon size and wallpaper tint",
+        "Scrollbar visibility and click behavior"
+      ],
+      "action": "Opened panel; no preference changed"
+    }
+  },
+  "finder": {
+    "fixture": "work/finder-runtime-fixture with two synthetic entries",
+    "visible_file_context_menu": [
+      "Open",
+      "Open With",
+      "Move to Trash",
+      "Get Info",
+      "Rename",
+      "Compress",
+      "Duplicate",
+      "Make Alias",
+      "Quick Look",
+      "Copy",
+      "Share",
+      "Tags",
+      "Quick Actions"
+    ],
+    "accessibility_alternate_commands_not_normally_visible": [
+      "Always Open With",
+      "Show Inspector",
+      "Duplicate Exactly",
+      "Copy as Pathname",
+      "Slideshow"
+    ],
+    "observed": [
+      "Share and Edit Tags disabled before file selection, enabled after selection",
+      "Two-item count becomes one-of-two-selected",
+      "One combined view chooser when window is narrow; four view buttons in the wider existing window"
+    ],
+    "action": "Opened separate window, navigated fixture, opened and dismissed context menu, closed only comparison window",
+    "file_mutations": false
+  },
+  "limits": [
+    "No complete application feature or pixel parity claim",
+    "Static resource coverage reused from reference/coverage.json for 25 targets",
+    "No live networking, account, message, call or disk operation tested",
+    "No animation duration measurements in this pass"
+  ]
+}

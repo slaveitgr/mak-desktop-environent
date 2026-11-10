@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=makOS
+Description=makOS boot logo with Plymouth progress and accessible prompts
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/makos
+ScriptFile=/usr/share/plymouth/themes/makos/makos.script

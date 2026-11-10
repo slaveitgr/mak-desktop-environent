@@ -96,7 +96,7 @@ class BrowserHarness:
 import QtQuick.Controls
 ApplicationWindow { width:1020;height:720;visible:false
  QtObject { id:desk;property bool reduceMotion:true;function showInfo(title,message) {} function openFolder(path) {} }
- Item { objectName:"host";width:1020;height:720;property string appKind:"safari";property string windowTitle:"Safari";property bool dark:false;property color ink:"#222222";property color muted:"#888888";property var desktop:desk;property bool active:true;property bool closing:false;property bool minimized:false }
+ Item { objectName:"host";width:1020;height:720;property string appKind:"safari";property string windowTitle:"Safari";property bool privateBrowsing:true;property bool dark:false;property color ink:"#222222";property color muted:"#888888";property var desktop:desk;property bool active:true;property bool closing:false;property bool minimized:false }
 }''', QUrl.fromLocalFile(str(ROOT / 'qml/DownloadVerification.qml')))
         assert self.engine.rootObjects(), self.errors
         self.window = self.engine.rootObjects()[0]

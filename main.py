@@ -4,6 +4,7 @@ import argparse
 import json
 import mimetypes
 import os
+import stat
 from pathlib import Path
 import sys
 from datetime import datetime
@@ -13,12 +14,15 @@ from PySide6.QtGui import QGuiApplication, QFont, QFontDatabase
 from PySide6.QtQml import QQmlApplicationEngine, QQmlEngine
 from PySide6.QtMultimedia import QImageCapture
 from filesystem import Workspace, FileError, seed_workspace
-from applications import ApplicationLauncher
+from finder_backend import read_regular_preview
+from applications import ApplicationLauncher, NATIVE_APP_IDS, NATIVE_APP_INFO, native_command
 from suite import Suite, ChessGame
 from terminal_session import TerminalSession
 from linux_session import LinuxSession
 from dde_services import DdeAudio
 from cutefish_services import CutefishShell
+from browser_profiles import BrowserProfiles
+from linux_settings import LinuxSettings
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -149,8 +153,11 @@ class Browser(QObject):
     @Slot()
     def refresh(self, *args):
         try:
-            self._files = self.bridge.list_files(self._path, self._hidden)
-            if self._query:
+            if self._query.strip() and not self._path.startswith('@') and self._path != '.Trash':
+                self._files = self.bridge.search_files(self._path, self._query, self._hidden)
+            else:
+                self._files = self.bridge.list_files(self._path, self._hidden)
+            if self._query and (self._path.startswith('@') or self._path == '.Trash'):
                 self._files = [x for x in self._files if self._query.casefold() in x['name'].casefold()]
             key = self._sort
             self._files.sort(key=lambda x: x.get(key, '').casefold() if isinstance(x.get(key), str) else x.get(key, 0), reverse=self._reverse)
@@ -172,15 +179,18 @@ class Bridge(QObject):
         super().__init__()
         self.workspace = workspace
         self.browsers = []
-        self.launcher = ApplicationLauncher()
+        self.launcher = ApplicationLauncher(native=cutefish_mode)
         self._dde_audio = DdeAudio(dde_mode, self)
         self._dde_audio.error.connect(self.error)
-        self._session = LinuxSession(session_mode, self)
+        self._session = LinuxSession(session_mode, self, cutefish_mode=cutefish_mode)
         self._session.error.connect(self.error)
         self._suite = Suite(workspace.root, self)
+        self._browser_profiles = BrowserProfiles(self._suite.data_dir, self)
         self._suite.error.connect(self.error)
-        self._cutefish_shell = CutefishShell(cutefish_mode, self)
+        if cutefish_mode: self._suite.watchExternalChanges()
+        self._cutefish_shell = CutefishShell(cutefish_mode and os.environ.get('XDG_SESSION_DESKTOP') != 'makos', self)
         self._cutefish_shell.error.connect(self.error)
+        self._linux_settings = LinuxSettings(cutefish_mode, self)
         self._suite.preferenceChanged.connect(self._cutefish_shell.preferenceChanged)
         self._chess = ChessGame(self._suite, self)
         self.terminals = []
@@ -189,6 +199,9 @@ class Bridge(QObject):
 
     @Property(QObject, constant=True)
     def suite(self): return self._suite
+
+    @Property(QObject, constant=True)
+    def browserProfiles(self): return self._browser_profiles
 
     @Property(QObject, constant=True)
     def session(self): return self._session
@@ -216,13 +229,23 @@ class Bridge(QObject):
             self.terminals.remove(terminal)
             terminal.deleteLater()
 
-    @Slot(str)
+    @Slot(str, result=bool)
     def launchCutefishApp(self, app_id):
-        if app_id in ('finder', 'settings'):
-            QProcess.startDetached(sys.executable, [str(APP_DIR / 'main.py'), '--cutefish-app', app_id, '--root', str(self.workspace.root)])
+        command = native_command(app_id, APP_DIR, self.workspace.root)
+        if not command:
+            self.error.emit('This makOS application is not registered.')
+            return False
+        result = QProcess.startDetached(command[0], command[1:])
+        started = result[0] if isinstance(result, tuple) else result
+        if not started:
+            self.error.emit(NATIVE_APP_INFO[app_id]['name'] + ' could not be opened.')
+        return bool(started)
 
     @Property(QObject, constant=True)
     def cutefishShell(self): return self._cutefish_shell
+
+    @Property(QObject, constant=True)
+    def linuxSettings(self): return self._linux_settings
 
     @Slot()
     def shutdown(self):
@@ -231,6 +254,8 @@ class Bridge(QObject):
         self._session.stop()
         self._dde_audio.stop()
         self._cutefish_shell.stop()
+        self._linux_settings.stop()
+        self._suite._external_timer.stop()
         for decision in list(self._download_decisions.values()): decision['loop'].quit()
         self._chess.shutdown()
         try:
@@ -271,19 +296,10 @@ class Bridge(QObject):
 
     @Property('QVariantMap', constant=True)
     def systemInfo(self):
-        import platform, getpass, subprocess
-        from PySide6.QtCore import QSysInfo
-        memory = 0
-        processor = platform.processor() or platform.machine()
-        if sys.platform == 'darwin':
-            try:
-                memory = int(subprocess.check_output(['/usr/sbin/sysctl','-n','hw.memsize'], timeout=3))
-                processor = subprocess.check_output(['/usr/sbin/sysctl','-n','machdep.cpu.brand_string'], timeout=3).decode().strip()
-            except (OSError, ValueError, subprocess.SubprocessError): pass
-        else:
-            try: memory = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
-            except (ValueError, OSError): pass
-        return {'name': 'Tahoe Desktop', 'version': '0.4', 'platform': QSysInfo.prettyProductName(), 'kernel': platform.release(), 'architecture': platform.machine(), 'processor': processor, 'memory': (str(round(memory / 1024**3)) + ' GB') if memory else 'Not available', 'user': getpass.getuser()}
+        from system_info import collect_system_info
+        if not hasattr(self, '_system_info'):
+            self._system_info = collect_system_info()
+        return self._system_info
 
     @Slot(QObject)
     def pasteToTerminal(self, terminal):
@@ -396,20 +412,36 @@ class Bridge(QObject):
             self.browsers.remove(browser)
             browser.deleteLater()
 
-    def list_files(self, relative, hidden=False):
+    def list_files(self, relative, hidden=False, selected_paths=None):
         root = self.workspace.root
-        if relative == '@applications':
+        if selected_paths is not None:
+            paths = []
+            for path in selected_paths:
+                try:
+                    paths.append(self.workspace.path(path))
+                except (OSError, FileError):
+                    continue
+        elif relative == '@applications':
             apps = [dict(id='finder', name='Finder', image='finder.png'), dict(id='settings', name='System Settings', image='settings.png')] + self.applicationCatalog
             return [dict(name=a['name'], path='@app:'+a['id'], appId=a['id'], isDir=False, kind='Application', size=0, sizeText='—', modified=0, dateText='—', image='', thumbnailText='', tag='', icon=self.assetRoot+a['image']) for a in apps]
-        if relative == '@recents' or relative.startswith('@tag:'):
+        elif relative == '@recents' or relative.startswith('@tag:'):
             paths = []
             for folder, dirs, files in os.walk(root, followlinks=False):
                 dirs[:] = [n for n in dirs if not n.startswith('.') and not (Path(folder)/n).is_symlink()]
-                paths += [Path(folder) / n for n in (files + (dirs if relative.startswith('@tag:') else [])) if not n.startswith('.')]
+                paths += [Path(folder) / n for n in (files + (dirs if relative.startswith('@tag:') else []))
+                          if not n.startswith('.') and not (Path(folder) / n).is_symlink()]
             if relative.startswith('@tag:'):
                 paths = [p for p in paths if self.workspace.tag(self.workspace.rel(p)) == relative[5:]]
             else:
-                paths = sorted(paths, key=lambda p: p.stat().st_mtime, reverse=True)[:100]
+                recent = []
+                for path in paths:
+                    try:
+                        info = path.lstat()
+                        if stat.S_ISREG(info.st_mode):
+                            recent.append((info.st_mtime, path))
+                    except OSError:
+                        continue
+                paths = [path for _, path in sorted(recent, key=lambda item: item[0], reverse=True)[:100]]
         else:
             paths = list(self.workspace.path(relative, allow_trash=True).iterdir())
         result = []
@@ -417,8 +449,10 @@ class Bridge(QObject):
             if p.name == '.desktop-data' or p.is_symlink() or (p.name.startswith('.') and (not hidden or relative == '.Trash')):
                 continue
             try:
-                st = p.stat()
-                directory = p.is_dir()
+                st = p.lstat()
+                if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
+                    continue
+                directory = stat.S_ISDIR(st.st_mode)
                 entry = self.workspace.trash_index.get(p.name) if relative == '.Trash' else None
                 name = entry['name'] if entry else p.name
                 suffix = Path(name).suffix.lower()
@@ -427,8 +461,7 @@ class Bridge(QObject):
                 thumbnail_text = ''
                 if not directory and suffix in ('.txt', '.md', '.csv', '.json', '.py', '.qml'):
                     try:
-                        with p.open('rb') as stream:
-                            thumbnail_text = stream.read(700).decode('utf-8', errors='replace')
+                        thumbnail_text = read_regular_preview(p).decode('utf-8', errors='replace')
                     except OSError:
                         pass
                 result.append({'thumbnailText': thumbnail_text, 'name':name, 'path':self.workspace.rel(p), 'isDir':directory,
@@ -437,9 +470,16 @@ class Bridge(QObject):
                     'modified':st.st_mtime, 'dateText':datetime.fromtimestamp(st.st_mtime).strftime('%d %b %Y, %H:%M'),
                     'image':QUrl.fromLocalFile(str(p)).toString() if image else '',
                     'icon':self.assetRoot + ('folder.png' if directory else 'document.png')})
-            except OSError:
+            except (OSError, FileError):
                 continue
         return sorted(result, key=lambda x: x['name'].casefold())
+
+    def search_files(self, relative, query, hidden=False):
+        paths, limited = self.workspace.search(relative, query, hidden)
+        result = self.list_files(relative, hidden, selected_paths=paths)
+        if limited:
+            self.error.emit('Search reached its current limit. Search a smaller folder or use a more specific name.')
+        return result
 
     @Slot(str, result='QVariantList')
     def children(self, relative):
@@ -565,14 +605,17 @@ def main():
     parser.add_argument('--fullscreen', action='store_true')
     parser.add_argument('--session', action='store_true', help='Dedicated Linux login session; launched by tahoe-session')
     parser.add_argument('--wayland-shell', action='store_true', help='Experimental makOS layer surfaces; requires a matching LayerShellQt plugin')
-    parser.add_argument('--cutefish-app', choices=('finder', 'settings'), help='Native makOS client for the Cutefish shell')
+    parser.add_argument('--cutefish-app', choices=NATIVE_APP_IDS, help='Native makOS client for the Cutefish shell')
     parser.add_argument('--cutefish-test', action='store_true', help=argparse.SUPPRESS)
+    parser.add_argument('--cutefish-shell', action='store_true', help='Trusted makOS desktop, menu bar and Dock session')
     parser.add_argument('--makos', action='store_true', help='makOS development mode: native windows and opt-in DDE service adapters on Linux')
     parser.add_argument('--native-windows', action='store_true', help='makOS development: a real platform window for each application')
     parser.add_argument('--settings', action='store_true', help='Open System Settings alongside Finder')
     parser.add_argument('--compare-right', action='store_true', help='Position the prototype on the right half for native Finder comparison')
     parser.add_argument('--smoke-test', action='store_true', help='Load QML, render once, and exit without UI interactions')
     args = parser.parse_args()
+    if args.cutefish_shell and (sys.platform != 'linux' or not os.environ.get('WAYLAND_SOCKET') or args.cutefish_app or args.session or args.wayland_shell):
+        parser.error('--cutefish-shell must be started by the trusted makOS session supervisor')
     if args.cutefish_app and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
         parser.error('--cutefish-app requires a Linux Wayland session')
     if args.cutefish_app and (args.session or args.wayland_shell or args.makos):
@@ -581,6 +624,12 @@ def main():
         parser.error('--session must be started by the Linux session launcher')
     if args.wayland_shell and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
         parser.error('--wayland-shell requires a running Linux Wayland compositor')
+    if args.cutefish_app == 'apps':
+        from shell_launcher import request_apps_overlay
+        launcher_app = QCoreApplication(sys.argv[:1])
+        ok, error = request_apps_overlay()
+        if not ok: print('Apps requires the running makOS desktop: ' + error, file=sys.stderr)
+        return 0 if ok else 1
     user_data = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share')) / 'tahoe-desktop'
     installed_linux = sys.platform == 'linux' and (args.session or not os.access(APP_DIR, os.W_OK))
     root = args.root or (user_data / 'workspace' if installed_linux else APP_DIR / 'demo-home')
@@ -588,14 +637,22 @@ def main():
     os.environ.setdefault('QT_QUICK_CONTROLS_STYLE', 'Basic')
     from PySide6.QtWebEngineQuick import QtWebEngineQuick
     QtWebEngineQuick.initialize()
+    trusted_wayland_fd = int(os.environ['WAYLAND_SOCKET']) if args.cutefish_shell else None
     app = QGuiApplication(sys.argv[:1] + (['-name', 'tahoe-desktop-shell'] if args.session else []))
     app.setApplicationName('makOS' if args.makos else 'Tahoe Desktop')
     app.setOrganizationName('Desktop Prototype')
+    if args.cutefish_shell:
+        app.setApplicationName('makOS Shell')
+        app.setDesktopFileName('org.makos.Shell')
+        # Qt already owns the trusted connection. Child apps connect normally.
+        try: os.set_inheritable(trusted_wayland_fd, False)
+        except OSError: pass  # libwayland may already have consumed the original FD.
+        os.environ.pop('WAYLAND_SOCKET', None)
     cutefish_instance = None
     if args.cutefish_app:
         from cutefish_runtime import CutefishInstance
-        app.setApplicationName('Finder' if args.cutefish_app == 'finder' else 'System Settings')
-        app.setDesktopFileName('org.makos.' + args.cutefish_app.capitalize())
+        app.setApplicationName(NATIVE_APP_INFO[args.cutefish_app]['name'])
+        app.setDesktopFileName(NATIVE_APP_INFO[args.cutefish_app]['desktop_id'])
         cutefish_instance = CutefishInstance(app, args.cutefish_app, root)
         if not cutefish_instance.acquire(): return 0
     if args.session:
@@ -604,22 +661,45 @@ def main():
     font.setStyleStrategy(QFont.PreferAntialias)
     app.setFont(font)
     workspace = Workspace(root)
-    bridge = Bridge(workspace, session_mode=args.session, dde_mode=args.makos or args.wayland_shell,
-                    cutefish_mode=bool(args.cutefish_app))
-    bridge.session.start()
+    bridge = Bridge(workspace, session_mode=args.session or args.cutefish_shell, dde_mode=args.makos or args.wayland_shell,
+                    cutefish_mode=bool(args.cutefish_app) or args.cutefish_shell)
+    if args.cutefish_shell: bridge.session.refreshApplications()
+    else: bridge.session.start()
     bridge.ddeAudio.start()
     engine = QQmlApplicationEngine()
-    if args.cutefish_app:
+    if args.cutefish_app or args.cutefish_shell:
         engine.addImportPath(str(APP_DIR / 'cutefish/build/qml'))
-        engine.rootContext().setContextProperty('cutefishApp', args.cutefish_app)
+        engine.rootContext().setContextProperty('cutefishApp', args.cutefish_app or '')
     engine.rootContext().setContextProperty('Bridge', bridge)
     engine.rootContext().setContextProperty('startFullscreen', args.fullscreen)
     engine.rootContext().setContextProperty('comparisonMode', args.compare_right)
     engine.rootContext().setContextProperty('startSettings', args.settings)
-    engine.rootContext().setContextProperty('startNativeWindows', args.native_windows or args.makos or args.wayland_shell or bool(args.cutefish_app))
-    engine.rootContext().setContextProperty('useWaylandShell', args.wayland_shell)
-    engine.load(QUrl.fromLocalFile(str(APP_DIR / ('qml/WaylandShell.qml' if args.wayland_shell else 'qml/Main.qml'))))
+    engine.rootContext().setContextProperty('startNativeWindows', args.native_windows or args.makos or args.wayland_shell or bool(args.cutefish_app) or args.cutefish_shell)
+    engine.rootContext().setContextProperty('useWaylandShell', args.wayland_shell or args.cutefish_shell)
+    engine.rootContext().setContextProperty('useCutefishShell', args.cutefish_shell)
+    engine.load(QUrl.fromLocalFile(str(APP_DIR / ('qml/CutefishShell.qml' if args.cutefish_shell else 'qml/WaylandShell.qml' if args.wayland_shell else 'qml/Main.qml'))))
     if not engine.rootObjects(): return 1
+    shell_launcher = None
+    if args.cutefish_shell:
+        from shell_launcher import ShellLauncher
+        shell_launcher = ShellLauncher(engine.rootObjects()[0], app)
+        app.aboutToQuit.connect(shell_launcher.stop)
+    if args.cutefish_shell and os.environ.get('MAKOS_SHELL_TEST_GEOMETRY'):
+        def export_shell_geometry():
+            from PySide6.QtCore import QPointF
+            root_object=engine.rootObjects()[0]
+            result={'controls':{},'appsOverlayVisible':bool(root_object.property('appsOverlayVisible'))}
+            for name,object_name in [('control','statusButton_control'),('apple','topMenuItem_apple')]:
+                item=root_object.findChild(QObject,object_name)
+                if item is None or item.window() is None: continue
+                position=item.mapToScene(QPointF(item.width()/2,item.height()/2))
+                result['controls'][name]={'windowTitle':item.window().title(),'x':position.x(),'y':position.y()}
+            destination=Path(os.environ['MAKOS_SHELL_TEST_GEOMETRY'])
+            destination.write_text(json.dumps(result)+'\n')
+        geometry_timer=QTimer(app)
+        geometry_timer.setInterval(150)
+        geometry_timer.timeout.connect(export_shell_geometry)
+        geometry_timer.start()
     if cutefish_instance:
         cutefish_instance.bind(engine.rootObjects()[0])
         if args.cutefish_test:
@@ -627,7 +707,7 @@ def main():
             exercise(app, engine.rootObjects()[0], engine)
     app.aboutToQuit.connect(engine.rootObjects()[0].flushApplications)
     app.aboutToQuit.connect(bridge.shutdown)
-    if args.session:
+    if args.session or args.cutefish_shell:
         import signal
         # Permit the supervisor to flush drafts on logout/service failure.
         signal.signal(signal.SIGTERM, lambda *_: finish_session(app, engine.rootObjects()[0]))
@@ -636,8 +716,12 @@ def main():
         signal_timer.timeout.connect(lambda: None)
         signal_timer.start(200)
     if args.smoke_test:
-        QTimer.singleShot(8000 if args.session else 1600,
-                          lambda: finish_session(app, engine.rootObjects()[0]) if args.session else app.quit())
+        if args.cutefish_app:
+            from cutefish_app_smoke import verify_startup
+            QTimer.singleShot(1800, lambda: verify_startup(app, engine.rootObjects()[0], engine, args.cutefish_app))
+        else:
+            QTimer.singleShot(8000 if args.session else 1600,
+                              lambda: finish_session(app, engine.rootObjects()[0]) if args.session else app.quit())
     result = app.exec()
     if cutefish_instance:
         # Tear down QML and Wayland protocol objects while their Python context
