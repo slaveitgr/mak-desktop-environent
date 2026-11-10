@@ -40,7 +40,7 @@ def main():
                             env=env, stdout=client_log, stderr=client_log, timeout=30)
                     trace = (results / (kind + '.log')).read_text()
                     required = ['.get_toplevel(', '.set_main_menu(', '.set_glass(', '.set_fullscreen_bars(',
-                                '.set_minimized(', '.set_fullscreen(', '.unset_fullscreen(', 'MAKOS_CUTEFISH_TEST=']
+                                '.set_minimized(', '.set_fullscreen(', '.unset_fullscreen(', '.fullscreen_reveal(', 'MAKOS_CUTEFISH_TEST=']
                     missing = [token for token in required if token not in trace]
                     errors = [token for token in ('TypeError:', 'ReferenceError:', 'failed to load component', 'error in client communication', 'Expected token', 'is not a type', 'FAIL:') if token in trace]
                     if result.returncode or missing or errors:

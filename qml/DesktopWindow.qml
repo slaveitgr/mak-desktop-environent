@@ -64,7 +64,7 @@ FocusScope {
     }
     Behavior on chromeOffset {
         NumberAnimation {
-            duration: desktop.reduceMotion ? 0 : 180
+            duration: desktop.reduceMotion ? 0 : win.nativeCutefish ? win.nativeWindow.compositorRevealDuration : 180
             easing.type: Easing.OutCubic
         }
     }

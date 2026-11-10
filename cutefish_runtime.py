@@ -114,6 +114,13 @@ def exercise(app, root, engine):
                 capture_output=True, text=True, timeout=3)
             assert result.returncode == 0 and 'boolean true' in result.stdout, result.stderr
 
+    def pointer_motion(x, y):
+        result = subprocess.run(['dbus-send', '--session', '--print-reply',
+            '--dest=org.cutefish.WindowDebug1', '/org/cutefish/WindowDebug1',
+            'org.cutefish.WindowDebug1.PointerMotion', 'double:' + str(x), 'double:' + str(y)],
+            capture_output=True, text=True, timeout=3)
+        assert result.returncode == 0 and 'boolean true' in result.stdout, result.stderr
+
     def check(label, expression, state=None, active=True):
         if callable(expression):
             expression(); results.append(label); return
@@ -135,9 +142,13 @@ def exercise(app, root, engine):
         (3000, 'compositor confirms restored window', '!controller.windows[0].minimized && controller.windows[0].nativeWindow.visible && controller.windows[0].nativeWindow.active', 'normal', True),
         (3200, 'fullscreen request', '(controller.presentation.enter(controller.windows[0]), true)', None, True),
         (3800, 'compositor confirms fullscreen window', 'controller.windows[0].nativeWindow.visibility === 5', 'fullscreen', True),
-        (4000, 'fullscreen exit request', '(controller.presentation.exit(), true)', None, True),
-        (4600, 'compositor confirms windowed restore', 'controller.windows[0].nativeWindow.visibility === 2', 'normal', True),
-        (4900, 'menu model available', 'JSON.parse(controller.nativeMenuRows(controller.windows[0])).length >= 5', None, True),
+        (4000, 'pointer reaches fullscreen top edge', lambda: pointer_motion(800, 0), None, True),
+        (4500, 'fullscreen chrome follows compositor reveal', 'controller.windows[0].nativeWindow.compositorReveal > 0 && controller.windows[0].chromeRevealed && controller.windows[0].chromeOffset > 0', None, True),
+        (4700, 'pointer leaves fullscreen chrome', lambda: pointer_motion(800, 600), None, True),
+        (5500, 'fullscreen chrome follows compositor hide', 'controller.windows[0].nativeWindow.compositorReveal === 0 && !controller.windows[0].chromeRevealed && controller.windows[0].chromeOffset === 0', None, True),
+        (5700, 'fullscreen exit request', '(controller.presentation.exit(), true)', None, True),
+        (6300, 'compositor confirms windowed restore', 'controller.windows[0].nativeWindow.visibility === 2', 'normal', True),
+        (6600, 'menu model available', 'JSON.parse(controller.nativeMenuRows(controller.windows[0])).length >= 5', None, True),
     ]
     for delay, label, code, state, active in steps:
         QTimer.singleShot(delay, lambda label=label, code=code, state=state, active=active:
@@ -154,7 +165,7 @@ def exercise(app, root, engine):
         shell.setDockAutoHide(True)
         shell.setDockGlassTint(.6)
         shell.preferenceChanged('battery.showPercentage', 'true')
-    QTimer.singleShot(5100, lambda: guard(absent_services))
+    QTimer.singleShot(6900, lambda: guard(absent_services))
 
     def finish():
         bridges = root.findChildren(QObject, 'makOSCutefishBridge')
@@ -164,4 +175,4 @@ def exercise(app, root, engine):
         print('MAKOS_CUTEFISH_TEST=' + json.dumps({'checks':results, 'windows':snapshots,
             'shell_settings':'missing-service handling verified; live-session success unverified'}), flush=True)
         app.quit()
-    QTimer.singleShot(6800, lambda: guard(finish))
+    QTimer.singleShot(8600, lambda: guard(finish))
