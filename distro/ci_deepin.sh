@@ -5,14 +5,22 @@ MAKOS_ROOTFS="$RUNNER_TEMP/makos-deepin-root"
 MAKOS_ISO="$RUNNER_TEMP/base/deepin-desktop-community-25.2.0-amd64.iso"
 [[ ! -e "$MAKOS_ROOTFS" ]] || { echo 'Refusing to overwrite an existing rootfs.' >&2; exit 2; }
 mkdir -p ci-results
-MAKOS_OFFSET=$("$RUNNER_TEMP/inspect/bin/python" - "$MAKOS_ISO" <<'PY'
+MAKOS_LAYERS=$("$RUNNER_TEMP/inspect/bin/python" - "$MAKOS_ISO" <<'PY'
 import pycdlib,sys
 iso=pycdlib.PyCdlib();iso.open(sys.argv[1])
-print(iso.get_record(rr_path='/live/filesystem.squashfs').extent_location()*2048)
+with iso.open_file_from_iso(rr_path='/live/filesystem.module') as stream:
+    modules=stream.read().decode().splitlines()
+assert modules == ['filesystem.squashfs', 'filesystem-extra.squashfs'], modules
+for module in modules:
+    print(iso.get_record(rr_path='/live/'+module).extent_location()*2048)
 iso.close()
 PY
 )
-sudo unsquashfs -no-progress -no-xattrs -d "$MAKOS_ROOTFS" -offset "$MAKOS_OFFSET" "$MAKOS_ISO"
+# The second live layer supplies /var/lib/dpkg and the combined package database.
+# Extract both in the order declared by the image; the first alone is incomplete.
+while read -r MAKOS_OFFSET; do
+  sudo unsquashfs -force -no-progress -no-xattrs -d "$MAKOS_ROOTFS" -offset "$MAKOS_OFFSET" "$MAKOS_ISO"
+done <<< "$MAKOS_LAYERS"
 sudo mkdir -p "$MAKOS_ROOTFS/tmp/makos"
 sudo cp -a . "$MAKOS_ROOTFS/tmp/makos/source"
 # Replace only the rootfs's resolver link; never follow an absolute symlink.
@@ -35,8 +43,16 @@ sudo ln -s pts/ptmx "$MAKOS_ROOTFS/dev/ptmx"
 sudo mount -t tmpfs -o size=512m tmpfs "$MAKOS_ROOTFS/dev/shm"
 sudo chroot "$MAKOS_ROOTFS" /bin/bash -se <<'SH'
 export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get install -y --no-install-recommends python3-venv dbus-x11 qml6-module-org-kde-layershell \
+test -s /var/lib/dpkg/status
+test -s /usr/share/keyrings/deepin-archive-crimson-keyring.gpg
+# The immutable live image leaves sources.list empty. Use only its signed base
+# archive for CI dependencies; no driver/app-store sources or service startup.
+echo 'deb [signed-by=/usr/share/keyrings/deepin-archive-crimson-keyring.gpg] https://community-packages.deepin.com/deepin/beige crimson main' > /tmp/makos/sources.list
+printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d
+chmod 755 /usr/sbin/policy-rc.d
+apt_args=(-o Dir::Etc::sourcelist=/tmp/makos/sources.list -o Dir::Etc::sourceparts=- -o Acquire::SmartMirrors::Enable=false -o APT::Update::Error-Mode=any)
+apt-get "${apt_args[@]}" update
+apt-get "${apt_args[@]}" install -y --no-install-recommends python3-venv dbus-x11 qml6-module-org-kde-layershell \
   libqt6webenginequick6 qml6-module-qtquick-effects qml6-module-qtquick-controls \
   qml6-module-qtmultimedia qml6-module-qtwebengine fonts-inter
 python3 -m venv /tmp/makos/venv
