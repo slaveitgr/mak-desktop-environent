@@ -46,6 +46,12 @@ with TemporaryDirectory() as folder:
         assert not evaluator.hasError(), evaluator.error().toString()
         return not undefined and bool(value)
 
+    # Export the requested window's menu, even while another app is active.
+    assert qml_boolean("JSON.parse(nativeMenuRows(windows[0]))[0].label === 'Finder'")
+    assert qml_boolean("JSON.parse(nativeMenuRows(windows[1]))[0].label === 'System Settings'")
+    assert qml_boolean("JSON.parse(nativeMenuRows(windows[0])).find(m => m.label === 'File').submenu.some(r => r.command === 'newwindow' && r.enabled && r.icon.length > 0)")
+    assert qml_boolean("JSON.parse(nativeMenuRows(windows[1])).find(m => m.label === 'View').submenu.some(r => r.command === 'settings:Appearance' && r.checked)")
+
     if '--native-windows' in sys.argv:
         assert qml_boolean("windows[0].nativeWindow && windows[1].nativeWindow && windows[0].nativeWindow !== windows[1].nativeWindow")
         assert qml_boolean("windows[0].nativeWindow.objectName === 'makOSNativeWindow' && windows[0].x === 0 && windows[0].y === 0")

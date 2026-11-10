@@ -8,9 +8,9 @@ pkg_check_modules(WAYLAND REQUIRED IMPORTED_TARGET wayland-client)
 qt_add_library(makoscutefish MODULE integration.cpp)
 target_link_libraries(makoscutefish PRIVATE Qt6::Core Qt6::Gui Qt6::GuiPrivate Qt6::Qml Qt6::WaylandClient PkgConfig::WAYLAND)
 qt_generate_wayland_protocol_client_sources(makoscutefish FILES
-    protocols/cutefish-main-menu-v1.xml
-    protocols/cutefish-surface-blur-v1.xml
-    protocols/cutefish-window-hints-v1.xml)
+    "${CMAKE_CURRENT_SOURCE_DIR}/protocols/cutefish-main-menu-v1.xml"
+    "${CMAKE_CURRENT_SOURCE_DIR}/protocols/cutefish-surface-blur-v1.xml"
+    "${CMAKE_CURRENT_SOURCE_DIR}/protocols/cutefish-window-hints-v1.xml")
 set_target_properties(makoscutefish PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/MakOS/Cutefish")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/qml/MakOS/Cutefish")
 configure_file(qmldir "${CMAKE_BINARY_DIR}/qml/MakOS/Cutefish/qmldir" COPYONLY)

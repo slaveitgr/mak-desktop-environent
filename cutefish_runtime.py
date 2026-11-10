@@ -51,6 +51,15 @@ class CutefishInstance(QObject):
 def exercise(app, root, engine):
     """Meaningful behavior checks under the actual compositor, without user data."""
     results = []
+    shell = engine.rootContext().contextProperty('Bridge').cutefishShell
+    applied = []
+    shell.applied.connect(applied.append)
+    def change_shell():
+        shell.setDockSize(48)
+        shell.setDockAutoHide(True)
+        shell.setDockGlassTint(.6)
+        shell.preferenceChanged('battery.showPercentage', 'true')
+    QTimer.singleShot(700, change_shell)
     def check(label, expression):
         qml = QQmlExpression(engine.rootContext(), root, expression)
         value = qml.evaluate()
@@ -83,6 +92,10 @@ def exercise(app, root, engine):
         bridges = root.findChildren(QObject, 'makOSCutefishBridge')
         if not bridges or not all(b.property('active') for b in bridges):
             print('FAIL: Cutefish protocol bridge not active', flush=True); app.exit(1); return
+        if not {'setIconSize', 'setVisibility', 'setGlassTint', 'setBatteryPercentage'}.issubset(applied):
+            print('FAIL: Cutefish shell settings did not acknowledge changes: ' + repr(applied), flush=True)
+            app.exit(1); return
+        results.append('real Dock and menu-bar D-Bus settings acknowledged')
         print('MAKOS_CUTEFISH_TEST=' + json.dumps(results), flush=True)
         app.quit()
     QTimer.singleShot(5300, finish)
