@@ -1,6 +1,6 @@
 # makOS Recovery development image
 
-The first screen follows the macOS Recovery layout: a menu bar, a centered
+The first screen follows the dark macOS Recovery references supplied by the user: a menu bar, a centered
 four-option utilities window, keyboard selection, double-click and Continue.
 The development preview uses original makOS vector artwork for three utility
 icons and the existing browser asset. It is not a verified pixel-identical copy.
@@ -23,7 +23,7 @@ to its previous auto-hide setting when choosing Try makOS.
 | Restore from Backup | Déjà Dup restore wizard | Compatible file backups; no Apple Time Machine restoration |
 | Install makOS | The ISO's Cutefish installer | Copies the remastered makOS filesystem; its installation wizard still uses Cutefish's interface and confirmation flow |
 | Web Browser | Chromium in a separate temporary profile | No Safari or Apple account services |
-| Disk Utility | GNOME Disks | Real disk tools, using their own authorization/confirmation UI |
+| Disk Utility | makOS Disk Utility | Read-only Linux inventory; explicit handoff to GNOME Disks for changes |
 
 Utilities also exposes Cutefish Terminal. These processes start only when the
 user selects them. Closing a utility returns to Recovery. Starting Recovery
@@ -37,6 +37,34 @@ The original Cutefish installer package is
 Its service copies `/run/live/medium/live/filesystem.squashfs`, validates disk
 and account choices, and asks polkit before installation. Its packages and
 licenses remain in the image.
+
+## Disk Utility
+
+The makOS window has a device/volume sidebar, View menu (hide sidebar, volumes
+only, all devices), capacity and mounted-filesystem usage, and a details table.
+Live scans use bounded asynchronous `lsblk --json` calls with explicit columns.
+Unavailable usage is shown as unavailable, rather than as an empty disk.
+Refresh preserves the selected device when it remains present.
+
+The toolbar opens operation information and an explicit **Open Disk Tools**
+button. That button selects the device in GNOME Disks; it does not erase or
+format it. Name, filesystem, partition map, authentication and final destructive
+confirmation still belong to GNOME Disks. No APFS formatting or macOS container
+support is claimed. The makOS erase sheet is not yet the complete native form.
+
+```sh
+./installer/run --preview --disk-utility
+```
+
+Preview uses clearly labelled example disks and cannot open system disk tools.
+The native Cutefish session exports this window's View menu to the actual topbar.
+
+## Installer and first-start references
+
+`visual-references.json` records the supplied Recovery/Disk Utility screenshots
+and the linked installation guides, including the Tahoe version linked from the
+macOS 27 article. The first-start country/account screens are reference material;
+a makOS first-start assistant is not yet implemented or enabled in this image.
 
 ## Building
 

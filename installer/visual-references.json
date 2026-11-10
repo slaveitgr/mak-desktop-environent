@@ -1,0 +1,19 @@
+{
+  "target": "macOS Tahoe visual behavior; makOS on Linux",
+  "user_images": ["5-5-1024x562.jpg", "7-4.jpg", "8-4-1024x511.jpg", "9-3.jpg", "10-2.jpg"],
+  "observations": {
+    "recovery": "Dark background, compact centered utility list with four rows, icons on the left, Continue at lower right, menus at the top. The supplied image labels macOS Sequoia.",
+    "disk_utility": "Dark sidebar with device/volume hierarchy, toolbar actions, capacity badge, storage bar and a two-column detail table. View offers sidebar and device/volume filters. Erase is a modal sheet.",
+    "tahoe_installer": "Centered large circular operating-system mark, title, short instruction and Continue; a subsequent screen selects the installation destination.",
+    "tahoe_first_start": "Wallpaper behind a light rounded panel, back navigation, country list or local-account form, Continue at lower right. Screens visually inspected in the browser."
+  },
+  "sources": [
+    "https://www.idownloadblog.com/2026/06/16/install-macos-27-on-partition/",
+    "https://www.idownloadblog.com/2025/06/10/install-macos-tahoe-on-another-partition/"
+  ],
+  "boundaries": [
+    "These are visual references, not authorization to run their disk-operation instructions.",
+    "No Apple account authentication, APFS formatting, or Time Machine compatibility is implemented.",
+    "First-start assistant and full installer restyling remain unimplemented."
+  ]
+}

@@ -12,12 +12,13 @@ class RecoveryTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls): cls.app = QCoreApplication.instance() or QCoreApplication([])
     def test_preview_never_starts_tools(self):
-        calls=[]; messages=[]
+        calls=[]; messages=[]; opened=[]
         c=RecoveryController(False, process_factory=lambda *_:calls.append(True))
         c.message.connect(lambda *args: messages.append(args))
+        c.openDisks.connect(lambda:opened.append(True))
         for row in CHOICES: c.launch(row['id'])
-        self.assertEqual(calls,[]); self.assertEqual(len(messages),4)
-        self.assertFalse(c.externalActive)
+        self.assertEqual(calls,[]); self.assertEqual(len(messages),3)
+        self.assertFalse(c.externalActive);self.assertEqual(opened,[True])
     def test_live_dispatch_uses_fixed_program_and_no_shell(self):
         c=RecoveryController(True, resolver=lambda name:'/usr/bin/'+name,process_factory=FakeProcess)
         c.launch('install'); p=c._process
@@ -29,7 +30,7 @@ class RecoveryTests(unittest.TestCase):
         messages=[];c=RecoveryController(True,resolver=lambda _:None,process_factory=FakeProcess)
         c.message.connect(lambda *args:messages.append(args))
         c.launch('install; reboot'); self.assertEqual(messages,[])
-        c.launch('disks');self.assertIsNone(c._process);self.assertEqual(len(messages),1)
+        c.launch('install');self.assertIsNone(c._process);self.assertEqual(len(messages),1)
     def test_failed_start_returns_to_recovery(self):
         c=RecoveryController(True,resolver=lambda n:'/usr/bin/'+n,process_factory=FakeProcess)
         c.launch('restore');self.assertEqual(c._process.command,('/usr/bin/deja-dup',['--restore']))

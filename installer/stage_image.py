@@ -18,7 +18,7 @@ def main():
     target=root/'opt/makos'
     if target.exists(): raise SystemExit('Refusing to overwrite an existing makOS installation.')
     target.mkdir(parents=True)
-    files=subprocess.check_output(['git','-C',str(source),'ls-files','-z']).decode().split('\0')
+    files=subprocess.check_output(['git','-c','safe.directory='+str(source),'-C',str(source),'ls-files','-z']).decode().split('\0')
     for name in filter(None,files):
         path=source/name
         if path.is_symlink(): raise SystemExit('Unexpected source symlink: '+name)
@@ -32,7 +32,7 @@ def main():
     lines += ['NAME="makOS"','PRETTY_NAME="makOS Development (Cutefish)"','ID=makos','ID_LIKE=debian','VERSION="0.1 Development"','VERSION_ID="0.1"']
     (root/'usr/lib/os-release').write_text('\n'.join(lines)+'\n')
     release=root/'etc/os-release';release.unlink(missing_ok=True);release.symlink_to('../usr/lib/os-release')
-    commit=subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
+    commit=subprocess.check_output(['git','-c','safe.directory='+str(source),'-C',str(source),'rev-parse','HEAD'],text=True).strip()
     (root/'etc/makos/live.json').write_text(json.dumps({'version':'0.1-development','source_commit':commit,'base':json.loads((source/'cutefish/base.json').read_text())},indent=2)+'\n')
     (root/'etc/xdg/autostart/cutefish-installer.desktop').write_text('''[Desktop Entry]
 Type=Application

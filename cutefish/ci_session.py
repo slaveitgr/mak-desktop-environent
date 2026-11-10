@@ -37,7 +37,7 @@ def main():
                     with (results / (kind + '.log')).open('w') as client_log:
                         result = subprocess.run([sys.executable, str(root / 'main.py'),
                             '--cutefish-app', kind, '--cutefish-test', '--root', str(runtime / 'workspace')],
-                            env=env, stdout=client_log, stderr=client_log, timeout=30)
+                            env=env, stdout=client_log, stderr=client_log, timeout=45)
                     trace = (results / (kind + '.log')).read_text()
                     required = ['.get_toplevel(', '.set_main_menu(', '.set_glass(', '.set_fullscreen_bars(',
                                 '.set_minimized(', '.set_fullscreen(', '.unset_fullscreen(', '.fullscreen_reveal(', 'MAKOS_CUTEFISH_TEST=']
@@ -47,12 +47,15 @@ def main():
                         raise RuntimeError(f'{kind}: exit={result.returncode}, missing={missing}, errors={errors}')
                     if compositor.poll() is not None: raise RuntimeError('Compositor exited during client checks')
                     passed[kind] = {'result':'passed', 'protocol_requests':{t:trace.count(t) for t in required[:-1]}}
-                with (results / 'recovery-native.log').open('w') as recovery_log:
-                    result = subprocess.run([sys.executable, str(root / 'installer/recovery.py'),
-                        '--native-shell', '--smoke-test'], env=env, stdout=recovery_log, stderr=recovery_log, timeout=20)
-                trace = (results / 'recovery-native.log').read_text()
-                assert result.returncode == 0 and '.set_main_menu(' in trace and 'PASS: makOS Recovery' in trace, trace[-2500:]
-                assert not any(token in trace for token in ('TypeError:', 'ReferenceError:', 'Expected token', 'FAIL:')), trace[-2500:]
+                for mode in ('recovery', 'disk'):
+                    path = results / (mode + '-native.log')
+                    args = [sys.executable, str(root / 'installer/recovery.py'), '--native-shell', '--smoke-test']
+                    if mode == 'disk': args.append('--disk-utility')
+                    with path.open('w') as recovery_log:
+                        result = subprocess.run(args, env=env, stdout=recovery_log, stderr=recovery_log, timeout=30)
+                    trace = path.read_text()
+                    assert result.returncode == 0 and '.set_main_menu(' in trace and 'PASS: makOS Recovery' in trace, trace[-2500:]
+                    assert not any(token in trace for token in ('TypeError:', 'ReferenceError:', 'Expected token', 'FAIL:')), trace[-2500:]
                 (results / 'integration.json').write_text(json.dumps(passed, indent=2) + '\n')
                 print('PASS: Finder and Settings native windows, app menus, glass requests and minimize/fullscreen/restore on Cutefish.')
             finally:

@@ -33,6 +33,7 @@ def is_live_system():
 
 
 class RecoveryController(QObject):
+    openDisks = Signal()
     message = Signal(str, str)
     externalChanged = Signal()
     returning = Signal()
@@ -59,6 +60,7 @@ class RecoveryController(QObject):
     @Slot(str)
     def launch(self, kind):
         if kind not in TOOLS or self._process is not None: return
+        if kind == 'disks': self.openDisks.emit(); return
         if not self._live:
             details = {
                 'install':'Boot the makOS live image to select a destination disk and start installation.',
@@ -111,6 +113,7 @@ def main(argv=None):
     parser.add_argument('--autostart', action='store_true')
     parser.add_argument('--smoke-test', action='store_true')
     parser.add_argument('--native-shell', action='store_true')
+    parser.add_argument('--disk-utility', action='store_true')
     parser.add_argument('--screenshot', type=Path)
     args = parser.parse_args(argv)
     live = is_live_system() and not args.preview and not args.smoke_test
@@ -121,10 +124,13 @@ def main(argv=None):
     app.setDesktopFileName('org.makos.Recovery')
     app.setFont(QFont('.AppleSystemUIFont' if sys.platform == 'darwin' else 'Inter', 13))
     controller = RecoveryController(live)
+    from disks import DiskInventory
+    disks = DiskInventory(preview=not live, parent=controller)
     engine = QQmlApplicationEngine()
     native = (live or args.native_shell) and bool(os.environ.get('WAYLAND_DISPLAY')) and (ROOT/'cutefish/build/qml/MakOS/Cutefish/qmldir').is_file()
     if native: engine.addImportPath(str(ROOT/'cutefish/build/qml'))
     engine.rootContext().setContextProperty('RecoveryBackend', controller)
+    engine.rootContext().setContextProperty('DiskBackend', disks)
     engine.rootContext().setContextProperty('nativeShell', native)
     engine.load(QUrl.fromLocalFile(str(ROOT/'installer/Recovery.qml')))
     if not engine.rootObjects(): return 1
@@ -140,10 +146,11 @@ def main(argv=None):
         QTimer.singleShot(500, lambda: dock.setDockAutoHide(True))
     def quit_recovery():
         if dock:
-            dock.setDockAutoHide(dock_visibility != 0)
+            dock.setDockVisibility(dock_visibility)
             QTimer.singleShot(150, app.quit)
         else: app.quit()
     controller.quitting.connect(quit_recovery)
+    if args.disk_utility: QTimer.singleShot(50, controller.openDisks.emit)
     if args.smoke_test or args.screenshot:
         def capture():
             def visual_names(item):
@@ -153,12 +160,19 @@ def main(argv=None):
                 print('FAIL: Recovery choices missing', flush=True); app.exit(1); return
             if args.screenshot:
                 args.screenshot.parent.mkdir(parents=True, exist_ok=True)
-                if not window.grabWindow().save(str(args.screenshot)): app.exit(1); return
-            if native:
+                target = window.findChild(QQuickWindow, 'makOSDiskUtility') if args.disk_utility else window
+                if not target or not target.grabWindow().save(str(args.screenshot)): app.exit(1); return
+            if native and not args.disk_utility:
                 bridge = window.findChild(QObject, 'cutefishRecoveryBridge')
                 if not bridge or not bridge.property('active'):
                     print('FAIL: Recovery native menu bridge inactive', flush=True); app.exit(1); return
-            print('PASS: makOS Recovery four-option chooser loaded', flush=True)
+            if args.disk_utility:
+                target = window.findChild(QQuickWindow, 'makOSDiskUtility')
+                if not target or not target.isVisible() or len(disks.rows) != 5: app.exit(1); return
+                if native:
+                    bridge = target.findChild(QObject, 'cutefishDiskBridge')
+                    if not bridge or not bridge.property('active'): app.exit(1); return
+            print('PASS: makOS Recovery four-option chooser loaded' + ('; Disk Utility loaded' if args.disk_utility else ''), flush=True)
             app.quit()
         QTimer.singleShot(700, capture)
     code = app.exec()

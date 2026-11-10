@@ -21,6 +21,11 @@ class CutefishContract(unittest.TestCase):
             ('org.cutefish.Dock','/Dock','org.cutefish.Dock','setVisibility',[1]),
             ('org.cutefish.Dock','/Dock','org.cutefish.Dock','setGlassTint',[.5])])
 
+    def test_smart_hide_visibility_is_preserved(self):
+        self.shell.setDockVisibility(2)
+        self.shell.setDockVisibility(3)
+        self.assertEqual(self.calls, [('org.cutefish.Dock','/Dock','org.cutefish.Dock','setVisibility',[2])])
+
     def test_invalid_values_are_not_sent(self):
         for size in (-1, 0, 65, 100000): self.shell.setDockSize(size)
         for tint in (-1, 2, float('nan'), float('inf')): self.shell.setDockGlassTint(tint)

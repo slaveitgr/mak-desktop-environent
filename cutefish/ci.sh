@@ -81,8 +81,10 @@ python3 -m venv --system-site-packages cutefish/build/venv
 cutefish/build/venv/bin/pip install chess==1.11.2
 export PATH="/tmp/makos/source/cutefish/build/venv/bin:$PATH"
 python3 -m unittest discover -s tests -p 'test_cutefish*.py' -v > /tmp/makos/results/client-tests.log 2>&1
-python3 -m unittest discover -s tests -p 'test_recovery.py' -v > /tmp/makos/results/recovery-tests.log 2>&1
+python3 -m unittest discover -s tests -p 'test_recovery*.py' -v > /tmp/makos/results/recovery-tests.log 2>&1
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --smoke-test > /tmp/makos/results/recovery-preview.log 2>&1
+QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --disk-utility --smoke-test > /tmp/makos/results/disk-preview.log 2>&1
+python3 tests/smoke_recovery.py > /tmp/makos/results/recovery-interaction.log 2>&1
 python3 cutefish/install_preview.py
 python3 distro/probe.py > /tmp/makos/results/readiness.json
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 tests/smoke_ui.py --native-windows > /tmp/makos/results/native-apps.log 2>&1

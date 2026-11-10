@@ -150,9 +150,19 @@ def exercise(app, root, engine):
         (6300, 'compositor confirms windowed restore', 'controller.windows[0].nativeWindow.visibility === 2', 'normal', True),
         (6600, 'menu model available', 'JSON.parse(controller.nativeMenuRows(controller.windows[0])).length >= 5', None, True),
     ]
-    for delay, label, code, state, active in steps:
-        QTimer.singleShot(delay, lambda label=label, code=code, state=state, active=active:
-                          guard(lambda: check(label, code, state, active)))
+    # Schedule each transition after its predecessor has actually run. Portal
+    # startup can block the event loop; independent absolute timers then become
+    # overdue together and may request fullscreen before the restore assertion.
+    def run_step(index):
+        if failed[0]: return
+        delay, label, code, state, active = steps[index]
+        guard(lambda: check(label, code, state, active))
+        if failed[0]: return
+        if index + 1 < len(steps):
+            QTimer.singleShot(steps[index + 1][0] - delay, lambda: run_step(index + 1))
+        else:
+            QTimer.singleShot(300, lambda: guard(check_services))
+    QTimer.singleShot(steps[0][0], lambda: run_step(0))
 
     def absent_services():
         # Upstream deliberately does not export Dock/Statusbar services with
@@ -165,7 +175,9 @@ def exercise(app, root, engine):
         shell.setDockAutoHide(True)
         shell.setDockGlassTint(.6)
         shell.preferenceChanged('battery.showPercentage', 'true')
-    QTimer.singleShot(6900, lambda: guard(absent_services))
+    def check_services():
+        absent_services()
+        QTimer.singleShot(1700, lambda: guard(finish))
 
     def finish():
         bridges = root.findChildren(QObject, 'makOSCutefishBridge')
@@ -175,4 +187,3 @@ def exercise(app, root, engine):
         print('MAKOS_CUTEFISH_TEST=' + json.dumps({'checks':results, 'windows':snapshots,
             'shell_settings':'missing-service handling verified; live-session success unverified'}), flush=True)
         app.quit()
-    QTimer.singleShot(8600, lambda: guard(finish))

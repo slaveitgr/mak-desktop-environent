@@ -44,7 +44,12 @@ class CutefishShell(QObject):
 
     @Slot(bool)
     def setDockAutoHide(self, enabled):
-        self._call('org.cutefish.Dock', '/Dock', 'setVisibility', [1 if enabled else 0])
+        self.setDockVisibility(1 if enabled else 0)
+
+    @Slot(int)
+    def setDockVisibility(self, mode):
+        if mode in (0, 1, 2):
+            self._call('org.cutefish.Dock', '/Dock', 'setVisibility', [int(mode)])
 
     @Slot(float)
     def setDockGlassTint(self, amount):
