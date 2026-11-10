@@ -44,7 +44,8 @@ def fetch(base, destination, workers):
             if have > expected:
                 raise RuntimeError('Invalid partial chunk: ' + str(target))
             request = urllib.request.Request(sources[(index + attempt) % len(sources)],
-                                            headers={'Range': f'bytes={start + have}-{end}'})
+                                            headers={'Range': f'bytes={start + have}-{end}',
+                                                     'User-Agent': 'makOS-development/0.8'})
             try:
                 with urllib.request.urlopen(request, timeout=40) as response:
                     if response.status != 206 or response.headers.get('Content-Range') != f'bytes {start + have}-{end}/{base["bytes"]}':
