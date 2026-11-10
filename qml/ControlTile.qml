@@ -60,6 +60,7 @@ Item {
                     color: tile.active ? "#f7f7fa" : tile.small ? "transparent" : tile.dark ? "#20ffffff" : "#18000000"
                     Icon { anchors.centerIn: parent; width: 23; height: 23; name: tile.definition.icon || "control"; color: tile.active ? (tile.entry.id === "focus" ? "#8267cf" : "#1688fa") : tile.panel.ink }
                     MouseArea {
+                        objectName:"controlToggle_"+tile.entry.id
                         anchors.fill:parent;visible:!tile.small && ["wifi","bluetooth","focus"].indexOf(tile.entry.id)>=0
                         onClicked:tile.panel.toggleControl(tile.entry.id)
                         Accessible.role:Accessible.Button;Accessible.name:"Toggle "+tile.definition.label
@@ -105,7 +106,8 @@ Item {
                 objectName: "controlSlider_" + tile.entry.id
                 ink: tile.panel.ink
                 symbol: tile.entry.id === "sound" ? "speaker" : "sun"
-                enabled: tile.entry.id === "sound" ? tile.panel.controls.soundAvailable : tile.entry.id !== "keyboardbrightness"
+                enabled: tile.entry.id === "sound" ? tile.panel.controls.soundAvailable : tile.panel.brightnessWritable
+                levelAvailable: tile.entry.id === "sound" ? tile.panel.controls.soundAvailable : !tile.panel.controls.nativeSystem || !!tile.panel.hardwareBrightness
                 Accessible.name: tile.entry.id === "sound" ? (tile.panel.controls.nativeSystem ? "System volume" : "Music volume") : "Desktop brightness"
                 value: tile.entry.id === "sound" ? (tile.panel.soundMuted ? 0 : tile.panel.volume) : tile.panel.brightness
                 onMoved: tile.panel.changeLevel(tile.entry.id, value)
@@ -116,7 +118,7 @@ Item {
             anchors.fill: parent
             visible: tile.mediaTile
             enabled: !tile.editing
-            Rectangle { x:13;y:13;width:36;height:36;radius:8;color:tile.dark?"#2cffffff":"#1a000000";Icon { anchors.centerIn:parent;width:19;height:19;name:"play";color:tile.panel.muted } }
+            Rectangle { visible:tile.entry.size==="medium";x:13;y:13;width:36;height:36;radius:8;color:tile.dark?"#2cffffff":"#1a000000";Icon { anchors.centerIn:parent;width:19;height:19;name:"play";color:tile.panel.muted } }
             Text {
                 x: 13; y: tile.entry.size === "medium" ? 58 : 12; width: parent.width - 26
                 text: tile.panel.controls.nowPlaying.title || "Not Playing"

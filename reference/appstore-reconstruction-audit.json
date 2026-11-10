@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-11-10",
+  "scope": "Native App Store shipped artifact metadata, existing compiled-resource ledger and controlled public catalog UI observation; independent makOS catalog frontend. No account, download, purchase, installation or update action.",
+  "identity": {
+    "bundle": "/System/Applications/App Store.app",
+    "version_from_existing_plist": "3.0 (1011.6.3.1.1)",
+    "binary": "/System/Applications/App Store.app/Contents/MacOS/App Store",
+    "sha256": "87ed7a12104d80a9652839bacbe357355cf26432cf7c7d4d45b05318726d70d2",
+    "selected_architecture": "x86_64",
+    "slice_offset": 16384,
+    "uuid": "A7372DB6-2843-34D7-A8D3-8D00A9EE4425",
+    "minimum_macos": "26.7",
+    "sdk": "26.7.2"
+  },
+  "shipped_evidence": {
+    "bundle": "../../work/rea-reference/appstore-native-2026-11-10.evidence.json",
+    "macho_parent": "ev_7029bdb1e55869447ad9466889439938b0d340287d267925841fc323d5f0abc8",
+    "macho_summary": "ev_6197e2ca8d1cd0eefdaf6372387b97584032dfde7d5616d23c4e8b17b751276e",
+    "dispatch": "ev_fb56ac610a3bd5f2d45853919a9bde5c1e552f69b9b54b48f8e34d92898f0ed3",
+    "dependency_count": 75,
+    "observed_dependencies": [
+      "AppKit",
+      "SwiftUI",
+      "JetEngine",
+      "JetUI",
+      "AppStoreUI",
+      "AppStoreKit",
+      "AppStoreDaemon",
+      "AppStoreFoundation",
+      "StoreJavaScript",
+      "AppleMediaServices"
+    ],
+    "observed_import_examples": [
+      "JetUI CollectionContent / NSCollectionView",
+      "JetUI DiffableDataStatePresenter",
+      "AppStoreKit TodayCardMediaAppIcon",
+      "AppStoreKit ConfigurableOfferButton"
+    ],
+    "limits": [
+      "Imports establish dependencies, not complete behavioral architecture.",
+      "Mach-O imports/exports are not exhaustive for stripped/toolchain-hidden names.",
+      "Dispatch decode max_records=300 exhausted on protocol metadata; no complete class/vtable mapping.",
+      "No decompilation, original source recovery or private framework protocol reproduction."
+    ]
+  },
+  "prior_resource_reference": {
+    "ledger": "reference/coverage.json appstore component",
+    "bundle": "../../work/rea-reference/appstore.evidence.json",
+    "menu_records": 33,
+    "control_records": 94,
+    "target_action_records": 24,
+    "localized_entries": 52,
+    "scope": "Partial static resources, not final dynamic store layout"
+  },
+  "native_ui": {
+    "method": "CUA native AX plus screenshots viewed in conversation; screenshots containing account identity were not copied to project artifacts. Persisted report excludes account and ownership/purchase-history data.",
+    "observed_sections": [
+      "Discover",
+      "Arcade",
+      "Create",
+      "Work",
+      "Play",
+      "Develop",
+      "Categories",
+      "Updates"
+    ],
+    "scenarios": [
+      {
+        "action": "Inspect Discover",
+        "observed": "Sidebar search and section selection; large editorial hero followed by smaller feature cards with horizontal paging controls."
+      },
+      {
+        "action": "Select Work",
+        "observed": "Two visible feature cards with label/headline/subtitle above artwork; compact app rows in two columns, icon/title/subtitle and separate offer control."
+      },
+      {
+        "action": "Open a public app by its title/card, not offer control",
+        "observed": "Detail page retains sidebar, adds Back and Share toolbar, app icon/title/subtitle and offer, metadata badges, screenshot carousel, platform row and description."
+      },
+      {
+        "action": "Back",
+        "observed": "Returns to Work category content."
+      },
+      {
+        "action": "Select Categories",
+        "observed": "Three-column category list and subsequent editorial app rows."
+      },
+      {
+        "action": "Select Discover",
+        "observed": "Original section restored at end."
+      }
+    ],
+    "layout_observations": {
+      "source_screenshot_size": [
+        1180,
+        724
+      ],
+      "sidebar_right_approx_px": 228,
+      "content_left_approx_px": 268,
+      "section_heading_approx_px": 32,
+      "work_visible_feature_columns": 2,
+      "categories_visible_columns": 3
+    },
+    "unobserved": [
+      "Search result behavior",
+      "Updates/account screens",
+      "Install/purchase/download behaviors",
+      "Pixel-perfect scaling/light appearance comparison",
+      "Measured animation timing/curves"
+    ]
+  },
+  "implementation": {
+    "engine": "Independent Qt Quick frontend over existing makOS applicationCatalog; no Apple service or Linux package installation backend.",
+    "files": [
+      "qml/AppStoreApp.qml",
+      "qml/AppStoreCatalog.js",
+      "qml/SuiteWindow.qml appstore routing",
+      "qml/AppMenus.js appstore branch"
+    ],
+    "working": [
+      "Separate App Store component, preserving AppsLibrary for Games/launcher",
+      "Sidebar sections, Discover hero, feature cards, compact app rows",
+      "Search and category filtering",
+      "App detail and Back restoring section/query/category/scroll",
+      "Open launches an included makOS app",
+      "Store menu dispatches Back and section navigation"
+    ],
+    "truthful_catalog": [
+      "Only included makOS application identities",
+      "Descriptions name current functional limitations",
+      "No copied third-party offerings, fabricated ratings, prices or download counts",
+      "Arcade and package updates state their unconnected status"
+    ],
+    "remaining": [
+      "Linux package discovery/install/update backend",
+      "Complete App Store UI behavior and accessibility parity",
+      "App screenshot galleries; current detail uses first-party app icon and capability description",
+      "Native animation timing reconstruction",
+      "Exact artwork, native sidebar symbols, typography/material and pixel parity"
+    ]
+  },
+  "verification": {
+    "tests/verify_appstore.py": "passed: actual Qt keyboard search/Return, pointer section/category/detail/Back/Open, category restoration and Store menu commands; zero QML warnings",
+    "environment": "macOS Qt offscreen software renderer, local tempdata; not Linux compositor runtime",
+    "render": "../../work/rea-reference/makos-appstore-work-fixture.png",
+    "render_limits": "Common shader-tinted Icon components do not render in this software capture; exact native GPU appearance and material were not verified."
+  },
+  "source_sha256": {
+    "qml/AppStoreApp.qml": "02000cdb980341610e77ef2d13c4f8a185ea26e03e119c0d0d182ae6f4d0854f",
+    "qml/AppStoreCatalog.js": "0acd45332a34307d4155ade520b64abf091e5f8642133a02cb62b83eb6ba0f1b",
+    "tests/verify_appstore.py": "aec5e4e171ced41b1c226e1c42fc74c4a3ef19b0890c4aeedf293ce3d8fc1e46"
+  }
+}

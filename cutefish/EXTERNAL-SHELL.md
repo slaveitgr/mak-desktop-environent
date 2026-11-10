@@ -60,3 +60,15 @@ the compositor emits `org.cutefish.WindowDebug1.LauncherToggleRequested`, which
 mode never emits this signal. A compiled state-machine test covers repeats,
 combinations, release order and locking; the native integration gate drives real
 key injection and requires toggling/closing without a new application window.
+
+In external mode the original `org.cutefish.Osd` hardware-key methods still
+perform audio/backlight changes. Only their native panel presentation is
+suppressed. `LevelChanged(s kind, d value, b muted, s label, b available)` reports
+observations from PipeWire or the brightness service, never the OSD's pending
+requested values. `CutefishShellState.hardwareLevelChanged` forwards that signal.
+The first report can contain the previously observed value while an asynchronous
+write completes; observed changes follow. Repeated identical observations are
+deduplicated except for a new hardware-key request, so a key at the limit can
+still show the true level. A missing audio/backlight source does not fabricate
+an output or a successful change. Physical volume/brightness keys and hardware
+OSD timing remain unverified until a Linux device trial.

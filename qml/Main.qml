@@ -12,6 +12,7 @@ ApplicationWindow {
     signal shellClosing()
     property bool layerShellMode: false
     property var nativeShellState: null
+    property var nativeOsd: null
     readonly property bool externalShellMode: typeof useCutefishShell !== "undefined" && useCutefishShell
     property alias controller: desktop
     property alias topbarView: topChrome
@@ -30,6 +31,10 @@ ApplicationWindow {
     function activateCutefishClient() {
         let w = desktop.windows.find(item => !item.closing);
         if (w) desktop.focusWindow(w);
+    }
+    function handleNativeLaunch(action, argument) {
+        if (action === "open-folder") desktop.openFolder(argument);
+        else if (action === "settings-page") desktop.openSettings(argument);
     }
     onClosing: function(event) {
         if (Bridge.session.enabled && !desktop.sessionEnding) {
@@ -371,8 +376,7 @@ ApplicationWindow {
                 window.forceActiveFocus();
         }
         function newWindow(path) {
-            if (externalShellMode) { Bridge.launchCutefishApp("finder"); return; }
-            if (cutefishMode && cutefishApp !== "finder") { Bridge.launchCutefishApp("finder"); return; }
+            if (externalShellMode || (cutefishMode && cutefishApp !== "finder")) { Bridge.launchFinder(path===undefined ? Bridge.initialFolder : path); return; }
             let browser = Bridge.createBrowser(path === undefined ? Bridge.initialFolder : path);
             let w = finderComponent.createObject(windowLayer, {
                 desktop: desktop,
@@ -388,8 +392,7 @@ ApplicationWindow {
             focusWindow(w);
         }
         function openSettings(page) {
-            if (externalShellMode) { Bridge.launchCutefishApp("settings"); return; }
-            if (cutefishMode && cutefishApp !== "settings") { Bridge.launchCutefishApp("settings"); return; }
+            if (externalShellMode || (cutefishMode && cutefishApp !== "settings")) { Bridge.launchSettings(page || ""); return; }
             let w = windows.find(item => item.appKind === "settings" && !item.closing);
             if (!w) {
                 w = settingsComponent.createObject(windowLayer, {
@@ -893,7 +896,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 z: 100000
                 color: "black"
-                opacity: (1-Math.max(0.15,Math.min(1,Number(desktop.preference("display.brightness","1")) || 0.15)))*0.65
+                opacity: desktop.cutefishMode || desktop.externalShellMode ? 0 : (1-Math.max(0.15,Math.min(1,Number(desktop.preference("display.brightness","1")) || 0.15)))*0.65
                 enabled: false
             }
         }
@@ -1017,8 +1020,15 @@ ApplicationWindow {
             target:desktop.shellState
             function onChanged(){if(menu.opened && desktop.externalShellMode && desktop.openMenuName!=="apple")menu.rows=desktop.menuRows(desktop.openMenuName);}
             function onLauncherToggleRequested(){desktop.toggleApps();}
+            function onHardwareLevelChanged(kind,value,muted,label,available) {
+                let osd=app.nativeOsd || levelOSD;
+                if (systemPanel.hardwareLevelChanged(kind,value,muted,label,available)) osd.dismiss();
+                else osd.present(kind,value,muted,label,available);
+            }
         }
         AppsOverlay { id: appsOverlay; desktop: desktop; backdrop: scene; parent: desktop.shellOverlay }
+        LevelOSD { id: levelOSD; objectName: "hardwareLevelOSD"; desktop: desktop; backdrop: scene; parent: desktop.shellOverlay }
+        Connections { target: systemPanel; function onOpened(){levelOSD.dismiss(); if(app.nativeOsd)app.nativeOsd.dismiss();} }
 
         // Qt Quick Popups receive pointer events in Overlay.overlay. Track the
         // bar in that same overlay while a menu is open, so hovering adjacent
@@ -1535,6 +1545,8 @@ ApplicationWindow {
         }
         Component.onCompleted: {
             if (typeof externalShellMode !== "undefined" && externalShellMode) { /* The shell opens native clients on demand. */ }
+            else if (cutefishMode && cutefishApp === "finder" && typeof startFolder !== "undefined" && startFolder !== null) newWindow(startFolder);
+            else if (cutefishMode && cutefishApp === "settings") openSettings(typeof settingsStartPage !== "undefined" ? settingsStartPage : "");
             else if (cutefishMode) openApplication(cutefishApp);
             else newWindow();
             if (startSettings && !cutefishMode)

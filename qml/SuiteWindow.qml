@@ -24,6 +24,7 @@ DesktopWindow {
         parent: win.clientItem
         anchors.fill: parent
         Text {
+            visible: win.appKind !== "appstore"
             x: win.sidebarWidth > 0 ? win.sidebarWidth + 24 : 110
             y: 15
             width: Math.max(80, parent.width - x - 65)
@@ -45,7 +46,8 @@ DesktopWindow {
                     : id === "photobooth" ? "PhotoBoothApp.qml" : id === "terminal" ? "TerminalApp.qml"
                     : id === "safari" || id === "maps" ? "WebApp.qml"
                     : id === "photos" || id === "music" ? "MediaApp.qml"
-                    : id === "phone" || id === "facetime" ? "CallsApp.qml" : "AppsLibrary.qml";
+                    : id === "phone" || id === "facetime" ? "CallsApp.qml"
+                    : id === "appstore" ? "AppStoreApp.qml" : "AppsLibrary.qml";
                 setSource(file, {host: win});
             }
             onStatusChanged: if (status === Loader.Error) win.desktop.showInfo(win.windowTitle, "The application could not be loaded. Check the application log.")

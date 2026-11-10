@@ -12,6 +12,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QDBusPendingReply>
 #include <functional>
+#include <cmath>
 
 // Session-local compositor bridge. All window actions name an observed window;
 // menu commands retain their owning window ID and cannot target another app.
@@ -26,6 +27,8 @@ public:
     explicit CutefishShellState(QObject *parent=nullptr):QObject(parent) {
         QDBusConnection::sessionBus().connect("org.cutefish.WindowDebug1", "/org/cutefish/WindowDebug1",
             "org.cutefish.WindowDebug1", "LauncherToggleRequested", this, SLOT(receiveLauncherToggle()));
+        QDBusConnection::sessionBus().connect("org.cutefish.Osd", "/Osd", "org.cutefish.Osd", "LevelChanged",
+            this, SLOT(receiveHardwareLevel(QString,double,bool,QString,bool)));
         m_timer.setInterval(300);connect(&m_timer,&QTimer::timeout,this,&CutefishShellState::refresh);m_timer.start();
         QTimer::singleShot(0,this,&CutefishShellState::refresh);
     }
@@ -73,8 +76,13 @@ public:
 signals:
     void changed();
     void launcherToggleRequested();
+    void hardwareLevelChanged(const QString& kind,double value,bool muted,const QString& label,bool available);
 private slots:
     void receiveLauncherToggle(){emit launcherToggleRequested();}
+    void receiveHardwareLevel(const QString& kind,double value,bool muted,const QString& label,bool available){
+        if(!QStringList{"volume","brightness","microphone","keyboardBrightness"}.contains(kind)||!std::isfinite(value)||value<0||value>1)return;
+        emit hardwareLevelChanged(kind,value,muted,label,available);
+    }
 private:
     void fail(const QString& error){m_error=error;m_timer.setInterval(3000);emit changed();}
     void call(const QString& method,const QVariantList& arguments,std::function<void(QDBusMessage)> done){

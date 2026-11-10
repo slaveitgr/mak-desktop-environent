@@ -14,6 +14,7 @@ class ShellExtension : public QWaylandClientExtensionTemplate<ShellExtension>, p
 public:
     ShellExtension() : QWaylandClientExtensionTemplate(2) {}
     ~ShellExtension() { if (isActive()) destroy(); }
+    uint32_t negotiatedVersion() const { return QtWayland::cutefish_shell_v1::version(); }
 };
 class ShellMetadata : public QtWayland::cutefish_shell_surface_v1 {
 public:
@@ -53,7 +54,7 @@ public:
         if(w)w->installEventFilter(this);
         schedule();emit changed();
     }
-    void setRole(int v) { if(v<0||v>2||v==m_role)return;m_role=v;schedule();emit changed(); }
+    void setRole(int v) { if(v<0||v>3||v==m_role)return;m_role=v;schedule();emit changed(); }
     void setPosition(QPoint v) { if(v==m_position)return;m_position=v;schedule();emit changed(); }
     void setExclusiveZone(int v) { v=qBound(0,v,4096);if(v==m_zone)return;m_zone=v;schedule();emit changed(); }
     void setEdge(int v) { if(v<0||v>3||v==m_edge)return;m_edge=v;schedule();emit changed(); }
@@ -72,7 +73,7 @@ protected:
 private:
     void schedule() { if(m_scheduled)return;m_scheduled=true;QTimer::singleShot(0,this,[this]{m_scheduled=false;apply();}); }
     void apply() {
-        if(!m_window||!m_window->handle()||!m_extension.isActive()||m_extension.version()<2)return;
+        if(!m_window||!m_window->handle()||!m_extension.isActive()||m_extension.negotiatedVersion()<2)return;
         auto s=static_cast<wl_surface*>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface",m_window));
         if(!s)return;
         if(s!=m_bound) {

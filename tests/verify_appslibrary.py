@@ -15,8 +15,16 @@ import shiboken6
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from applications import APPLICATIONS
+from linux_session import LinuxSession
 
 class Bridge(QObject):
+    def __init__(self):
+        super().__init__()
+        self._session = LinuxSession(False, self)
+
+    @Property(QObject, constant=True)
+    def session(self): return self._session
+
     @Property('QVariantList', constant=True)
     def applicationCatalog(self):
         return [dict(id=a['id'], name=a['name'], image=a['id'] + '.png') for a in APPLICATIONS]

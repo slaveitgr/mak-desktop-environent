@@ -21,6 +21,9 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
     if sys.platform!='linux' or os.environ.get('MAKOS_EXTERNAL_SHELL_TEST')!='1' or ROOT!=Path('/tmp/makos/source'):
         raise SystemExit('Use the isolated external-shell CI check.')
+    from PySide6.QtCore import QCoreApplication
+    from PySide6.QtDBus import QDBusConnection,QDBusMessage
+    qt=QCoreApplication.instance() or QCoreApplication([])
     commit=os.environ.get('MAKOS_SOURCE_COMMIT','')
     if not re.fullmatch('[0-9a-f]{40}',commit):raise SystemExit('Missing source commit for the validation report.')
     output=args.output.resolve();output.mkdir(parents=True,exist_ok=True)
@@ -165,6 +168,44 @@ def main():
                 assert {w['id'] for w in windows() if w['role']=='normal' and not w['popup']}==normal_before
                 report['checks']['lone_super_launcher']={'left_and_right':True,'press_waits_for_release':True,
                     'combination_does_not_toggle':True,'toggle_and_escape_close':True,'desktop_launcher_route':True,'no_new_application_window':True}
+                # no-DRM mode has no hardware Osd service. A private fixture
+                # sender tests native host/input behavior, not physical levels.
+                bus=QDBusConnection.sessionBus()
+                assert bus.registerService('org.cutefish.Osd'),'Unexpected hardware OSD service on isolated headless test bus'
+                try:
+                    def level(value=.42,available=True):
+                        message=QDBusMessage.createSignal('/Osd','org.cutefish.Osd','LevelChanged')
+                        message.setArguments(['volume',value,False,'CI audio fixture',available])
+                        assert bus.send(message)
+                        qt.processEvents()
+                    second=subprocess.Popen([sys.executable,str(ROOT/'main.py'),'--cutefish-app','settings','--root',str(home)],
+                                            env=env,stdout=finder_log,stderr=finder_log,start_new_session=True)
+                    processes.append(second)
+                    settings=wait_for(lambda:next((w for w in windows() if w['appId']=='org.makos.Settings' and w['role']=='normal' and not w['popup']),None),'Settings for OSD click-through')
+                    settings_id=int(settings['id'])
+                    width=min(920,bounds[2]);height=min(640,work[3])
+                    assert call('SetWindowBounds','tiiii',settings_id,bounds[0]+bounds[2]-width,work[1],width,height)
+                    assert call('SetWindowBounds','tiiii',identity,bounds[0]+20,work[1]+150,min(700,bounds[2]-40),min(420,work[3]-150))
+                    assert call('ActivateWindow','t',identity)
+                    wait_for(lambda:any(int(w['id'])==identity and w['active'] for w in finder_windows()),'Finder focus before OSD')
+                    time.sleep(.2)
+                    level()
+                    osd=wait_for(lambda:next((w for w in windows() if w['role']=='osd' and w['visible']),None),'trusted native OSD surface')
+                    assert not osd['popup'] and not osd['active'] and osd['appId']=='org.makos.Shell',osd
+                    assert osd['bounds'][2:]==[290,62],osd
+                    assert any(int(w['id'])==identity and w['active'] for w in finder_windows()),'OSD stole keyboard focus'
+                    x,y,width,height=osd['bounds']
+                    assert call('PointerMotion','dd',x+width/2,y+height/2)
+                    assert call('PointerButton','ub',272,True);assert call('PointerButton','ub',272,False)
+                    wait_for(lambda:any(int(w['id'])==settings_id and w['active'] for w in windows()),'pointer passes through OSD to Settings')
+                    report['checks']['native_osd_focus']={'fixture_level_event':True,'hardware_test':False,'surface':osd,
+                                                         'no_focus_theft':True,'click_through':True}
+                    level(available=False)
+                    wait_for(lambda:not any(w['role']=='osd' and w['visible'] for w in windows()),'unavailable source dismisses native OSD')
+                    assert call('CloseWindow','t',settings_id)
+                    wait_for(lambda:not any(int(w['id'])==settings_id for w in windows()),'OSD fixture Settings window closes')
+                finally:
+                    bus.unregisterService('org.cutefish.Osd')
                 assert role_set()
                 report['result']='passed'
                 print('PASS: single native makOS shell, real Finder menu action, reserved work area, right Dock target, minimize/restore/fullscreen, native menu/Control Center popups and compositor screenshots.')

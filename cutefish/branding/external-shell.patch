@@ -102,16 +102,17 @@
      </enum>
  
      <enum name="role">
-@@ -72,6 +75,8 @@
+@@ -72,6 +75,9 @@
          compositor's wallpaper, and covering the output.
        </description>
        <entry name="desktop" value="0" summary="the desktop, below everything"/>
 +      <entry name="panel" value="1" since="2" summary="a menu bar above application windows"/>
 +      <entry name="dock" value="2" since="2" summary="a Dock above application windows"/>
++      <entry name="osd" value="3" since="2" summary="a noninteractive hardware level display"/>
      </enum>
  
      <enum name="focus_policy">
-@@ -134,5 +139,35 @@
+@@ -134,5 +140,35 @@
        <arg name="width" type="int"/>
        <arg name="height" type="int"/>
      </event>
@@ -160,7 +161,7 @@
  //
 --- a/src/wayland/protocols/cutefish_shell.cpp
 +++ b/src/wayland/protocols/cutefish_shell.cpp
-@@ -34,6 +34,10 @@
+@@ -34,6 +34,12 @@
      switch (role) {
      case CUTEFISH_SHELL_SURFACE_V1_ROLE_DESKTOP:
          return WindowRole::Desktop;
@@ -168,10 +169,12 @@
 +        return WindowRole::Panel;
 +    case CUTEFISH_SHELL_SURFACE_V1_ROLE_DOCK:
 +        return WindowRole::Dock;
++    case CUTEFISH_SHELL_SURFACE_V1_ROLE_OSD:
++        return WindowRole::Osd;
      default:
          return std::nullopt;
      }
-@@ -65,6 +69,7 @@
+@@ -65,6 +71,7 @@
          m_outputsChanged.reset();
          m_zonesChanged.reset();
          m_resource = nullptr;
@@ -179,17 +182,17 @@
          if (m_surface) {
              m_surface->removeSurfaceObserver(this);
              // Only the stored metadata is dropped. A window that is still
-@@ -81,6 +86,9 @@
+@@ -81,6 +88,9 @@
      void setRole(WindowRole role)
      {
          m_metadata.role = role;
-+        if (role == WindowRole::Panel || role == WindowRole::Dock)
++        if (role == WindowRole::Panel || role == WindowRole::Dock || role == WindowRole::Osd)
 +            m_metadata.focusPolicy = FocusPolicy::NoFocus;
 +        updateExclusiveZone();
          placeOnOutput();
          apply();
          sendWorkArea();
-@@ -94,22 +102,54 @@
+@@ -94,22 +104,54 @@
  
      bool setOutput(const std::string& name)
      {
@@ -250,7 +253,7 @@
      void activate()
      {
          if (!m_surface)
-@@ -125,11 +165,23 @@
+@@ -125,11 +167,23 @@
      {
          if (surface != m_surface)
              return;
@@ -274,7 +277,7 @@
      void apply()
      {
          if (m_surface)
-@@ -190,6 +242,9 @@
+@@ -190,6 +244,9 @@
      compositor::Surface* m_surface = nullptr;
      wl_resource* m_resource = nullptr;
      ShellWindowMetadata m_metadata;
@@ -284,7 +287,7 @@
      std::optional<base::Rect> m_sentWorkArea;
      base::Subscription m_outputsChanged;
      base::Subscription m_zonesChanged;
-@@ -243,12 +298,67 @@
+@@ -243,12 +300,67 @@
      }
  }
  

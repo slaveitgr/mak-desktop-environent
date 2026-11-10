@@ -93,6 +93,7 @@ FocusScope {
     function launch(id) {
         if (!id)
             return;
+        if (launcher && host.launchApp) { host.launchApp(id); return; }
         if (launcher && host.dismiss) host.dismiss();
         host.desktop.openApplication(id);
         if (launcher && !host.dismiss)

@@ -26,6 +26,10 @@ sudo rm -f "$MAKOS_ROOTFS/etc/resolv.conf"
 sudo cp /etc/resolv.conf "$MAKOS_ROOTFS/etc/resolv.conf"
 cleanup() {
   sudo cp -a "$MAKOS_ROOTFS/tmp/makos/results/." ci-results/ 2>/dev/null || true
+  # Plymouth writes root-only logs; the runner must be able to upload the
+  # disposable validation outputs even when an earlier build step failed.
+  sudo chown -R "$(id -u):$(id -g)" ci-results/ 2>/dev/null || true
+  chmod -R u+rwX ci-results/ 2>/dev/null || true
   for point in dev/pts dev/shm dev proc; do sudo umount "$MAKOS_ROOTFS/$point" 2>/dev/null || true; done
 }
 trap cleanup EXIT
@@ -99,10 +103,18 @@ export PYTHONPATH="/tmp/makos/source"
 python3 -m unittest discover -s tests -p 'test_cutefish*.py' -v > /tmp/makos/results/client-tests.log 2>&1
 python3 -m unittest discover -s tests -p 'test_recovery*.py' -v > /tmp/makos/results/recovery-tests.log 2>&1
 python3 -m unittest discover -s tests -p 'test_finder*.py' -v > /tmp/makos/results/finder-tests.log 2>&1
-python3 -m unittest -v tests.test_browser tests.test_linux_settings tests.test_native_applications tests.test_linux_session tests.test_makos_installer > /tmp/makos/results/functional-contract-tests.log 2>&1
+python3 -m unittest -v tests.test_browser tests.test_linux_settings tests.test_native_applications tests.test_linux_session tests.test_makos_installer tests.test_downloads tests.test_system_info > /tmp/makos/results/functional-contract-tests.log 2>&1
 QT_QUICK_BACKEND=software python3 tests/verify_linux_settings_ui.py > /tmp/makos/results/settings-ui-fixtures.log 2>&1
 QT_QUICK_BACKEND=software python3 tests/verify_control_linux.py > /tmp/makos/results/control-ui-fixtures.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_control_tahoe.py > /tmp/makos/results/control-tahoe-ui-fixtures.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_apps_overlay.py > /tmp/makos/results/apps-overlay-fixtures.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_shared_appearance.py > /tmp/makos/results/shared-appearance-fixtures.log 2>&1
 QT_QUICK_BACKEND=software python3 tests/verify_makos_installer_ui.py > /tmp/makos/results/installer-ui-fixtures.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_about_system_info.py > /tmp/makos/results/about-ui-fixtures.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_appstore.py > /tmp/makos/results/appstore-ui-fixtures.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_web_page.py > /tmp/makos/results/browser-page.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_web_downloads.py > /tmp/makos/results/browser-downloads.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_browser_profiles.py > /tmp/makos/results/browser-profiles.log 2>&1
 python3 tests/smoke_installer_dbus_wire.py > /tmp/makos/results/installer-dbus-wire.log 2>&1
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --smoke-test > /tmp/makos/results/recovery-preview.log 2>&1
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --disk-utility --smoke-test > /tmp/makos/results/disk-preview.log 2>&1

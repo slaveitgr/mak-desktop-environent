@@ -54,7 +54,7 @@ def main():
     subprocess.run(['c++', '-std=c++20', '-Wall', '-Wextra', '-Werror',
                     str(directory/'test_lone_modifier_tap.cpp'), '-o', str(shortcut_test)], check=True)
     subprocess.run([str(shortcut_test)], check=True)
-    patches = [directory/'menu-bar-brand-icon.patch', directory/'external-shell.patch']
+    patches = [directory/'menu-bar-brand-icon.patch', directory/'external-shell.patch', directory/'osd-external.patch']
     for patch in patches:
         subprocess.run(['patch', '--batch', '--forward', '--fuzz=0', '-p1', '-i', str(patch)], cwd=upstream, check=True)
     assert (upstream/'protocols/cutefish-shell-v1.xml').read_bytes() == (source/'cutefish/protocols/cutefish-shell-v1.xml').read_bytes()

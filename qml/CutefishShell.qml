@@ -12,6 +12,7 @@ Main {
     minimumWidth: 1; minimumHeight: 1
     title: "makOS Desktop"
     nativeShellState: shellState
+    nativeOsd: osdWindow
     CutefishShellState { id: shellState }
     CutefishShellSurface { window: shell; role: 0 }
 
@@ -52,11 +53,35 @@ Main {
             Image { anchors.fill:parent; source:Bridge.assetRoot+(shell.controller.wallpaperIsDark?"wallpaper-dark.jpg":"wallpaper-light.jpg"); fillMode:Image.PreserveAspectCrop }
         }
     }
+    ApplicationWindow {
+        id: osdWindow
+        objectName: "makOSLevelOSDSurface"
+        transientParent: null
+        visible: osdState.active
+        color: "transparent"
+        width: 290; height: 62
+        flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowDoesNotAcceptFocus | Qt.WindowTransparentForInput
+        title: "makOS Hardware Level"
+        property alias kind: osdState.kind
+        property alias label: osdState.label
+        property alias value: osdState.value
+        property alias muted: osdState.muted
+        property alias levelAvailable: osdState.levelAvailable
+        property alias dismissalInterval: osdState.dismissalInterval
+        function present(kind,value,muted,label,available) { return osdState.present(kind,value,muted,label,available); }
+        function dismiss() { osdState.dismiss(); }
+        HardwareLevelState { id: osdState }
+        CutefishShellSurface {
+            window: osdWindow; role: 3; exclusiveZone: 0
+            position: Qt.point(Screen.virtualX + Math.max(8, shell.width-osdWindow.width-28), Screen.virtualY+41)
+        }
+        LevelOSDContent { anchors.fill:parent;level:osdState;desktop:shell.controller }
+    }
     Component.onCompleted: {
         topbarView.parent=bar.contentItem;
         dockView.parent=dockWindow.contentItem;
         dockView.backdrop=dockBackdrop;
         controller.shellOverlay=bar.contentItem;
     }
-    onShellClosing: { bar.close(); dockWindow.close(); }
+    onShellClosing: { bar.close(); dockWindow.close(); osdWindow.dismiss(); }
 }

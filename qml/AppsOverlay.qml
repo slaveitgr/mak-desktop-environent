@@ -6,6 +6,7 @@ MaterialPopup {
     objectName: "appsOverlay"
     required property var desktop
     required property Item backdrop
+    property string pendingApplication: ""
     width: Math.min(1040, desktop.width - 64)
     height: Math.min(740, desktop.height - 130)
     x: Math.round((desktop.width-width)/2)
@@ -15,7 +16,14 @@ MaterialPopup {
     focus: true
     reducedMotion: desktop.reduceMotion
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-    onOpened: { Bridge.session.refreshApplications(); library.focusSearch(true); }
+    onOpened: { pendingApplication=""; Bridge.session.refreshApplications(); library.focusSearch(true); }
+    onClosed: {
+        if (pendingApplication !== "") {
+            let application = pendingApplication;
+            pendingApplication = "";
+            Qt.callLater(function(){ launcher.desktop.openApplication(application); });
+        }
+    }
     background: Glass {
         backdrop: launcher.backdrop; sampleX: launcher.x; sampleY: launcher.y
         dark: launcher.desktop.dark; corner: 30; tint: 0.62; frost: 0.98
@@ -30,6 +38,7 @@ MaterialPopup {
         readonly property color ink: dark ? "#f5f5f7" : "#24252a"
         readonly property color muted: dark ? "#c1c1ca" : "#666670"
         function dismiss() { launcher.close(); }
+        function launchApp(id) { launcher.pendingApplication=id; launcher.close(); }
     }
     contentItem: AppsLibrary { id: library; host: launcherHost }
 }

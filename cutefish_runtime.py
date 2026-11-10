@@ -10,7 +10,7 @@ from PySide6.QtQml import QQmlExpression
 
 
 class CutefishInstance(QObject):
-    def __init__(self, app, kind, root):
+    def __init__(self, app, kind, root, request=None):
         super().__init__(app)
         identity = hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:16]
         runtime = Path(os.environ['XDG_RUNTIME_DIR'])
@@ -19,6 +19,9 @@ class CutefishInstance(QObject):
         self.server = QLocalServer(self)
         self.server.setSocketOptions(QLocalServer.UserAccessOption)
         self.root = None
+        self.kind = kind
+        self.request = request or {'action':'activate'}
+        self._queued = []
         self.server.newConnection.connect(self.accept)
 
     def acquire(self):
@@ -27,7 +30,7 @@ class CutefishInstance(QObject):
             client.connectToServer(self.name)
             if not client.waitForConnected(2000):
                 raise RuntimeError('The existing makOS client is not accepting activation requests.')
-            payload = {'action':'activate', 'token':os.environ.get('XDG_ACTIVATION_TOKEN', '')[:2048]}
+            payload = dict(self.request, token=os.environ.get('XDG_ACTIVATION_TOKEN', '')[:2048])
             client.write(json.dumps(payload).encode() + b'\n')
             if not client.waitForBytesWritten(1000):
                 raise RuntimeError('Could not deliver the activation request.')
@@ -40,18 +43,30 @@ class CutefishInstance(QObject):
 
     def bind(self, root):
         self.root = root
+        pending,self._queued=self._queued,[]
+        for payload in pending: self.activate(payload)
 
     def activate(self, payload):
-        if not isinstance(payload, dict) or payload.get('action') != 'activate': return
+        if not isinstance(payload, dict): return
+        action=payload.get('action')
+        if action not in ('activate','open-folder','settings-page'): return
+        if action=='open-folder' and self.kind!='finder': return
+        if action=='settings-page' and self.kind!='settings': return
+        argument=payload.get('argument','')
+        if not isinstance(argument,str) or len(argument)>2048 or '\0' in argument: return
         token = payload.get('token', '')
         if not isinstance(token, str) or len(token) > 2048 or '\0' in token: return
         if self.root:
             # Qt 6.8 consumes XDG_ACTIVATION_TOKEN synchronously from
             # requestActivate(). Forward the launcher's token to the owner.
             if token: os.environ['XDG_ACTIVATION_TOKEN'] = token
-            try: self.root.activateCutefishClient()
+            try:
+                if action=='activate': self.root.activateCutefishClient()
+                else: self.root.handleNativeLaunch(action,argument)
             finally:
                 if token: os.environ.pop('XDG_ACTIVATION_TOKEN', None)
+        elif len(self._queued)<16:
+            self._queued.append(payload)
 
     def accept(self):
         while self.server.hasPendingConnections():

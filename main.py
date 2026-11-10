@@ -244,6 +244,21 @@ class Bridge(QObject):
     @Property(QObject, constant=True)
     def cutefishShell(self): return self._cutefish_shell
 
+    def _launch_native_request(self, app_id, option, value):
+        if not isinstance(value,str) or len(value)>2048 or '\0' in value:
+            return False
+        command=native_command(app_id, APP_DIR, self.workspace.root)+[option,value]
+        result=QProcess.startDetached(command[0],command[1:])
+        started=result[0] if isinstance(result,tuple) else result
+        if not started: self.error.emit('The application could not be opened.')
+        return bool(started)
+
+    @Slot(str,result=bool)
+    def launchFinder(self, path): return self._launch_native_request('finder','--open-folder',path)
+
+    @Slot(str,result=bool)
+    def launchSettings(self, page): return self._launch_native_request('settings','--settings-page',page)
+
     @Property(QObject, constant=True)
     def linuxSettings(self): return self._linux_settings
 
@@ -606,6 +621,8 @@ def main():
     parser.add_argument('--session', action='store_true', help='Dedicated Linux login session; launched by tahoe-session')
     parser.add_argument('--wayland-shell', action='store_true', help='Experimental makOS layer surfaces; requires a matching LayerShellQt plugin')
     parser.add_argument('--cutefish-app', choices=NATIVE_APP_IDS, help='Native makOS client for the Cutefish shell')
+    parser.add_argument('--open-folder', help='Open a folder in the native Finder instance')
+    parser.add_argument('--settings-page', help='Open a page in the native Settings instance')
     parser.add_argument('--cutefish-test', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--cutefish-shell', action='store_true', help='Trusted makOS desktop, menu bar and Dock session')
     parser.add_argument('--makos', action='store_true', help='makOS development mode: native windows and opt-in DDE service adapters on Linux')
@@ -614,6 +631,8 @@ def main():
     parser.add_argument('--compare-right', action='store_true', help='Position the prototype on the right half for native Finder comparison')
     parser.add_argument('--smoke-test', action='store_true', help='Load QML, render once, and exit without UI interactions')
     args = parser.parse_args()
+    if args.open_folder is not None and args.cutefish_app != 'finder': parser.error('--open-folder requires --cutefish-app finder')
+    if args.settings_page is not None and args.cutefish_app != 'settings': parser.error('--settings-page requires --cutefish-app settings')
     if args.cutefish_shell and (sys.platform != 'linux' or not os.environ.get('WAYLAND_SOCKET') or args.cutefish_app or args.session or args.wayland_shell):
         parser.error('--cutefish-shell must be started by the trusted makOS session supervisor')
     if args.cutefish_app and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
@@ -653,7 +672,8 @@ def main():
         from cutefish_runtime import CutefishInstance
         app.setApplicationName(NATIVE_APP_INFO[args.cutefish_app]['name'])
         app.setDesktopFileName(NATIVE_APP_INFO[args.cutefish_app]['desktop_id'])
-        cutefish_instance = CutefishInstance(app, args.cutefish_app, root)
+        request={'action':'open-folder','argument':args.open_folder} if args.open_folder is not None else {'action':'settings-page','argument':args.settings_page} if args.settings_page is not None else None
+        cutefish_instance = CutefishInstance(app, args.cutefish_app, root, request)
         if not cutefish_instance.acquire(): return 0
     if args.session:
         app.setDesktopFileName('tahoe-desktop')
@@ -674,6 +694,8 @@ def main():
     engine.rootContext().setContextProperty('startFullscreen', args.fullscreen)
     engine.rootContext().setContextProperty('comparisonMode', args.compare_right)
     engine.rootContext().setContextProperty('startSettings', args.settings)
+    engine.rootContext().setContextProperty('startFolder', args.open_folder)
+    engine.rootContext().setContextProperty('settingsStartPage', args.settings_page or '')
     engine.rootContext().setContextProperty('startNativeWindows', args.native_windows or args.makos or args.wayland_shell or bool(args.cutefish_app) or args.cutefish_shell)
     engine.rootContext().setContextProperty('useWaylandShell', args.wayland_shell or args.cutefish_shell)
     engine.rootContext().setContextProperty('useCutefishShell', args.cutefish_shell)

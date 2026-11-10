@@ -1,0 +1,92 @@
+{
+  "target": "macOS Tahoe 26 Control Center and hardware-level feedback",
+  "observed_runtime": {
+    "version": "Local macOS Tahoe 26.7.2, identified in Software Update by the parent agent",
+    "method": "Read-only native CUA inspection. Control Center became accessible after Menu Bar Settings > Add Controls, then Done. No radio, pairing, network or power setting was changed.",
+    "control_center": {
+      "container": "Separate floating glass capsules and circles; no enclosing rectangle, headline, Back or Close button.",
+      "grid_width": 290,
+      "cell": 62,
+      "gap": 14,
+      "rows": [
+        "Wi-Fi 138x62 left; Now Playing 138x138 right spanning two rows",
+        "Bluetooth 138x62 left",
+        "AirDrop 138x62 left; Stage Manager and Screen Mirroring 62x62 circles right",
+        "Dark Mode and Capture Screen 62x62 circles left; Focus 138x62 right",
+        "Display 290x62, thin horizontal level control and endpoint glyphs",
+        "Sound 290x62, thin horizontal level control and endpoint glyphs"
+      ],
+      "footer": "Small centered Edit Controls pill",
+      "uncertainty": "Dimensions were observed from runtime screenshots, not extracted layout constraints. Native capture background/alpha was unsuitable for exact material-color measurement. No private network or device names are recorded."
+    },
+    "wifi": {
+      "width": 306,
+      "corner_radius_approx": 14,
+      "hierarchy": [
+        "Wi-Fi title and right-aligned switch",
+        "Optional Personal Hotspot group",
+        "Known Networks with approximately 32px rows, active circular glyph and security indicator",
+        "Other Networks disclosure",
+        "Separator and Wi-Fi Settings… footer"
+      ],
+      "absent_controls": [
+        "Back",
+        "Close",
+        "Show in Menu Bar"
+      ]
+    },
+    "bluetooth": "The native Bluetooth accessibility tree became unavailable. Its pixel layout was not observed; the new layout follows the dedicated title/switch/device-row/footer pattern and exposes actual Linux state.",
+    "battery": "No local native battery popover was observed. Content hierarchy uses Apple's Tahoe battery-status documentation and the Linux backend's available telemetry."
+  },
+  "user_screenshot_evidence": {
+    "files": [
+      "Screenshot 2026-11-10 at 4.29.25 PM.png",
+      "Screenshot 2026-11-10 at 4.29.28 PM.png"
+    ],
+    "observed": "Hardware-level OSD at x1602,y41 on a 1920px-wide screen, approximately 290x62, capsule shape, actual output title or Display, thin track and endpoint glyphs. User states that an open Control Center updates its existing control instead of showing a separate OSD.",
+    "privacy": "Original screenshots were viewed locally only. They contain private desktop content and are not copied into the repository or generated fixtures."
+  },
+  "primary_sources": [
+    {
+      "url": "https://support.apple.com/guide/mac-help/what-is-the-battery-status-menu-mchl173fcc57/26/mac/26",
+      "supports": "Tahoe battery percentage, power source, energy mode, charging information and significant-energy app categories"
+    },
+    {
+      "url": "https://support.apple.com/en-ie/guide/mac-help/mchl50f94f8f/27/mac/27",
+      "supports": "Icon toggles, detail disclosure, sliders, control rearrangement and resize behavior; this successfully retrieved revision is macOS 27, so Tahoe geometry comes from local runtime instead"
+    },
+    {
+      "url": "https://www.apple.com/newsroom/2025/06/macos-tahoe-26-makes-the-mac-more-capable-productive-and-intelligent-than-ever/",
+      "supports": "Tahoe customizable Control Center and Liquid Glass design"
+    }
+  ],
+  "implemented": [
+    "Default 4-column floating grid matching the observed arrangement, independent glass surfaces and thin sliders",
+    "Existing custom layout persistence, resize, reorder and gallery retained",
+    "Dedicated Wi-Fi, Bluetooth and battery popovers with Settings footer and no generic Back/Close/pinning controls",
+    "Separate radio-icon click and detail-label click; native radio/profile writes retain confirmed state until backend readback",
+    "Actual battery percentage and level, charging/source and available Linux power-profile choices",
+    "Actual compositor hardware-event values update visible Control Center controls; closed controls route to one top-right OSD",
+    "Native display brightness remains read-only until an actual setter exists; hardware events display observed brightness without writing local dimming preferences",
+    "Passive native OSD ApplicationWindow with compositor role 3, no focus/input and no reserved area; common state/content shared with the explicit Popup.Item preview"
+  ],
+  "verification": {
+    "test_control_center": "14 isolated persistence and real-pointer gesture cases passed",
+    "verify_control_linux": "Confirmed readback, coalesced volume requests, rejected writes and disconnection behavior passed",
+    "verify_control_tahoe": "Actual QML grid geometry, radio/profile pointer requests, readback-only state, unavailable hardware, battery percentage, Main.qml hardware signal routing and OSD dismissal passed using synthetic backend data; injected native-host routing also verifies that the preview popup remains closed",
+    "captures": "Synthetic fixture captures only; software Qt with Reduce Transparency enabled validates geometry/text, not shader material or native symbol rendering",
+    "hardware": "No host hardware settings changed. Native compositor event patch and real Linux rendering require CI/disposable VM validation.",
+    "native_osd": "The actual Wayland role/focus-retention behavior remains a Linux compositor CI gate; the local fixture validates routing and state only."
+  },
+  "remaining_parity": [
+    "Wi-Fi scan, join/authentication, Personal Hotspot and security indicators are not provided by the current backend; no fabricated networks or locks",
+    "Bluetooth pairing/connect/disconnect and per-device class artwork are not connected",
+    "Battery charge-time estimates, significant-energy apps, battery health and Apple-specific energy behavior are unavailable",
+    "Balanced maps to Automatic as a Linux power-profile label; this does not implement Apple's adaptive power policy",
+    "Capture Screen and Stage Manager have explicit unavailable details; the Capture Screen glyph is currently generic camera artwork",
+    "Native brightness pointer adjustment remains unavailable; only real hardware-service reports are displayed",
+    "Battery outline and level fill are an independent drawing; exact native glyph parity is unverified",
+    "Glass tint/refraction, native glyph rendering under GPU, popup morphs and dismissal timings have not been matched frame by frame",
+    "Existing customized users retain their chosen control layout; the new default applies to new layouts or Reset Control Center"
+  ]
+}

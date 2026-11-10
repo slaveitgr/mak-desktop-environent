@@ -1,0 +1,182 @@
+--- a/src/core/compositor_shell.cpp
++++ b/src/core/compositor_shell.cpp
+@@ -739,6 +739,7 @@
+     auto *osd = m_shell->addComponent(std::make_unique<shell::Osd>(
+             m_shell.get(), shell::createSessionOsdLevels(environment.bus)));
+     if (m_options.externalShell) {
++        osd->setExternalPresentation(true);
+         // Window management, the fallback wallpaper and system prompts remain;
+         // the trusted external client is the only desktop chrome provider.
+         m_shell->addComponent(std::make_unique<shell::NotRespondingSheets>(m_shell.get()));
+--- a/src/shell/osd/osd.h
++++ b/src/shell/osd/osd.h
+@@ -6,6 +6,8 @@
+ #define CUTEFISH_SHELL_OSD_OSD_H_
+ 
+ #include <memory>
++#include <optional>
++#include <tuple>
+ #include <string>
+ 
+ #include "base/signal.h"
+@@ -33,12 +35,16 @@
+     virtual bool hasSink() const = 0;
+     virtual double volume() const = 0;
+     virtual bool muted() const = 0;
++    virtual bool sinkLevelAvailable() const { return hasSink(); }
++    virtual std::string sinkLabel() const { return {}; }
+     virtual void setVolume(double volume) = 0;
+     virtual void setMuted(bool muted) = 0;
+ 
+     virtual bool hasMicrophone() const = 0;
+     virtual double microphoneVolume() const = 0;
+     virtual bool microphoneMuted() const = 0;
++    virtual bool microphoneLevelAvailable() const { return hasMicrophone(); }
++    virtual std::string microphoneLabel() const { return {}; }
+     virtual void setMicrophoneMuted(bool muted) = 0;
+ 
+     // Percent.
+@@ -89,6 +95,7 @@
+     ~Osd() override;
+ 
+     bool registerService();
++    void setExternalPresentation(bool external) { m_externalPresentation = external; if (external) hide(); }
+ 
+     void volumeUp();
+     void volumeDown();
+@@ -108,6 +115,7 @@
+ 
+ private:
+     void present(Kind kind);
++    void publishExternalLevel(bool force = false);
+     void hide();
+     void place();
+     void update();
+@@ -129,6 +137,10 @@
+     std::unique_ptr<ShellWindow> m_window;
+     LevelTrack *m_track = nullptr;
+     Kind m_kind = Kind::Volume;
++    bool m_externalPresentation = false;
++    bool m_externalActive = false;
++    using ExternalLevel = std::tuple<std::string, double, bool, std::string, bool>;
++    std::optional<ExternalLevel> m_lastExternalLevel;
+     // Requested and not reported yet; negative for none.
+     double m_pendingVolume = -1;
+     int m_pendingMuted = -1;
+--- a/src/shell/osd/osd.cpp
++++ b/src/shell/osd/osd.cpp
+@@ -91,6 +91,7 @@
+     if (!bus)
+         return false;
+     auto object = std::make_unique<dbus::Object>(bus, "/Osd", "org.cutefish.Osd");
++    object->addSignal("LevelChanged", "sdbsb", {"kind", "value", "muted", "label", "available"});
+     object->addMethod("volumeDown", [this] { volumeDown(); });
+     object->addMethod("volumeUp", [this] { volumeUp(); });
+     object->addMethod("toggleMute", [this] { toggleMute(); });
+@@ -139,6 +140,12 @@
+ void Osd::present(Kind kind)
+ {
+     m_kind = kind;
++    if (m_externalPresentation) {
++        m_externalActive = true;
++        publishExternalLevel(true);
++        m_hideTimer.start();
++        return;
++    }
+     update();
+     place();
+     applyGlass();
+@@ -148,6 +155,7 @@
+ 
+ void Osd::hide()
+ {
++    m_externalActive = false;
+     m_window->hide();
+ }
+ 
+@@ -227,10 +235,53 @@
+ 
+ void Osd::update()
+ {
++    if (m_externalPresentation) {
++        if (m_externalActive) publishExternalLevel();
++        return;
++    }
+     // A held key glides; the first level after showing snaps.
+     m_track->setAnimated(isShown());
+     m_track->setPosition(position());
+     m_track->setIcon(iconFile());
++}
++
++void Osd::publishExternalLevel(bool force)
++{
++    if (!m_service)
++        return;
++    // Only observations from PipeWire/brightness services cross this boundary.
++    // The pending values used to coalesce hardware key repeats are never UI state.
++    std::string kind, label;
++    double value = 0;
++    bool muted = false, available = false;
++    switch (m_kind) {
++    case Kind::Volume:
++        kind = "volume";
++        available = m_levels->sinkLevelAvailable();
++        value = m_levels->volume(); muted = m_levels->muted(); label = m_levels->sinkLabel();
++        break;
++    case Kind::Microphone:
++        kind = "microphone";
++        available = m_levels->microphoneLevelAvailable();
++        value = m_levels->microphoneVolume(); muted = m_levels->microphoneMuted(); label = m_levels->microphoneLabel();
++        break;
++    case Kind::Brightness:
++        kind = "brightness"; label = "Display";
++        available = m_levels->brightnessEnabled(); value = m_levels->brightness() / 100.0;
++        break;
++    case Kind::KeyboardBrightness:
++        kind = "keyboardBrightness"; label = "Keyboard";
++        available = m_levels->keyboardMaximum() > 0;
++        value = available ? double(m_levels->keyboardBrightness()) / m_levels->keyboardMaximum() : 0;
++        break;
++    }
++    available = available && std::isfinite(value);
++    value = available ? std::clamp(value, 0.0, 1.0) : 0;
++    const ExternalLevel level {kind, value, muted, label, available};
++    if (!force && m_lastExternalLevel == level)
++        return;
++    m_lastExternalLevel = level;
++    m_service->emitSignal("LevelChanged", kind, value, muted, label, available);
+ }
+ 
+ void Osd::volumeUp()
+--- a/src/shell/osd/osd_levels.cpp
++++ b/src/shell/osd/osd_levels.cpp
+@@ -43,6 +43,8 @@
+     bool hasSink() const override { return bool(m_sinks.defaultNode()); }
+     double volume() const override { return sink() ? sink()->volume() : 0; }
+     bool muted() const override { return sink() && sink()->muted(); }
++    bool sinkLevelAvailable() const override { return sink() && sink()->hasVolume(); }
++    std::string sinkLabel() const override { return sink() ? sink()->displayName() : std::string(); }
+     void setVolume(double volume) override
+     {
+         if (auto node = sink())
+@@ -57,6 +59,8 @@
+     bool hasMicrophone() const override { return bool(m_sources.defaultNode()); }
+     double microphoneVolume() const override { return source() ? source()->volume() : 0; }
+     bool microphoneMuted() const override { return source() && source()->muted(); }
++    bool microphoneLevelAvailable() const override { return source() && source()->hasVolume(); }
++    std::string microphoneLabel() const override { return source() ? source()->displayName() : std::string(); }
+     void setMicrophoneMuted(bool muted) override
+     {
+         if (auto node = source())
+--- a/src/shell/statusbar/brightness.cpp
++++ b/src/shell/statusbar/brightness.cpp
+@@ -39,6 +39,9 @@
+                     m_enabled = enabled;
+                     enabledChanged();
+                 }
++            } else if (m_enabled) {
++                m_enabled = false;
++                enabledChanged();
+             }
+             finished();
+         });

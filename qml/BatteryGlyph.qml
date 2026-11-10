@@ -21,8 +21,9 @@ Item {
     }
     Rectangle { x: parent.width - 2; y: (parent.height - 4) / 2; width: 2; height: 4; radius: 1; color: glyph.color; opacity: 0.65 }
     Canvas {
+        id: chargePath
         anchors.centerIn: parent; width: 8; height: 12; visible: glyph.charging && glyph.available
         onPaint: { let c=getContext("2d");c.reset();c.fillStyle="#252529";c.strokeStyle=glyph.color;c.lineWidth=0.8;c.beginPath();c.moveTo(4.8,0);c.lineTo(0,6.6);c.lineTo(3.5,6.6);c.lineTo(2.5,12);c.lineTo(8,4.5);c.lineTo(4.3,4.5);c.closePath();c.fill();c.stroke(); }
-        Connections { target:glyph; function onColorChanged(){parent.requestPaint();} }
+        Connections { target:glyph; function onColorChanged(){chargePath.requestPaint();} }
     }
 }

@@ -29,6 +29,11 @@
       "test": "tests/verify_about_system_info.py",
       "result": "passed",
       "scope": "About dialog and Settings About actual-data layout, field order, wrapped GPUs and preview host"
+    },
+    {
+      "test": "tests/verify_appstore.py",
+      "result": "passed",
+      "scope": "Actual Qt pointer/keyboard catalog navigation, search, detail/back, Open and menu commands; no host installs"
     }
   ],
   "applications": [
@@ -357,7 +362,9 @@
       "id": "appstore",
       "backend": "Built-in app catalog",
       "implemented_scope": [
-        "Explore/launch included apps"
+        "Separate App Store sidebar/hero/app rows",
+        "Read-only included-app search and category filters",
+        "Details, back restoration and actual Open"
       ],
       "missing_or_unverified": [
         "No package installation/update or online store backend"
@@ -370,9 +377,10 @@
           "ev_b694ec14021a82a0893fb78df5acc2b2a7d0fae301d1a7749f6d759d7c5eac80"
         ],
         "remaining_reference_questions": [
-          "Recovered menu labels and limited localizations do not establish the store browsing layout.",
-          "Catalog service, Apple account, purchases and installation behavior were not inspected."
-        ]
+          "Controlled public native Discover/Work/Details/Categories navigation observed; exact animation timing and full UI parity unverified.",
+          "No catalog/account/purchase/install protocol reconstruction or Linux package backend."
+        ],
+        "reconstruction_audit": "reference/appstore-reconstruction-audit.json"
       }
     },
     {

@@ -77,6 +77,7 @@
       <entry name="desktop" value="0" summary="the desktop, below everything"/>
       <entry name="panel" value="1" since="2" summary="a menu bar above application windows"/>
       <entry name="dock" value="2" since="2" summary="a Dock above application windows"/>
+      <entry name="osd" value="3" since="2" summary="a noninteractive hardware level display"/>
     </enum>
 
     <enum name="focus_policy">

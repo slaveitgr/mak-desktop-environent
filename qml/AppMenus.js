@@ -23,7 +23,7 @@ function names(kind, title) {
         contacts: ["File", "Edit", "View", "Card", "Window", "Help"],
         music: ["File", "Edit", "Song", "View", "Controls", "Account", "Window", "Help"],
         games: ["Edit", "View", "Window", "Help"],
-        appstore: ["Edit", "Window", "Help"],
+        appstore: ["Edit", "Store", "Window", "Help"],
         terminal: ["Shell", "Edit", "View", "Window", "Help"],
         calculator: ["Edit", "View", "Window", "Help"],
         chess: ["Game", "Edit", "View", "Moves", "Window", "Help"],
@@ -69,6 +69,7 @@ function rows(kind, name, host, desktop) {
     }
     if (name === "Help") return [item(title + " Help", "about"), separator(), item("About This Desktop", "about")];
     if (name === "Edit") {
+        if (kind === "appstore") return [app("Find…", "find", cmd+"F", !!p)];
         if (kind === "calculator") return [app("Undo", "undo", cmd+"Z", !!p), separator(), app("Copy Result", "copy", cmd+"C", !!p), app("Copy Expression", "copyExpression", "", !!p), separator(), app("Clear", "new", "Esc", !!p)];
         if (kind === "chess") return [app("Undo", "undo", cmd+"Z", !!(p && p.game.canUndo)), disabled("Redo", "⇧"+cmd+"Z")];
         if (kind === "terminal") return [app("Copy", "copy", cmd+"C", !!p), app("Paste", "paste", cmd+"V", !!(p && p.session && p.session.running)), app("Select All", "selectAll", cmd+"A", !!p)];
@@ -87,6 +88,12 @@ function rows(kind, name, host, desktop) {
     if (name === "Format") {
         if (kind === "notes") return [disabled("Title"), disabled("Heading"), disabled("Subheading"), disabled("Body"), disabled("Monostyled"), separator(), disabled("Bulleted List"), disabled("Dashed List"), disabled("Numbered List"), disabled("Checklist"), separator(), disabled("Bold", cmd+"B"), disabled("Italic", cmd+"I"), disabled("Underline", cmd+"U")];
         return [disabled("Font"), disabled("Style"), disabled("Alignment"), separator(), disabled("Make Rich Text")];
+    }
+    if (kind === "appstore" && name === "Store") {
+        return [app("Back", "back", cmd+"[", !!(p && p.canGoBack)), separator()].concat(
+            ["Discover", "Arcade", "Create", "Work", "Play", "Develop", "Categories", "Updates"].map(function(section) {
+                return app(section, "section:"+section, "", !!p, !!(p && p.section === section));
+            }));
     }
     if (kind === "safari") {
         if (name === "File") return [app("New Tab", "new", cmd+"T", !!p), app("New Window", "newWindow", cmd+"N", !!p), app("New Private Window", "newPrivateWindow", "⇧"+cmd+"N", !!p), separator(), app("Open Location…", "focusLocation", cmd+"L", !!p), app("Close Tab", "closeTab", cmd+"W", !!p && p.tabCount > 1), item("Close Window", "close", "⇧"+cmd+"W"), separator(), disabled("Save As…", cmd+"S"), disabled("Print…", cmd+"P")];

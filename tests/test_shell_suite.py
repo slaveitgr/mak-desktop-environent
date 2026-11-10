@@ -146,7 +146,7 @@ with TemporaryDirectory() as folder:
   elif case=='shell-chrome':
    from PySide6.QtCore import QDateTime, QDate, QTime
    apple=desktop.menuRows('apple').toVariant()
-   assert apple[0]['label']=='About This Mac'
+   assert apple[0]['label']=='About This Mak'
    labels=[row.get('label') for row in apple]
    for label in ('System Settings…','App Store…','Recent Items','Force Quit…','Sleep','Restart…','Shut Down…','Lock Screen'):assert label in labels,label
    desktop.dispatch('aboutmac');about=desktop.property('activeWindow')

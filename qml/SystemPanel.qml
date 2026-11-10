@@ -16,9 +16,12 @@ MaterialPopup {
     readonly property color muted: dark ? "#c1c1ca" : "#666670"
     readonly property int revision: controls.revision
     readonly property var definition: controls.info(section) || ({label: section === "control" ? "Control Center" : "Clock", settingsPage: ""})
-    readonly property real volume: { let r = revision; return Math.max(0, Math.min(1, Number(controls.preference("sound.volume", "0.75")))); }
-    readonly property bool soundMuted: { let r = revision; return controls.preference("sound.muted", "false") === "true"; }
-    readonly property real brightness: { let r = revision; return Math.max(0.1, Math.min(1, Number(controls.preference("display.brightness", "1")))); }
+    property var hardwareVolume: null
+    property var hardwareBrightness: null
+    readonly property real volume: { let r = revision; return controls.nativeSystem && hardwareVolume ? hardwareVolume.value : Math.max(0, Math.min(1, Number(controls.preference("sound.volume", "0.75")))); }
+    readonly property bool soundMuted: { let r = revision; return controls.nativeSystem && hardwareVolume ? hardwareVolume.muted : controls.preference("sound.muted", "false") === "true"; }
+    readonly property real brightness: { let r = revision; return controls.nativeSystem ? hardwareBrightness ? hardwareBrightness.value : 0 : Math.max(0.1, Math.min(1, Number(controls.preference("display.brightness", "1")))); }
+    readonly property bool brightnessWritable: !controls.nativeSystem
     readonly property alias gridItem: controlGrid
     readonly property bool mainView: section === "control"
     readonly property bool nativeDetail: ["wifi", "bluetooth", "battery", "lowpower"].indexOf(section) >= 0
@@ -63,6 +66,19 @@ MaterialPopup {
         else if (id === "search") { close(); desktop.dispatch("search"); }
         else showDetail(id);
     }
+    // Values originate in the compositor's actual hardware services. This
+    // signal never changes a setting or guesses an increment from a key press.
+    function hardwareLevelChanged(kind, value, muted, label, available) {
+        let valid = available && Number.isFinite(value) && value >= 0 && value <= 1;
+        if (kind === "volume") hardwareVolume = valid ? {value:value,muted:!!muted,label:label} : null;
+        if (kind === "brightness") hardwareBrightness = valid ? {value:value} : null;
+        let id = kind === "volume" ? "sound" : kind === "brightness" ? "display" : "";
+        return visible && id !== "" && (mainView ? controls.layout.some(item => item.id === id) : section === id);
+    }
+    Connections {
+        target: panel.controls.systemBackend
+        function onChanged() { panel.hardwareVolume = null; }
+    }
     function canToggle(id) {
         if (id === "focus" || id === "darkmode") return true;
         if (!controls.nativeSystem || !controls.systemBackend.ready || controls.systemBackend.busy) return false;
@@ -82,7 +98,7 @@ MaterialPopup {
     function changeLevel(id, value) {
         if (id === "sound") {
             controls.requestVolume(value);
-        } else if (id === "display") controls.setPreference("display.brightness", String(Math.max(0.1, Math.min(1, value))));
+        } else if (id === "display" && brightnessWritable) controls.setPreference("display.brightness", String(Math.max(0.1, Math.min(1, value))));
     }
     function cycleSize(id, current) {
         let info = controls.info(id);
@@ -208,8 +224,8 @@ MaterialPopup {
                 }
                 Column {
                     visible: panel.section === "display"; width: parent.width; spacing: 13
-                    ControlSlider { objectName: "controlDetailBrightness"; width: parent.width; symbol: "sun"; dark: panel.dark; from: 0.1; value: panel.brightness; Accessible.name: "Desktop brightness"; onMoved: panel.changeLevel("display", value) }
-                    Text { width: parent.width; text: "Brightness changes the appearance of this desktop."; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
+                    ControlSlider { objectName: "controlDetailBrightness"; width: parent.width; symbol: "sun"; dark: panel.dark; from: controls.nativeSystem ? 0 : 0.1; enabled:panel.brightnessWritable;value: panel.brightness; Accessible.name: controls.nativeSystem ? "Display brightness" : "Desktop brightness"; onMoved: panel.changeLevel("display", value) }
+                    Text { width: parent.width; text: panel.controls.nativeSystem ? (panel.hardwareBrightness ? "Brightness from the display keys. Slider adjustment is not connected yet." : "Display brightness is unavailable until the display service reports a level.") : "Brightness changes the appearance of this desktop."; color: panel.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
                     Switch { objectName: "controlDisplayDarkMode"; text: "Dark Mode"; checked: desktop.dark; onToggled: desktop.setAppearance(checked ? "dark" : "light") }
                 }
                 Column {
