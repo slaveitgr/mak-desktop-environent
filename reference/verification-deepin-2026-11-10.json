@@ -1,0 +1,101 @@
+{
+  "milestone": "0.8-dev",
+  "date": "2026-11-10",
+  "branch": "makos-deepin",
+  "tested_commit": "897590b619f58ef0ca44d30f3e66116bcb20c41b",
+  "result": "passed",
+  "ci_run": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42806639307",
+  "artifact": {
+    "url": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42806639307/artifacts/13760185881",
+    "zip_sha256": "53a5c1b1c3e86213078ac54921932e74c3fd01dbf37f8b55c7decd688a2ac170",
+    "files_sha256": {
+      "compositor.log": "ae363d178e8d661fde15b27b9367fabf993e8339dcf6f36ab73296baecb7fcaf",
+      "native-apps.log": "19566b3e4ff123451bfeffec150704f40c6700d7e9f9eacc7876bd3df1f42135",
+      "readiness.json": "88dfee466caf5db397ffd4901a536b8b0987f82784a2ea9c431e4c963f6325bb",
+      "treeland-check.log": "2fddf06f5090e5c257921066ac63f0244493d85a45ce0dd250cd59a3a84517ec",
+      "wayland-client.log": "f6b223ebd7224122be582f043eba78fffcbcb9b1ce31b13a309a5ea27e413145"
+    }
+  },
+  "environment": {
+    "host": "GitHub Ubuntu 24.04 runner; this is not the product base",
+    "userspace": "Deepin 25 crimson; both live filesystem layers of the verified Deepin 25.2.0 AMD64 ISO",
+    "isolation": "chroot, private PID/mount namespace, owned device/runtime directories, private system and session D-Bus",
+    "package_source": "Signed Crimson main archive; ISO hash pinned, package repository not a frozen snapshot",
+    "packages": {
+      "dde-daemon": "6.1.99",
+      "dde-session": "2.0.27",
+      "dde-shell": "2.0.49",
+      "libdtk6core": "6.7.44",
+      "libqt6core6": "6.8.0+dfsg-0deepin31",
+      "qml6-module-org-kde-layershell": "6.3.4-1",
+      "treeland": "0.8.13"
+    },
+    "pyside": "6.8.0.2",
+    "qt_runtime": "6.8.0",
+    "loaded_qtcore": [
+      "/usr/lib/x86_64-linux-gnu/libQt6Core.so.6.8.0"
+    ],
+    "qt_loading": "Distribution Qt libraries, QML modules and plugins; wheel Qt lib/qml directories moved aside in the disposable CI environment",
+    "webengine_sandbox": "Disabled only for the CI environment"
+  },
+  "checks": {
+    "local_unit_and_integration_tests": {
+      "count": 140,
+      "result": "passed",
+      "scope": "Local macOS regression suite, not rerun as 140 tests in this Linux job"
+    },
+    "deepin_native_windows": {
+      "result": "passed",
+      "platform": "Qt offscreen / software",
+      "suite_apps": 19,
+      "finder": true,
+      "settings_categories": 32,
+      "coverage": [
+        "QML load",
+        "menus and app routing",
+        "singleton windows",
+        "minimize/restore",
+        "full screen",
+        "close",
+        "native window identity and popup ownership"
+      ]
+    },
+    "treeland_protocol": {
+      "result": "passed",
+      "backend": "headless, software rendering",
+      "layer_surfaces": 3,
+      "layer_names": [
+        "makos-desktop",
+        "makos-menu-bar",
+        "makos-dock"
+      ],
+      "xdg_toplevels": 2,
+      "native_clients": [
+        "Finder",
+        "Settings"
+      ],
+      "successful_client_exit": true,
+      "qml_load_or_type_errors": false
+    },
+    "probe_scope": "readiness.json was collected before the session started; its native_layer_session_validated:false is a probe limitation, not the subsequent protocol-test result"
+  },
+  "environment_warnings": [
+    "No audio server in the offscreen app test",
+    "Document portal FUSE mount unavailable",
+    "RealtimeKit unavailable",
+    "Xwayland falls back to software; missing optional keysyms"
+  ],
+  "not_validated": [
+    "Bootable makOS ISO or OS installation",
+    "Display-manager login and lock authentication",
+    "All 19 apps under a real interactive Treeland session",
+    "Physical GPU acceleration and frame timings",
+    "Tahoe pixel or animation parity",
+    "Camera capture and hardware audio/network/display adapters",
+    "Document portal integration",
+    "Multiple monitors",
+    "Compositor blur and Genie minimize targets",
+    "External-app global menus and cross-window file drag/drop",
+    "Cutefish runtime or Reef Mac app compatibility"
+  ]
+}

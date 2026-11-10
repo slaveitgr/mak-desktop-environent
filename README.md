@@ -18,12 +18,16 @@ to the platform window system. On Linux, `--makos` also opts into the DDE audio
 adapter; it controls the default system output when the existing Audio1 service
 is available. Preview mode remains available without that flag.
 
-The Dock and menu bar still live in the preview shell window. Their separate
-Wayland layer surfaces, compositor blur, cross-window drag/drop, native global
-menus and Treeland minimize targets are the next integration work. Native mode
-uses compositor window transitions; the original in-scene Genie animation is
-retained in preview mode. Native-window backdrop sampling currently uses the
-wallpaper and does not claim live blur of other applications.
+The experimental `--wayland-shell` entry point creates separate Desktop, Dock
+and menu-bar layer surfaces. A headless test with Deepin's Treeland 0.8.13 passed,
+including Finder and Settings as native Wayland windows. This mode needs the
+distribution's Qt and LayerShellQt runtime; see the [tested environment](distro/README.md).
+Plain native mode keeps the Dock and menu bar in the preview shell window.
+Compositor blur, cross-window drag/drop, external-app global menus and Treeland
+minimize targets remain integration work. Native mode uses compositor window
+transitions; the original in-scene Genie animation remains in preview mode.
+Native-window backdrop sampling currently uses the wallpaper and does not
+claim live blur of other applications.
 
 See [the makOS base, verified inventory and app reuse decisions](distro/README.md).
 The previous Ubuntu/Openbox prototype is preserved in the repository history and
@@ -39,7 +43,7 @@ On Linux, use Python 3.10–3.15 with `venv`, then run:
 ./run.sh
 ```
 
-The launcher uses an existing environment or creates `.venv` and installs `requirements.txt`. Qt needs the platform's Wayland/X11 libraries and a working graphics driver. Ubuntu 26.10 package installation, application checks and the X11 session lifecycle passed in CI; physical login and hardware behavior remain unverified. Optional arguments:
+The launcher uses an existing environment or creates `.venv` and installs `requirements.txt`. Qt needs the platform's Wayland/X11 libraries and a working graphics driver. The historical 0.7 Ubuntu package passed its X11 session checks; current Deepin validation is described below. Physical login and hardware behavior remain unverified. Optional arguments:
 
 ```sh
 ./run.sh --fullscreen
@@ -77,6 +81,10 @@ Safari and Maps access the network when navigated. Private cookies are shared ac
 Photo Booth starts with the camera off. On macOS, use the generated `.app` so the OS can present a proper permission prompt. A plain Python process without a camera usage declaration reports an explanation instead. Camera capture stops on minimize, hide or close. Original captures remain in `Pictures/Photo Booth/.originals`; processed PNGs and contact sheets appear in Photos. Opening the app alone never starts the camera.
 
 ## Desktop behavior
+
+These interaction descriptions refer to preview mode unless explicitly stated.
+Native mode delegates window movement, resize, minimize and full screen to the
+platform compositor; the remaining integration boundaries are listed above.
 
 - The Desktop shows real files from the workspace `Desktop/` folder. It supports selection, a selection rectangle, contextual menus, persistent icon positions, folder creation, rename, copy/paste, reversible Trash and Undo. Drag files between Finder and Desktop, onto folders, or between desktop positions; Option-drag copies. These are internal workspace drags; host-app drag/import and external volumes are not connected.
 - Minimized windows travel to their separate thumbnail on the right of the Dock. The destination is laid out before animation starts and recalculated before restore after a viewport change.
@@ -159,7 +167,9 @@ python tests/verify_settings_appearance.py
 python tests/verify_menu_symbols.py
 ```
 
-**0.7 verification:** 136 tests passed on macOS and Ubuntu 26.10; all built-in apps and Settings loaded; the installed X11 session started and stopped cleanly under Xvfb. [Successful Ubuntu run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488); [ready-built Ubuntu package ZIP](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488/artifacts/13750056972). See `reference/verification-0.7.json` for scope and limitations.
+**Deepin development verification:** 140 tests pass locally. The [Deepin run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42806639307) passes native-window QML checks for all 19 suite apps, Finder and 32 Settings categories using system Qt 6.8.0. A separate headless Treeland 0.8.13 test confirms three shell layer surfaces and two native Finder/Settings windows. See [the exact evidence and limits](reference/verification-deepin-2026-11-10.json). This is not an installer or physical-login validation.
+
+**Historical 0.7 verification:** 136 tests passed on macOS and Ubuntu 26.10; all built-in apps and Settings loaded; the installed X11 session started and stopped cleanly under Xvfb. [Successful Ubuntu run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488); [legacy Ubuntu package ZIP](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488/artifacts/13750056972). See `reference/verification-0.7.json` for scope and limitations.
 
 Previous verification for 0.5 on 10 November 2026: **114 unit/integration tests passed**, including ten desktop mouse-gesture scenarios and eight animation/layout regressions. The complete QML app/Settings smoke check, Appearance controls and menu-symbol/material checks also passed without QML warnings. The rebuilt macOS launcher was reopened and the updated Apple/File menus were visually checked. The seven application verification scripts from 0.4 remain the previous application baseline.
 
@@ -171,17 +181,24 @@ After the Mac was unlocked, live native Finder and Appearance Settings were insp
 
 `main.py` bridges Qt to the confined file workspace. `suite.py` provides SQLite records/preferences and Chess integration. `browser_downloads.py`, `photo_effects.py`, `calculator_engine.py`, `chess_engine.py` and `terminal_session.py` implement the corresponding local services. `qml/` contains the shell and application views; `shaders/` includes source and precompiled Qt packages. `build_shaders.py` rebuilds every shader with the pinned Qt compiler.
 
-The Linux session remains independent of mandatory Plasma or GNOME components. [Treeland](https://github.com/linuxdeepin/treeland) and [Waylib](https://github.com/vioken/waylib) are provisional candidates for a later Linux compositor trial; [DDE services](https://github.com/linuxdeepin/dde-control-center) can be evaluated separately. The Mac host has no Linux VM installed; the package supplies the initial X11 session integration. The initial 0.7 login-session implementation uses Openbox/picom instead. Its internal apps still share one Qt surface; external apps are managed by Openbox, with Alt+Tab and Super+Space for shell access. Treeland remains a future direction.
+The selected Linux stack is Deepin, Treeland/Waylib and selected DDE services.
+Our shell and application views remain project code, with native client windows
+in development mode. The earlier 0.7 Openbox/picom session is a historical
+prototype. No makOS VM has been booted or makOS installer ISO produced yet.
 
 To create a source package without user data or local runtimes, run `python package_release.py`. The ZIP contains a SHA-256 manifest and seeds a fresh workspace on first launch. Existing release archives are never overwritten by this command.
 
 ## Deepin integration direction
 
-Reviewed upstream source on 10 November 2026. The proposed long-term arrangement is **Ubuntu + Treeland + our Qt Quick shell + selected DDE services**. The 0.7 Openbox session is the first runnable packaging target; it does not commit the project to X11. No Deepin code or daemon has been incorporated yet.
+The [base and integration notes](distro/README.md) record the pinned Deepin ISO,
+shipped component versions, app reuse decisions and runtime constraints.
+`dde_services.py` implements the first DDE Audio1 adapter. File Manager, Album
+and other Deepin application backends still need bounded integration work;
+launching their existing interfaces does not implement our Tahoe views.
 
-- [Treeland](https://github.com/linuxdeepin/treeland) supplies a Wayland compositor built around wlroots/Waylib and Qt Quick. Its current README requires Qt >= 6.8 and wlroots 0.20. This fits the shell's rendering approach, but requires a separate Linux build/runtime trial and real-client focus, popup, fullscreen and multi-monitor tests.
-- [dde-shell](https://github.com/linuxdeepin/dde-shell) provides a shell plugin system. Its [build dependencies](https://github.com/linuxdeepin/dde-shell/blob/master/debian/control) include DTK6, private Qt development interfaces and Deepin-versioned Qt Wayland packages. Treat it as an integration reference or a separately built component; do not load arbitrary DDE C++ plugins into the PySide wheel runtime.
-- [dde-daemon](https://github.com/linuxdeepin/dde-daemon) and [dde-control-center](https://github.com/linuxdeepin/dde-control-center) are candidates for system-service adapters and Settings behavior. Connect selected services over D-Bus while retaining the Tahoe UI. Verify Ubuntu-compatible packages and service ownership before enabling system daemons.
-- [dde-file-manager](https://github.com/linuxdeepin/dde-file-manager) is useful for mature file operations, mount/trash/preview behavior and backend design. The Finder UI remains ours.
-
-Pin tested releases/commits and preserve upstream licenses when reusing code. The current [application-manager branch](https://github.com/linuxdeepin/dde-application-manager) explicitly identifies itself as a refactor in progress, so following every upstream master branch would not be a reliable release strategy. The current prototype's independent internal windows must eventually become real client surfaces (or compositor-managed views); installing a new compositor alone does not make that transition.
+[Cutefish](reference/cutefish-2026-11.md) and [PearOS](reference/pearos-2026-11.md)
+were inspected as additional references. Cutefish supplies its own toolkit and
+compositor; PearOS uses Plasma/KWin. Neither is a drop-in Treeland component.
+No Reef runtime was identified in the inspected Cutefish nightly ISO, and no
+Mac application compatibility is claimed. Exact source revisions and licensing
+boundaries are recorded in the corresponding `reference/*-sources.json` files.

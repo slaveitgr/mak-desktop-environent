@@ -67,7 +67,8 @@ Wire-contract tests pass; no Deepin hardware audio test has been performed yet.
 Native mode is an integration preview, not a complete Treeland login session.
 The experimental `--wayland-shell` entry point creates separate desktop, topbar
 and Dock layer-shell surfaces using the system LayerShellQt plugin. Its first
-Deepin protocol test is in progress; this is not a validated login session.
+Deepin protocol test passes with the shipped Treeland 0.8.13 compositor; this
+does not validate a complete login session.
 Compositor blur, global menus for external apps, native cross-window file
 drag/drop, lock/session teardown, multiple monitors and the compositor Genie
 animation remain to be integrated and tested. Preview
@@ -115,11 +116,33 @@ menu routing, minimize/restore, full screen, singleton handling and close. Nativ
 checks additionally verify distinct platform windows and context-menu ownership.
 These headless checks establish behavior contracts, not visual/animation parity.
 Native Finder and Settings also rendered through Cocoa/Metal on the development
-Mac. The Deepin CI harness extracts both live filesystem layers from the verified
-ISO and installs test dependencies from the base archive using the image's
-Crimson signing key. The rootfs setup now passes. A subsequent native-app check exposed Qt 6.8.0
-read-only QML image-capture properties; Photo Booth now uses the public setters
-through its Python bridge. All 19 native app pages pass locally after that change;
-the Deepin/Treeland run is being repeated. CI checks `/proc/self/maps` to require
-actual system Qt libraries; the wheel libraries are moved outside its RPATH
-inside the disposable environment before testing distribution plugins.
+Mac.
+
+The [Deepin run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42806639307)
+passes at commit `897590b619f58ef0ca44d30f3e66116bcb20c41b`. It checks two
+distinct scopes:
+
+- All 19 suite apps, Finder and 32 Settings categories pass the native-window QML
+  checks using Deepin's Qt 6.8.0 with the offscreen platform plugin.
+- The actual Treeland 0.8.13 compositor starts with a headless output. Its client
+  protocol trace records three layer surfaces (`makos-desktop`, `makos-menu-bar`,
+  `makos-dock`) and two native `xdg_toplevel` windows for Finder and Settings.
+  The client exits successfully without QML load/type errors.
+
+The CI harness extracts both live filesystem layers from the verified ISO and
+installs test dependencies from the signed Crimson archive. It runs a private
+system D-Bus and DConfig service with owned runtime directories. Python bindings
+use the system Qt libraries and QML modules; bundled wheel libraries and QML
+modules are moved aside inside this disposable environment. `/proc/self/maps`
+confirms the loaded system QtCore library. Photo Booth uses the public image
+capture setters through its Python bridge to accommodate Qt 6.8.0's read-only
+QML property declarations.
+
+The GitHub host is Ubuntu, but the tested userspace is the extracted Deepin
+rootfs. The ISO is hash pinned; dependencies from the signed package archive
+are not a frozen repository snapshot. The run does not boot an OS or exercise
+display-manager login, physical GPUs, camera/audio hardware, document-portal
+mounting or animation fidelity. Expected headless warnings include unavailable
+audio, FUSE/RealtimeKit and software Xwayland rendering. See
+[`reference/verification-deepin-2026-11-10.json`](../reference/verification-deepin-2026-11-10.json)
+for the exact artifact and evidence boundaries.
