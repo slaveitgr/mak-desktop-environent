@@ -57,6 +57,16 @@ apt-get "${apt_args[@]}" install -y --no-install-recommends python3-venv dbus-x1
   qml6-module-qtmultimedia qml6-module-qtwebengine fonts-inter
 python3 -m venv /tmp/makos/venv
 /tmp/makos/venv/bin/pip install PySide6==6.8.0.2 chess==1.11.2 pyte==0.8.2 wcwidth==0.9.4
+# Wheel RPATHs take precedence over LD_LIBRARY_PATH. Keep the wheel's Qt
+# libraries outside its search path so bindings and distribution QML plugins
+# share the actual Deepin Qt. Preserve them only as unused CI diagnostics.
+/tmp/makos/venv/bin/python - <<'QT'
+from pathlib import Path
+import shutil,sysconfig
+libraries=Path(sysconfig.get_path('purelib'))/'PySide6'/'Qt'/'lib'
+assert libraries.is_dir(), libraries
+shutil.move(str(libraries), '/tmp/makos/unused-wheel-qt-libraries')
+QT
 useradd --create-home --shell /bin/bash makos-test
 mkdir -p /tmp/makos/results
 chown -R makos-test:makos-test /tmp/makos
