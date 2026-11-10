@@ -9,6 +9,14 @@ ApplicationWindow {
     required property var desktop
     property var view: null
     property bool disposing: false
+    readonly property bool compositorGlass: !!(cutefishBridge.item && cutefishBridge.item.glassReady)
+    readonly property int compositorReveal: cutefishBridge.item ? cutefishBridge.item.revealOffset : 0
+    readonly property int compositorRevealDuration: cutefishBridge.item ? cutefishBridge.item.revealDuration : 200
+    Loader {
+        id: cutefishBridge
+        source: desktop.cutefishMode ? "CutefishWindowBridge.qml" : ""
+        onLoaded: item.host = host
+    }
     readonly property Item overlayItem: contentItem
     objectName: "makOSNativeWindow"
     transientParent: null
@@ -40,6 +48,7 @@ ApplicationWindow {
     }
     function minimize() {
         if (!view || view.closing) return;
+        if (desktop.cutefishMode) { showMinimized(); return; }
         // A texture cannot be shared between QQuickWindows. Keep an image for
         // the Dock, capturing while the native client is still mapped.
         let captured = view.surfaceItem.grabToImage(function(result) {
@@ -58,6 +67,8 @@ ApplicationWindow {
     }
     onVisibilityChanged: function(visibility) {
         if (!view || disposing) return;
+        if (desktop.cutefishMode && visibility !== Window.Minimized && visibility !== Window.Hidden)
+            view.isFullscreen = visibility === Window.FullScreen;
         let minimized = visibility === Window.Minimized;
         if (view.minimized !== minimized && visibility !== Window.Hidden) {
             view.minimized = minimized;

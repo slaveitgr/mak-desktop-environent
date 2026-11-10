@@ -5,6 +5,9 @@ import QtQuick.Effects
 FocusScope {
     id: win
     property var nativeWindow: null
+    readonly property bool compositorGlass: !!(nativeWindow && nativeWindow.compositorGlass)
+    readonly property bool nativeCutefish: desktop.cutefishMode && !!nativeWindow
+    readonly property bool chromeRevealed: nativeCutefish ? nativeWindow.compositorReveal > 0 : desktop.presentation.chromeVisible
     property var nativeSnapshot: null
     property url nativeThumbnail: ""
     required property var desktop
@@ -33,15 +36,15 @@ FocusScope {
     property rect savedGeometry: Qt.rect(0, 0, 0, 0)
     property rect fullscreenRestoreGeometry: Qt.rect(0, 0, 0, 0)
     property size fullscreenViewport: Qt.size(0, 0)
-    property real chromeOffset: isFullscreen && desktop.presentation.chromeVisible ? 30 : 0
+    property real chromeOffset: isFullscreen ? (nativeCutefish ? nativeWindow.compositorReveal : desktop.presentation.chromeVisible ? 30 : 0) : 0
     property alias surfaceItem: surface
     property alias clientItem: client
     width: 720
     height: 680
     visible: nativeWindow ? !appHidden : !appHidden && (!minimized || minimizeProgress < 0.999) && (!desktop.presentation.active || desktop.presentation.window === win)
     enabled: !closing && !minimized && !appHidden
-    opacity: closing ? 0 : appearanceProgress
-    scale: 0.965 + 0.035 * appearanceProgress
+    opacity: nativeCutefish ? 1 : closing ? 0 : appearanceProgress
+    scale: nativeCutefish ? 1 : 0.965 + 0.035 * appearanceProgress
     Behavior on opacity {
         NumberAnimation {
             duration: desktop.reduceMotion ? 0 : 140
@@ -143,7 +146,7 @@ FocusScope {
     }
     Timer {
         running: win.closing
-        interval: desktop.reduceMotion ? 1 : 150
+        interval: win.nativeCutefish || desktop.reduceMotion ? 1 : 150
         onTriggered: desktop.destroyWindow(win)
     }
     WindowBackdrop {
@@ -167,7 +170,7 @@ FocusScope {
         MultiEffect {
             anchors.fill: shadow
             source: shadow
-            shadowEnabled: !win.isFullscreen
+            shadowEnabled: !win.nativeCutefish && !win.isFullscreen
             shadowColor: win.active ? "#65000000" : "#37000000"
             shadowBlur: 1
             shadowVerticalOffset: 14
@@ -176,12 +179,19 @@ FocusScope {
         Rectangle {
             anchors.fill: parent
             radius: win.isFullscreen ? 0 : 25
-            color: win.dark ? "#242b2e" : "#f6f6f7"
+            color: win.compositorGlass ? "transparent" : (win.dark ? "#242b2e" : "#f6f6f7")
             border.width: win.isFullscreen ? 0 : 1
             border.color: win.dark ? "#596068" : "#b8bdc4"
         }
+        Rectangle {
+            visible: win.compositorGlass
+            x: win.sidebarWidth + 8
+            width: parent.width - x
+            height: parent.height
+            color: win.dark ? "#242b2e" : "#f6f6f7"
+        }
         Glass {
-            visible: win.sidebarWidth > 0 && win.active && desktop.wallpaperTint
+            visible: !win.compositorGlass && win.sidebarWidth > 0 && win.active && desktop.wallpaperTint
             x: 8
             y: 8
             width: Math.max(0, win.sidebarWidth - 8)
@@ -232,7 +242,7 @@ FocusScope {
             x: 18
             y: 18
             spacing: 8
-            visible: !win.isFullscreen || desktop.presentation.chromeVisible
+            visible: !win.isFullscreen || win.chromeRevealed
             Repeater {
                 model: ["#ff5f57", "#febc2e", "#28c840"]
                 delegate: Rectangle {

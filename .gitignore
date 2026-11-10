@@ -15,3 +15,5 @@ dist/
 *.iso.part
 *.iso.assembling
 *.iso.chunks/
+cutefish/build/
+ci-results/

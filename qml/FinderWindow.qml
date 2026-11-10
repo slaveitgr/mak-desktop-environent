@@ -6,6 +6,9 @@ import QtQuick.Effects
 FocusScope {
     id: win
     property var nativeWindow: null
+    readonly property bool compositorGlass: !!(nativeWindow && nativeWindow.compositorGlass)
+    readonly property bool nativeCutefish: desktop.cutefishMode && !!nativeWindow
+    readonly property bool chromeRevealed: nativeCutefish ? nativeWindow.compositorReveal > 0 : desktop.presentation.chromeVisible
     property var nativeSnapshot: null
     property url nativeThumbnail: ""
     readonly property int minimumWindowWidth: 660
@@ -23,10 +26,10 @@ FocusScope {
     property rect fullscreenRestoreGeometry: Qt.rect(0, 0, 940, 570)
     property size fullscreenViewport: Qt.size(0, 0)
     property int geometryDuration: 280
-    property real chromeOffset: isFullscreen && desktop.presentation.chromeVisible ? 30 : 0
+    property real chromeOffset: isFullscreen ? (nativeCutefish ? nativeWindow.compositorReveal : desktop.presentation.chromeVisible ? 30 : 0) : 0
     Behavior on chromeOffset {
         NumberAnimation {
-            duration: desktop.reduceMotion ? 0 : 180
+            duration: desktop.reduceMotion ? 0 : win.nativeCutefish ? win.nativeWindow.compositorRevealDuration : 180
             easing.type: Easing.OutCubic
         }
     }
@@ -53,8 +56,8 @@ FocusScope {
     readonly property real sidebarSymbolSize: desktop.sidebarIconSize === "small" ? 20 : desktop.sidebarIconSize === "large" ? 28 : 24
     width: 940
     height: 570
-    opacity: closing ? 0 : appearanceProgress
-    scale: 0.965 + 0.035 * appearanceProgress
+    opacity: nativeCutefish ? 1 : closing ? 0 : appearanceProgress
+    scale: nativeCutefish ? 1 : 0.965 + 0.035 * appearanceProgress
     visible: nativeWindow ? !appHidden : !appHidden && (!minimized || minimizeProgress < 0.999) && (!desktop.presentation.active || desktop.presentation.window === win)
     enabled: !closing && !minimized && !appHidden
     transformOrigin: Item.Center
@@ -110,7 +113,7 @@ FocusScope {
     }
     Timer {
         running: win.closing
-        interval: desktop.reduceMotion ? 1 : 150
+        interval: win.nativeCutefish || desktop.reduceMotion ? 1 : 150
         onTriggered: desktop.destroyWindow(win)
     }
     onXChanged: desktop.motionTick++
@@ -306,7 +309,7 @@ FocusScope {
         MultiEffect {
             anchors.fill: shadowShape
             source: shadowShape
-            shadowEnabled: !win.isFullscreen
+            shadowEnabled: !win.nativeCutefish && !win.isFullscreen
             shadowColor: win.active ? "#65000000" : "#37000000"
             shadowBlur: 1
             shadowVerticalOffset: 14
@@ -317,13 +320,20 @@ FocusScope {
         Rectangle {
             anchors.fill: parent
             radius: win.isFullscreen ? 0 : 25
-            color: win.dark ? "#242b2e" : "#fcfcfd"
+            color: win.compositorGlass ? "transparent" : (win.dark ? "#242b2e" : "#fcfcfd")
             border.color: win.dark ? "#596068" : "#b8bdc4"
             border.width: win.isFullscreen ? 0 : 1
         }
         // The floating Tahoe sidebar has its own rounded material boundary.
+        Rectangle {
+            visible: win.compositorGlass
+            x: win.sideWidth + 8
+            width: parent.width - x
+            height: parent.height
+            color: win.dark ? "#242b2e" : "#fcfcfd"
+        }
         Glass {
-            visible: win.sidebarVisible && win.active && desktop.wallpaperTint
+            visible: !win.compositorGlass && win.sidebarVisible && win.active && desktop.wallpaperTint
             x: 8
             y: 8
             width: win.sideWidth
@@ -374,7 +384,7 @@ FocusScope {
             }
             Row {
                 id: lights
-                visible: !win.isFullscreen || desktop.presentation.chromeVisible
+                visible: !win.isFullscreen || win.chromeRevealed
                 x: 10
                 y: 10
                 spacing: 8

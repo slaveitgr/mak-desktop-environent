@@ -212,6 +212,11 @@ class Bridge(QObject):
             self.terminals.remove(terminal)
             terminal.deleteLater()
 
+    @Slot(str)
+    def launchCutefishApp(self, app_id):
+        if app_id in ('finder', 'settings'):
+            QProcess.startDetached(sys.executable, [str(APP_DIR / 'main.py'), '--cutefish-app', app_id, '--root', str(self.workspace.root)])
+
     @Slot()
     def shutdown(self):
         if self._shutting_down: return
@@ -552,12 +557,18 @@ def main():
     parser.add_argument('--fullscreen', action='store_true')
     parser.add_argument('--session', action='store_true', help='Dedicated Linux login session; launched by tahoe-session')
     parser.add_argument('--wayland-shell', action='store_true', help='Experimental makOS layer surfaces; requires a matching LayerShellQt plugin')
+    parser.add_argument('--cutefish-app', choices=('finder', 'settings'), help='Native makOS client for the Cutefish shell')
+    parser.add_argument('--cutefish-test', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--makos', action='store_true', help='makOS development mode: native windows and opt-in DDE service adapters on Linux')
     parser.add_argument('--native-windows', action='store_true', help='makOS development: a real platform window for each application')
     parser.add_argument('--settings', action='store_true', help='Open System Settings alongside Finder')
     parser.add_argument('--compare-right', action='store_true', help='Position the prototype on the right half for native Finder comparison')
     parser.add_argument('--smoke-test', action='store_true', help='Load QML, render once, and exit without UI interactions')
     args = parser.parse_args()
+    if args.cutefish_app and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
+        parser.error('--cutefish-app requires a Linux Wayland session')
+    if args.cutefish_app and (args.session or args.wayland_shell or args.makos):
+        parser.error('--cutefish-app cannot be combined with another desktop mode')
     if args.session and (sys.platform != 'linux' or not os.environ.get('TAHOE_SESSION_SOCKET')):
         parser.error('--session must be started by the Linux session launcher')
     if args.wayland_shell and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
@@ -572,6 +583,13 @@ def main():
     app = QGuiApplication(sys.argv[:1] + (['-name', 'tahoe-desktop-shell'] if args.session else []))
     app.setApplicationName('makOS' if args.makos else 'Tahoe Desktop')
     app.setOrganizationName('Desktop Prototype')
+    cutefish_instance = None
+    if args.cutefish_app:
+        from cutefish_runtime import CutefishInstance
+        app.setApplicationName('Finder' if args.cutefish_app == 'finder' else 'System Settings')
+        app.setDesktopFileName('org.makos.' + args.cutefish_app.capitalize())
+        cutefish_instance = CutefishInstance(app, args.cutefish_app, root)
+        if not cutefish_instance.acquire(): return 0
     if args.session:
         app.setDesktopFileName('tahoe-desktop')
     font = QFont('.AppleSystemUIFont' if sys.platform == 'darwin' else 'Inter', 13)
@@ -582,14 +600,22 @@ def main():
     bridge.session.start()
     bridge.ddeAudio.start()
     engine = QQmlApplicationEngine()
+    if args.cutefish_app:
+        engine.addImportPath(str(APP_DIR / 'cutefish/build/qml'))
+        engine.rootContext().setContextProperty('cutefishApp', args.cutefish_app)
     engine.rootContext().setContextProperty('Bridge', bridge)
     engine.rootContext().setContextProperty('startFullscreen', args.fullscreen)
     engine.rootContext().setContextProperty('comparisonMode', args.compare_right)
     engine.rootContext().setContextProperty('startSettings', args.settings)
-    engine.rootContext().setContextProperty('startNativeWindows', args.native_windows or args.makos or args.wayland_shell)
+    engine.rootContext().setContextProperty('startNativeWindows', args.native_windows or args.makos or args.wayland_shell or bool(args.cutefish_app))
     engine.rootContext().setContextProperty('useWaylandShell', args.wayland_shell)
     engine.load(QUrl.fromLocalFile(str(APP_DIR / ('qml/WaylandShell.qml' if args.wayland_shell else 'qml/Main.qml'))))
     if not engine.rootObjects(): return 1
+    if cutefish_instance:
+        cutefish_instance.bind(engine.rootObjects()[0])
+        if args.cutefish_test:
+            from cutefish_runtime import exercise
+            exercise(app, engine.rootObjects()[0], engine)
     app.aboutToQuit.connect(engine.rootObjects()[0].flushApplications)
     app.aboutToQuit.connect(bridge.shutdown)
     if args.session:

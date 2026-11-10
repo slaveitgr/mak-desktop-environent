@@ -1,0 +1,11 @@
+{
+  "base": {
+    "distribution": "Debian 13 / Cutefish 1.0 nightly",
+    "filename": "cutefish-1.0-nightly-20261108-2229-amd64.iso",
+    "bytes": 1563197440,
+    "sha256": "bedebb9260e9b413980fc62f192b72a9d2ddeca7c7bc98d6042c9dda7978e933",
+    "url": "https://download.cutefish.org/iso/nightly/cutefish-1.0-nightly-20261108-2229-amd64.iso"
+  },
+  "compositor_source": "0e709136bd7056136e74e981acffc4b88d659e0b",
+  "scope": "Experimental branch; no claim of visual parity or Reef support."
+}

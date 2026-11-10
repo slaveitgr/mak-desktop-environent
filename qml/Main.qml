@@ -5,6 +5,7 @@ import QtQuick.Window
 import QtCore
 import "AppMenus.js" as AppMenus
 import "FinderMenus.js" as FinderMenus
+import "MenuSymbols.js" as MenuSymbols
 
 ApplicationWindow {
     id: app
@@ -13,7 +14,8 @@ ApplicationWindow {
     property alias controller: desktop
     property alias topbarView: topChrome
     property alias dockView: dock
-    visible: true
+    readonly property bool cutefishMode: typeof cutefishApp !== "undefined" && cutefishApp !== ""
+    visible: !cutefishMode
     width: comparisonMode ? Math.floor(Screen.width / 2) : Math.min(1360, Screen.width - 50)
     x: comparisonMode ? Math.floor(Screen.width / 2) : (Screen.width - width) / 2
     y: comparisonMode ? 60 : (Screen.height - height) / 2
@@ -21,6 +23,10 @@ ApplicationWindow {
     minimumWidth: comparisonMode ? 760 : 960
     minimumHeight: 650
     function flushApplications() { for(let w of desktop.windows) if(w.prepareClose)w.prepareClose(); }
+    function activateCutefishClient() {
+        let w = desktop.windows.find(item => !item.closing);
+        if (w) desktop.focusWindow(w);
+    }
     onClosing: function(event) {
         if (Bridge.session.enabled && !desktop.sessionEnding) {
             event.accepted = false;
@@ -55,6 +61,7 @@ ApplicationWindow {
         id: desktop
         objectName: "desktop"
         anchors.fill: parent
+        readonly property bool cutefishMode: app.cutefishMode
         readonly property bool shellActive: app.active
         readonly property bool nativeWindows: typeof startNativeWindows !== "undefined" && startNativeWindows
         readonly property var hostPalette: app.palette
@@ -345,6 +352,7 @@ ApplicationWindow {
                 window.forceActiveFocus();
         }
         function newWindow(path) {
+            if (cutefishMode && cutefishApp !== "finder") { Bridge.launchCutefishApp("finder"); return; }
             let browser = Bridge.createBrowser(path === undefined ? Bridge.initialFolder : path);
             let w = finderComponent.createObject(windowLayer, {
                 desktop: desktop,
@@ -360,6 +368,7 @@ ApplicationWindow {
             focusWindow(w);
         }
         function openSettings(page) {
+            if (cutefishMode && cutefishApp !== "settings") { Bridge.launchCutefishApp("settings"); return; }
             let w = windows.find(item => item.appKind === "settings" && !item.closing);
             if (!w) {
                 w = settingsComponent.createObject(windowLayer, {
@@ -421,6 +430,7 @@ ApplicationWindow {
             if (host) { host.disposing = true; host.view = null; host.hide(); }
             w.destroy();
             if (host) host.destroy();
+            if (cutefishMode && windows.length === 0) Qt.quit();
             let remaining = windows.filter(item => !item.minimized && !item.appHidden && !item.closing);
             if (remaining.length)
                 focusWindow(remaining[remaining.length - 1]);
@@ -504,8 +514,9 @@ ApplicationWindow {
                 separator: true
             };
         }
-        function menuRows(name) {
-            let w = activeWindow;
+        function menuRows(name) { return menuRowsFor(name, activeWindow); }
+        function menuRowsFor(name, target) {
+            let w = target;
             let has = !!w;
             if (has && w.appKind === "settings" && name !== "apple") {
                 if (name === "System Settings")
@@ -525,6 +536,21 @@ ApplicationWindow {
             if (name === "apple")
                 return [row("About This Mac", "aboutmac"), sep(), row("System Settings…", "settings"), row("App Store…", "launch:appstore"), sep(), {label:"Recent Items", submenu: recentMenuRows()}, sep(), row("Force Quit…", "forcequit", "⌥⌘⎋"), sep(), row("Sleep", "session:sleep"), row("Restart…", "session:restart"), row("Shut Down…", "session:shutdown"), sep(), row("Lock Screen", "session:lock", "⌃⌘Q"), row("Log Out " + Bridge.systemInfo.user + "…", "session:logout", "⇧⌘Q")];
             return FinderMenus.rows(name,w || desktopFiles,desktop,Bridge);
+        }
+        function nativeMenuRows(w) {
+            function icons(rows) {
+                return rows.map(function(row) {
+                    let result = Object.assign({}, row);
+                    let symbol = MenuSymbols.symbolFor(row);
+                    result.icon = symbol ? "makos-menu-" + symbol : "";
+                    if (row.submenu) result.submenu = icons(row.submenu);
+                    return result;
+                });
+            }
+            let names = w.appKind === "finder" ? ["Finder", "File", "Edit", "View", "Go", "Window", "Help"] : ["System Settings", "Edit", "View", "Window", "Help"];
+            return JSON.stringify(names.map(function(name, index) {
+                return {label:name, role:index === 0 ? 1 : name === "Window" ? 2 : name === "Help" ? 3 : 0, submenu:icons(menuRowsFor(name, w))};
+            }));
         }
         function openTopMenu(name, x) {
             systemPanel.close();
@@ -1441,8 +1467,9 @@ ApplicationWindow {
             SettingsWindow {}
         }
         Component.onCompleted: {
-            newWindow();
-            if (startSettings)
+            if (cutefishMode && cutefishApp === "settings") openSettings("");
+            else newWindow();
+            if (startSettings && !cutefishMode)
                 openSettings("");
         }
         Repeater {

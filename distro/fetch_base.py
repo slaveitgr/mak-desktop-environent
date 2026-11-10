@@ -95,6 +95,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, default=Path.home() / 'Downloads/makOS')
     parser.add_argument('--workers', type=int, choices=range(1, 9), default=4)
+    parser.add_argument('--manifest', type=Path, default=Path(__file__).with_name('base.json'))
     args = parser.parse_args()
-    base = json.loads(Path(__file__).with_name('base.json').read_text())['base']
+    base = json.loads(args.manifest.read_text())['base']
     fetch(base, args.output, args.workers)

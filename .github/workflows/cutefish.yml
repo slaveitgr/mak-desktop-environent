@@ -1,0 +1,29 @@
+name: makOS on the pinned Cutefish base
+on:
+  push:
+    branches: [makos-cutefish]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cutefish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare ISO inspection
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends squashfs-tools python3-venv
+          python3 -m venv "$RUNNER_TEMP/inspect"
+          "$RUNNER_TEMP/inspect/bin/pip" install pycdlib==1.15.0
+      - name: Download and verify Cutefish
+        run: python3 distro/fetch_base.py --manifest cutefish/base.json --output "$RUNNER_TEMP/base" --workers 4
+      - name: Build the Qt bridge and test native clients in Cutefish
+        run: bash cutefish/ci.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: makos-cutefish-validation
+          path: ci-results/
+          if-no-files-found: warn

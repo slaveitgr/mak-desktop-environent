@@ -1,0 +1,10 @@
+{
+  "upstream": "https://github.com/cutefishos/cutefish-compositor",
+  "commit": "0e709136bd7056136e74e981acffc4b88d659e0b",
+  "license": "BSD-3-Clause",
+  "sha256": {
+    "cutefish-main-menu-v1.xml": "da918dad5256d07e378e7405dafe53897d4f206a78183cd06647f4069a31efe7",
+    "cutefish-surface-blur-v1.xml": "30961f2f6298a6f739c57774d64b0c6fcaf10ad298fa2c988d181d654572ccfc",
+    "cutefish-window-hints-v1.xml": "d77de9d1c5ac453e80d8056b28b89387ad52789559d7494efd82f54774a51301"
+  }
+}
