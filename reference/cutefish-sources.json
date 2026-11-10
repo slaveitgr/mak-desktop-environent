@@ -1,0 +1,167 @@
+{
+  "inspected_on": "2026-11-10",
+  "method": "Read public source and official pages. Runtime not tested. No Cutefish source imported into product.",
+  "repositories": {
+    "getting-started": {
+      "url": "https://github.com/cutefishos/getting-started",
+      "commit": "870ec4493d9c8713c95e32f2c6b88dd383d2bea7",
+      "license": "BSD-3-Clause"
+    },
+    "cutefish-toolkit": {
+      "url": "https://github.com/cutefishos/cutefish-toolkit",
+      "commit": "67e34d75a5c0f36e7c8753ad87810886be6e59ea",
+      "license": "BSD-3-Clause"
+    },
+    "cutefish-framework": {
+      "url": "https://github.com/cutefishos/cutefish-framework",
+      "commit": "19712540d65ef7c270b4e937e3af674b860a0265",
+      "license": "BSD-3-Clause"
+    },
+    "cutefish-compositor": {
+      "url": "https://github.com/cutefishos/cutefish-compositor",
+      "commit": "06690b499e6cb5f24fb156042a1560c853486b35",
+      "license": "BSD-3-Clause; compositor retains additional per-file Chromium, Sommelier and APSL notices"
+    },
+    "filemanager": {
+      "url": "https://github.com/cutefishos/filemanager",
+      "commit": "a386c2560ebad0a892fb387c241947a8d7a11483",
+      "license": "BSD-3-Clause"
+    }
+  },
+  "public_source_findings": [
+    {
+      "area": "UI stack",
+      "files": [
+        "cutefish-toolkit/README.md",
+        "cutefish-compositor/README.md"
+      ],
+      "observation": "Native C++/Skia/GLES toolkit; compositor owns window management, shell, lock screen and Xwayland. Optional Qt plugins integrate Qt applications."
+    },
+    {
+      "area": "Glass",
+      "files": [
+        "cutefish-compositor/src/render/glass.h",
+        "cutefish-compositor/src/render/shaders/glass_fragment_shader.glsl"
+      ],
+      "observation": "Backdrop softening, superellipse refraction, tint and chromatic separation implemented at compositor level."
+    },
+    {
+      "area": "Minimize",
+      "files": [
+        "cutefish-compositor/src/shell/dock/minimized_windows.cpp",
+        "cutefish-compositor/src/shell/dock/dock_window.cpp",
+        "cutefish-compositor/src/scene/window_animation.cpp"
+      ],
+      "observation": "Separate minimized-window model with thumbnail capture, landing state and target rectangle. Source sets minimize/restore to 320 ms, not a measured Tahoe timing."
+    },
+    {
+      "area": "Menus and status items",
+      "files": [
+        "cutefish-compositor/protocols/cutefish-main-menu-v1.xml",
+        "cutefish-compositor/protocols/cutefish-status-item-v1.xml",
+        "cutefish-compositor/protocols/cutefish-window-hints-v1.xml"
+      ],
+      "observation": "Custom protocols for active-window global menus, update-before-open, icons/check states/shortcuts, variable-width client-drawn status items with anchored popups, and fullscreen reveal."
+    },
+    {
+      "area": "File operations",
+      "files": [
+        "cutefish-framework/files/CMakeLists.txt",
+        "filemanager/README.md"
+      ],
+      "observation": "Separate Cutefish::Files and FilesThumbnails libraries for listing, MIME, operations/undo, trash, monitoring, UDisks2 and thumbnails. Files uses ToolkitBase; thumbnails also uses Toolkit. File manager includes disk-image mounts."
+    },
+    {
+      "area": "Fullscreen reveal",
+      "files": [
+        "cutefish-compositor/src/wm/dock_layout_manager.cpp",
+        "cutefish-compositor/src/wm/dock_layout_manager.h",
+        "cutefish-compositor/protocols/cutefish-window-hints-v1.xml"
+      ],
+      "observation": "Compositor coordinates panel reveal with the fullscreen window, sending offset and duration. Pointer/menu state keeps panels visible; reversing mid-slide starts at the current position. Source delay/slide constants are 200 ms, not measured Tahoe timings."
+    },
+    {
+      "area": "Interoperability",
+      "files": [
+        "cutefish-compositor/src/wayland/protocol_globals.cpp",
+        "cutefish-compositor/CMakeLists.txt",
+        "cutefish-compositor/src/shell/statusbar/application_menu.h"
+      ],
+      "observation": "Registers xdg-shell and KDE appmenu; imports com.canonical.dbusmenu in addition to custom menu protocol. No layer-shell implementation was found in the inspected protocol registration/build sources.",
+      "boundary": "Static selected-source search, not a live registry probe. Current makOS layer-shell surfaces would need an adapter or compositor changes before assuming they run unchanged."
+    }
+  ],
+  "reef": {
+    "sources": [
+      "https://cutefish.org/blog/running-mac-apps/",
+      "https://cutefish.org/blog/mac-apps-first-milestone/"
+    ],
+    "maintainer_claims": "Unmodified Mac GUI apps use a Mach-O loader and reimplemented frameworks integrated with Cutefish toolkit/compositor/shell. App Store, iCloud and Sign in with Apple are unavailable.",
+    "availability": "Explicitly not open source at present; no available license to redistribute or port private Reef established.",
+    "verification": "Official claims, not independently executed or audited Reef code. No Mac-app compatibility added to makOS."
+  },
+  "download_status": {
+    "url": "https://download.cutefish.org/",
+    "observation": "Official page now advertises Debian 13 based amd64 and arm64 nightly ISOs. getting-started README no-ISO text is older. Nightly is marked for testing, not stable release.",
+    "selected_iso": "cutefish-1.0-nightly-20261108-2229-amd64.iso",
+    "inspection": "ISO checksum verified; complete rootfs path/package inventory and selected payload analysis found no identifiable Reef. See separate ISO evidence record; no runtime test."
+  },
+  "makos_decision": "Keep the authorized Deepin/Treeland target. Evaluate public Cutefish interaction contracts and portable backend boundaries. Reusing compositor effects requires adaptation; replacing Treeland with Cutefish would be an architectural change, not a plugin install.",
+  "unknowns": [
+    "Cutefish runtime behavior and hardware performance",
+    "Measured Tahoe visual/animation parity",
+    "Reef runtime compatibility and redistribution availability"
+  ],
+  "shipped_source_provenance": {
+    "cutefish-compositor": {
+      "snapshot_commit": "0e709136bd7056136e74e981acffc4b88d659e0b",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-compositor",
+      "license_labels": [
+        "APSL-2.0",
+        "BSD-3-Clause",
+        "Expat",
+        "MIT-Wayland"
+      ]
+    },
+    "cutefish-core": {
+      "snapshot_commit": "98b846f1d6848cc2ddb983d4b8c75fbc5107f2cc",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-core",
+      "license_labels": []
+    },
+    "cutefish-toolkit": {
+      "snapshot_commit": "90c1a06e3dbef3b2578b2c4e209e10f39959f95f",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-toolkit",
+      "license_labels": [
+        "BSD-3-Clause"
+      ]
+    },
+    "cutefish-framework": {
+      "snapshot_commit": "19712540d65ef7c270b4e937e3af674b860a0265",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-framework",
+      "license_labels": []
+    },
+    "cutefish-filemanager": {
+      "snapshot_commit": "d326cd9a831885367e983dc713aaa70571e84713",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/filemanager",
+      "license_labels": []
+    },
+    "cutefish-settings": {
+      "snapshot_commit": "d623dbdd2b0913f0d7d9dc19cb5ce1abbcf85805",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/settings",
+      "license_labels": []
+    }
+  },
+  "verification_scope": {
+    "public_source": "reviewed at recorded HEADs",
+    "iso": "verified checksum and statically inspected separately",
+    "runtime": "not executed",
+    "tahoe_parity": "not measured",
+    "mac_binary_support_in_makos": false
+  }
+}

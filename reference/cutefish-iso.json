@@ -1,0 +1,63 @@
+{
+  "iso": {
+    "bytes": 1563197440,
+    "sha256": "bedebb9260e9b413980fc62f192b72a9d2ddeca7c7bc98d6042c9dda7978e933",
+    "official_manifest": "https://download.cutefish.org/iso/nightly/cutefish-1.0-nightly-20261108-2229-amd64.iso.sha256",
+    "checksum_match": true,
+    "filename": "cutefish-1.0-nightly-20261108-2229-amd64.iso"
+  },
+  "package_records": 859,
+  "filesystem_entries": 52216,
+  "regular_file_headers_examined": 39881,
+  "elf_files": 3360,
+  "macho_magic_candidates": [],
+  "header_read_errors": [],
+  "reef_conclusion": "No identifiable Reef executable/framework payload found in this ISO; renamed/embedded/nested/later-downloaded payloads not ruled out",
+  "selected_elf_files": 9,
+  "runtime_tested": false,
+  "source_snapshots": {
+    "cutefish-compositor": {
+      "snapshot_commit": "0e709136bd7056136e74e981acffc4b88d659e0b",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-compositor",
+      "license_labels": [
+        "APSL-2.0",
+        "BSD-3-Clause",
+        "Expat",
+        "MIT-Wayland"
+      ]
+    },
+    "cutefish-core": {
+      "snapshot_commit": "98b846f1d6848cc2ddb983d4b8c75fbc5107f2cc",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-core",
+      "license_labels": []
+    },
+    "cutefish-toolkit": {
+      "snapshot_commit": "90c1a06e3dbef3b2578b2c4e209e10f39959f95f",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-toolkit",
+      "license_labels": [
+        "BSD-3-Clause"
+      ]
+    },
+    "cutefish-framework": {
+      "snapshot_commit": "19712540d65ef7c270b4e937e3af674b860a0265",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/cutefish-framework",
+      "license_labels": []
+    },
+    "cutefish-filemanager": {
+      "snapshot_commit": "d326cd9a831885367e983dc713aaa70571e84713",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/filemanager",
+      "license_labels": []
+    },
+    "cutefish-settings": {
+      "snapshot_commit": "d623dbdd2b0913f0d7d9dc19cb5ce1abbcf85805",
+      "authority": "shipped Debian changelog; no reproducible-build verification",
+      "source_url": "https://github.com/cutefishos/settings",
+      "license_labels": []
+    }
+  }
+}

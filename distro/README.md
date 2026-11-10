@@ -65,9 +65,12 @@ connected. Plain preview and macOS development do not invoke system services.
 Wire-contract tests pass; no Deepin hardware audio test has been performed yet.
 
 Native mode is an integration preview, not a complete Treeland login session.
-Dock/topbar layer-shell surfaces, compositor blur, global menus for external
-apps, native cross-window file drag/drop, lock/session teardown, multiple monitors
-and the compositor Genie animation remain to be integrated and tested. Preview
+The experimental `--wayland-shell` entry point creates separate desktop, topbar
+and Dock layer-shell surfaces using the system LayerShellQt plugin. Its first
+Deepin protocol test is in progress; this is not a validated login session.
+Compositor blur, global menus for external apps, native cross-window file
+drag/drop, lock/session teardown, multiple monitors and the compositor Genie
+animation remain to be integrated and tested. Preview
 mode retains its existing in-scene animations. Native mode currently delegates
 window transitions to the running window manager/compositor.
 
@@ -84,6 +87,13 @@ window transitions to the running window manager/compositor.
 Keep package and asset attribution when importing source. Merely renaming an
 upstream application is not treated as a completed makOS implementation. Existing
 local records remain preserved until a tested data migration is available.
+
+The public Cutefish desktop is also being reviewed as a source reference;
+`reference/cutefish-sources.json` records exact revisions and evidence boundaries.
+It uses its own C++/Skia toolkit and compositor. Its glass, minimized-window
+landing and menu/status protocols are useful references, but are not Treeland
+plugins. Cutefish's separate Reef compatibility runtime is currently closed
+source; no Reef integration or ability to run Mac application binaries is claimed.
 
 ## Qt and session constraints
 
@@ -104,3 +114,12 @@ native-window QML checks cover all 19 suite apps, Finder, 32 Settings categories
 menu routing, minimize/restore, full screen, singleton handling and close. Native
 checks additionally verify distinct platform windows and context-menu ownership.
 These headless checks establish behavior contracts, not visual/animation parity.
+Native Finder and Settings also rendered through Cocoa/Metal on the development
+Mac. The Deepin CI harness extracts both live filesystem layers from the verified
+ISO and installs test dependencies from the base archive using the image's
+Crimson signing key. The rootfs setup now passes. A subsequent native-app check exposed Qt 6.8.0
+read-only QML image-capture properties; Photo Booth now uses the public setters
+through its Python bridge. All 19 native app pages pass locally after that change;
+the Deepin/Treeland run is being repeated. CI checks `/proc/self/maps` to require
+actual system Qt libraries; the wheel libraries are moved outside its RPATH
+inside the disposable environment before testing distribution plugins.

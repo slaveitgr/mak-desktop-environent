@@ -1,0 +1,30 @@
+{
+  "iso-source": {
+    "commit": "3141d689cc0fafdb354b75422341e5c365bd2ee5",
+    "remote": "https://github.com/pearOS-archlinux/iso.git"
+  },
+  "goldwing-source": {
+    "commit": "5c3942a1bfc7d37420b6a146c9d40aaae555a896",
+    "remote": "https://github.com/Pear-Project/iso.git"
+  },
+  "pkgbuilds": {
+    "commit": "aec5cdd1d1eb56db9f53b10dec27985fb5f3f76d",
+    "remote": "https://github.com/pearOS-archlinux/pkgbuilds.git"
+  },
+  "liquid-gel": {
+    "commit": "e1e0a2d9f31bc4c47c06bf003815749479605a33",
+    "remote": "https://github.com/pearOS-archlinux/liquid-gel.git"
+  },
+  "pafari": {
+    "commit": "278b8980e78da9abc3ab0a34ff9c1ccc59e500b0",
+    "remote": "https://github.com/pearOS-archlinux/pafari.git"
+  },
+  "seafari": {
+    "commit": "48469ff687c8c84b83d27322d12ecb11c56c2bd4",
+    "remote": "https://github.com/InledGroup/seafari.git"
+  },
+  "apps-bundle": {
+    "commit": "886b369b0adc40bc455f58eb6efbf0c425609616",
+    "remote": "https://github.com/pearOS-archlinux/pearos-apps-bundle.git"
+  }
+}
