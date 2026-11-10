@@ -1,0 +1,40 @@
+name: Pinned Cutefish browser diagnosis
+on:
+  push:
+    branches: [makos-cutefish]
+    paths:
+      - 'browser_profiles.py'
+      - 'qml/Browser*.qml'
+      - 'qml/Web*.qml'
+      - 'tests/verify_web*.py'
+      - 'tests/verify_browser_profiles.py'
+      - 'cutefish/ci.sh'
+      - '.github/workflows/browser-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MAKOS_BROWSER_ONLY: '1'
+      MAKOS_DOWNLOAD_TRACE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare pinned-base inspection
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends squashfs-tools python3-venv
+          python3 -m venv "$RUNNER_TEMP/inspect"
+          "$RUNNER_TEMP/inspect/bin/pip" install pycdlib==1.15.0
+      - name: Download and verify the same Cutefish base
+        run: python3 distro/fetch_base.py --manifest cutefish/base.json --output "$RUNNER_TEMP/base" --workers 4
+      - name: Diagnose browser in the pinned Qt runtime
+        run: bash cutefish/ci.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: makos-browser-diagnostic
+          path: ci-results/
+          if-no-files-found: warn

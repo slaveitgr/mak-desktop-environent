@@ -13,9 +13,15 @@ Item {
     property var pendingEntry: null
     property alias proposedName: fileName.text
     property bool closing: false
+    property bool traceLifecycle: false
     readonly property bool awaitingConfirmation: pendingEntry !== null
     readonly property bool listVisible: downloadList.opened
     readonly property int activeCount: entries.filter(item => item.status === "downloading" || item.status === "awaiting").length
+
+    function trace(label, request) {
+        if (traceLifecycle)
+            console.info("DOWNLOAD", label, request ? request.id : "-", request ? request.state : "-", request ? request.isFinished : "-", request ? request.interruptReason : "-");
+    }
 
     function byteText(value) {
         if (value < 0)
@@ -63,6 +69,7 @@ Item {
         // originated the download may show its prompt or cancel the request.
         if (!owner.ownsWebView(download.view))
             return;
+        trace("requested", download);
         // Qt 6.8 destroys an unaccepted request when this signal returns.
         // The bridge's nested event loop keeps this request alive while the
         // in-desktop confirmation remains interactive, without writing a file.
@@ -82,7 +89,9 @@ Item {
         fileName.text = entry.name;
         downloadList.close();
         savePrompt.open();
+        trace("decision-wait", download);
         let accepted = Bridge.waitForDownloadDecision(manager);
+        trace(accepted ? "decision-save" : "decision-cancel", download);
         savePrompt.close();
         pendingEntry = null;
         if (!accepted || closing) {
@@ -107,7 +116,9 @@ Item {
         download.downloadDirectory = destination.directory;
         download.downloadFileName = destination.name;
         entry.status = "downloading";
+        trace("accept-before", download);
         download.accept();
+        trace("accept-after", download);
         updateEntry(entry);
         showList();
     }
@@ -115,6 +126,10 @@ Item {
         let request = entry.request;
         if (!request || entry.finalized)
             return;
+        if (entry.lastTraceState !== request.state) {
+            entry.lastTraceState = request.state;
+            trace("state", request);
+        }
         entry.received = request.receivedBytes;
         entry.total = request.totalBytes;
         if (request.state === WebEngineDownloadRequest.DownloadCompleted) {
@@ -138,12 +153,16 @@ Item {
             entry.finalized = true;
             entry.status = interrupted ? "failed" : "cancelled";
             entry.message = interrupted ? request.interruptReasonString || "Download interrupted" : "";
-            if (interrupted && !request.isFinished)
+            if (interrupted && !request.isFinished) {
+                trace("interrupted-cancel-before", request);
                 request.cancel();
+                trace("interrupted-cancel-after", request);
+            }
             if (entry.token)
                 Bridge.suite.cancelDownload(entry.token);
             entry.token = "";
             entry.request = null;
+            trace("failure-finalized", null);
         }
     }
     function cancelEntry(entry) {
@@ -216,6 +235,7 @@ Item {
             property real received: 0
             property real total: -1
             property bool finalized: false
+            property int lastTraceState: -1
             Connections {
                 target: entry.request
                 function onStateChanged() {

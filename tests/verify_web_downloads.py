@@ -16,12 +16,13 @@ import threading
 import time
 from urllib.parse import urlsplit
 
-from PySide6.QtCore import QObject, QTimer, QUrl
+from PySide6.QtCore import QObject, QTimer, QUrl, qVersion
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent
 from PySide6.QtQuick import QQuickItem, QQuickWindow
 from PySide6.QtTest import QTest
 from PySide6.QtWebEngineQuick import QtWebEngineQuick
+from PySide6.QtWebEngineCore import qWebEngineVersion, qWebEngineChromiumVersion
 import shiboken6
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +39,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = urlsplit(self.path).path
         if path.startswith('/download'):
+            if path.endswith('-broken'):
+                print('FIXTURE: serving truncated response', flush=True)
             slow = path.endswith('-slow')
             data = SLOW_DATA if slow else DATA
             name = 'slow.bin' if slow else 'sample.txt'
@@ -113,6 +116,7 @@ ApplicationWindow { width:1020;height:720;visible:false
         self.page.ensureSession()
         self.manager = self.page.property('downloadManager')
         assert self.manager
+        self.manager.setProperty('traceLifecycle', os.environ.get('MAKOS_DOWNLOAD_TRACE') == '1')
 
     def close_browser(self):
         if self.page is None:
@@ -186,6 +190,7 @@ ApplicationWindow { width:1020;height:720;visible:false
 
 
 def main():
+    print('Browser runtime: Qt=' + qVersion() + ' WebEngine=' + qWebEngineVersion() + ' Chromium=' + qWebEngineChromiumVersion(), flush=True)
     server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     QtWebEngineQuick.initialize()
@@ -250,7 +255,9 @@ def main():
             harness.assert_clean()
             print('PASS: progress and cancellation remove owned partial files', flush=True)
 
+            print('CASE: truncated response before or during Save confirmation', flush=True)
             entry = harness.start_download(True, '/download-broken', rename='broken.bin')
+            print('CASE: truncated response accepted; waiting for terminal state', flush=True)
             wait_for(lambda: entry.property('finalized'), 'interrupted download', seconds=15)
             assert entry.property('status') == 'failed'
             assert entry.property('message')

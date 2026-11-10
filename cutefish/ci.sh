@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 [[ "${GITHUB_ACTIONS:-}" == "true" ]] || { echo 'This isolated rootfs harness is only for GitHub Actions.' >&2; exit 2; }
+[[ "${MAKOS_BROWSER_ONLY:-0}" != 1 || "${MAKOS_BUILD_RECOVERY_ISO:-0}" != 1 ]] || { echo 'Browser-only diagnosis cannot build a release image.' >&2; exit 2; }
 MAKOS_ROOTFS="$RUNNER_TEMP/makos-cutefish-root"
 MAKOS_ISO="$RUNNER_TEMP/base/cutefish-1.0-nightly-20261108-2229-amd64.iso"
 [[ ! -e "$MAKOS_ROOTFS" ]] || { echo 'Refusing to overwrite an existing rootfs.' >&2; exit 2; }
@@ -45,7 +46,7 @@ sudo ln -s pts/ptmx "$MAKOS_ROOTFS/dev/ptmx"
 sudo mount -t tmpfs -o size=512m tmpfs "$MAKOS_ROOTFS/dev/shm"
 # All service descendants belong to this PID namespace and are reaped when
 # its init shell exits. Its proc mount is private to the namespace.
-sudo env MAKOS_BUILD_RECOVERY_ISO="${MAKOS_BUILD_RECOVERY_ISO:-0}" MAKOS_SOURCE_COMMIT="$(git rev-parse HEAD)" unshare --mount --pid --fork --kill-child --mount-proc="$MAKOS_ROOTFS/proc" \
+sudo env MAKOS_BUILD_RECOVERY_ISO="${MAKOS_BUILD_RECOVERY_ISO:-0}" MAKOS_BROWSER_ONLY="${MAKOS_BROWSER_ONLY:-0}" MAKOS_DOWNLOAD_TRACE="${MAKOS_DOWNLOAD_TRACE:-0}" MAKOS_SOURCE_COMMIT="$(git rev-parse HEAD)" unshare --mount --pid --fork --kill-child --mount-proc="$MAKOS_ROOTFS/proc" \
   chroot "$MAKOS_ROOTFS" /bin/bash -se <<'SH'
 export DEBIAN_FRONTEND=noninteractive
 test -s /var/lib/dpkg/status
@@ -86,7 +87,9 @@ if [[ "${MAKOS_BUILD_RECOVERY_ISO:-0}" == 1 ]]; then
   # Keep Plymouth's abstract socket separate from any runner daemon.
   unshare --net xvfb-run -a -s "-screen 0 1600x900x24" python3 /tmp/makos/source/installer/boot/check_theme.py --output /tmp/makos/results > /tmp/makos/results/plymouth-check.log 2>&1
 fi
-MAKOS_COMPOSITOR_CHROOT=1 python3 /tmp/makos/source/cutefish/branding/build.py > /tmp/makos/results/compositor-branding-build.log 2>&1
+if [[ "${MAKOS_BROWSER_ONLY:-0}" != 1 ]]; then
+  MAKOS_COMPOSITOR_CHROOT=1 python3 /tmp/makos/source/cutefish/branding/build.py > /tmp/makos/results/compositor-branding-build.log 2>&1
+fi
 useradd --create-home --shell /bin/bash makos-test
 chown -R makos-test:makos-test /tmp/makos
 runuser -u makos-test -- /bin/bash -se <<'USER'
@@ -94,12 +97,19 @@ cd /tmp/makos/source
 export XDG_RUNTIME_DIR=/tmp/makos/runtime
 mkdir -m 700 "$XDG_RUNTIME_DIR"
 export QTWEBENGINE_DISABLE_SANDBOX=1 QT_QUICK_CONTROLS_STYLE=Basic
-cmake -S cutefish -B cutefish/build -G Ninja -DCMAKE_BUILD_TYPE=Debug > /tmp/makos/results/build.log 2>&1
-cmake --build cutefish/build -j2 >> /tmp/makos/results/build.log 2>&1
 python3 -m venv --system-site-packages cutefish/build/venv
 cutefish/build/venv/bin/pip install chess==1.11.2
 export PATH="/tmp/makos/source/cutefish/build/venv/bin:$PATH"
 export PYTHONPATH="/tmp/makos/source"
+if [[ "${MAKOS_BROWSER_ONLY:-0}" == 1 ]]; then
+  printf '%s\n' 'DIAGNOSTIC ONLY: pinned base browser tests; not native-shell or release validation.' > /tmp/makos/results/diagnostic-scope.txt
+  QT_QUICK_BACKEND=software python3 tests/verify_web_page.py > /tmp/makos/results/browser-page.log 2>&1
+  QT_QUICK_BACKEND=software python3 tests/verify_web_downloads.py > /tmp/makos/results/browser-downloads.log 2>&1
+  QT_QUICK_BACKEND=software python3 tests/verify_browser_profiles.py > /tmp/makos/results/browser-profiles.log 2>&1
+  exit 0
+fi
+cmake -S cutefish -B cutefish/build -G Ninja -DCMAKE_BUILD_TYPE=Debug > /tmp/makos/results/build.log 2>&1
+cmake --build cutefish/build -j2 >> /tmp/makos/results/build.log 2>&1
 python3 -m unittest discover -s tests -p 'test_cutefish*.py' -v > /tmp/makos/results/client-tests.log 2>&1
 python3 -m unittest discover -s tests -p 'test_recovery*.py' -v > /tmp/makos/results/recovery-tests.log 2>&1
 python3 -m unittest discover -s tests -p 'test_finder*.py' -v > /tmp/makos/results/finder-tests.log 2>&1
@@ -112,9 +122,6 @@ QT_QUICK_BACKEND=software python3 tests/verify_shared_appearance.py > /tmp/makos
 QT_QUICK_BACKEND=software python3 tests/verify_makos_installer_ui.py > /tmp/makos/results/installer-ui-fixtures.log 2>&1
 QT_QUICK_BACKEND=software python3 tests/verify_about_system_info.py > /tmp/makos/results/about-ui-fixtures.log 2>&1
 QT_QUICK_BACKEND=software python3 tests/verify_appstore.py > /tmp/makos/results/appstore-ui-fixtures.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_web_page.py > /tmp/makos/results/browser-page.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_web_downloads.py > /tmp/makos/results/browser-downloads.log 2>&1
-QT_QUICK_BACKEND=software python3 tests/verify_browser_profiles.py > /tmp/makos/results/browser-profiles.log 2>&1
 python3 tests/smoke_installer_dbus_wire.py > /tmp/makos/results/installer-dbus-wire.log 2>&1
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --smoke-test > /tmp/makos/results/recovery-preview.log 2>&1
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 installer/recovery.py --preview --disk-utility --smoke-test > /tmp/makos/results/disk-preview.log 2>&1
@@ -124,5 +131,8 @@ python3 distro/probe.py > /tmp/makos/results/readiness.json
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 tests/smoke_ui.py --native-windows > /tmp/makos/results/native-apps.log 2>&1
 dbus-run-session -- python3 cutefish/ci_session.py > /tmp/makos/results/cutefish-check.log 2>&1
 dbus-run-session -- env MAKOS_EXTERNAL_SHELL_TEST=1 python3 cutefish/branding/probe_external.py --output /tmp/makos/results > /tmp/makos/results/external-shell-check.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_web_page.py > /tmp/makos/results/browser-page.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_web_downloads.py > /tmp/makos/results/browser-downloads.log 2>&1
+QT_QUICK_BACKEND=software python3 tests/verify_browser_profiles.py > /tmp/makos/results/browser-profiles.log 2>&1
 USER
 SH
