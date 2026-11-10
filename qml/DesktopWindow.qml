@@ -177,18 +177,21 @@ FocusScope {
             blurMax: 48
         }
         Rectangle {
+            visible: !win.compositorGlass
             anchors.fill: parent
             radius: win.isFullscreen ? 0 : 25
-            color: win.compositorGlass ? "transparent" : (win.dark ? "#242b2e" : "#f6f6f7")
-            border.width: win.isFullscreen ? 0 : 1
-            border.color: win.dark ? "#596068" : "#b8bdc4"
-        }
-        Rectangle {
-            visible: win.compositorGlass
-            x: win.sidebarWidth + 8
-            width: parent.width - x
-            height: parent.height
             color: win.dark ? "#242b2e" : "#f6f6f7"
+            border.color: win.dark ? "#596068" : "#b8bdc4"
+            border.width: win.isFullscreen ? 0 : 1
+        }
+        CompositorGlassFrame {
+            visible: win.compositorGlass
+            anchors.fill: parent
+            bodyColor: win.dark ? "#242b2e" : "#f6f6f7"
+            borderColor: win.dark ? "#596068" : "#b8bdc4"
+            borderWidth: win.isFullscreen ? 0 : 1
+            corner: win.isFullscreen ? 0 : 25
+            glassRect: Qt.rect(8, 8, Math.max(0, win.sidebarWidth - 8), Math.max(0, height - 16))
         }
         Glass {
             visible: !win.compositorGlass && win.sidebarWidth > 0 && win.active && desktop.wallpaperTint

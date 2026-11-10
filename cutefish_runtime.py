@@ -107,11 +107,12 @@ def exercise(app, root, engine):
     def restore_from_shell():
         # A minimized client cannot mint its own focus token. Exercise the
         # compositor activation path used by its Dock/window switcher.
-        result = subprocess.run(['dbus-send', '--session', '--print-reply',
-            '--dest=org.cutefish.WindowDebug1', '/org/cutefish/WindowDebug1',
-            'org.cutefish.WindowDebug1.ActivateWindow', 'uint64:' + snapshots[-1]['id']],
-            capture_output=True, text=True, timeout=3)
-        assert result.returncode == 0 and 'boolean true' in result.stdout, result.stderr
+        for method in ('RestoreWindow', 'ActivateWindow'):
+            result = subprocess.run(['dbus-send', '--session', '--print-reply',
+                '--dest=org.cutefish.WindowDebug1', '/org/cutefish/WindowDebug1',
+                'org.cutefish.WindowDebug1.' + method, 'uint64:' + snapshots[-1]['id']],
+                capture_output=True, text=True, timeout=3)
+            assert result.returncode == 0 and 'boolean true' in result.stdout, result.stderr
 
     def check(label, expression, state=None, active=True):
         if callable(expression):
