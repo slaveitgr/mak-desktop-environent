@@ -1,0 +1,10 @@
+--- a/src/session/window_debug_service.cpp
++++ b/src/session/window_debug_service.cpp
+@@ -63,6 +63,7 @@
+     Value object = Value::object({
+             {"id", std::to_string(window->id())},
+             {"appId", window->applicationId()},
++            {"processId", std::to_string(window->processId())},
+             {"title", window->title()},
+             {"popup", window->isPopup()},
+             {"role", wm::toString(window->role())},

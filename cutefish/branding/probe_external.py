@@ -182,12 +182,17 @@ def main():
                 def key(code,pressed):assert call('Key','ub',code,pressed)
                 wait_for(lambda:not launcher_visible(),'launcher initially closed')
                 normal_before={w['id'] for w in windows() if w['role']=='normal' and not w['popup']}
+                popup_before={w['id'] for w in windows() if w['popup']}
+                shell_process=role_set()['desktop'][0]['processId']
+                assert int(shell_process)>0
                 key(125,True);time.sleep(.3)
                 assert not launcher_visible(),'Super press must wait for release'
                 key(125,False)
                 wait_for(launcher_visible,'lone Super opens Apps overlay')
                 assert {w['id'] for w in windows() if w['role']=='normal' and not w['popup']}==normal_before
-                apps_popup=wait_for(lambda:next((w for w in windows() if w['popup'] and w['appId']=='org.makos.Shell'
+                # xdg_popup has no set_app_id request. Verify the owner from
+                # Wayland peer credentials, matching the trusted desktop.
+                apps_popup=wait_for(lambda:next((w for w in windows() if w['popup'] and w['id'] not in popup_before and w['processId']==shell_process
                     and w['bounds'][2:]==[844,576] and any(s.get('blur') for s in w.get('surfaces',[]))),None),
                     '844 by 576 Apps popup with compositor glass')
                 report['checks']['apps_native_glass']={'popup':apps_popup,'native_compositor_blur':True,'size':[844,576]}
@@ -253,6 +258,11 @@ def main():
                 print('PASS: single native makOS shell, real Finder menu action, reserved work area, right Dock target, minimize/restore/fullscreen, native menu/Control Center popups and compositor screenshots.')
             except BaseException as error:
                 report['result']='failed';report['error']=str(error)
+                try:
+                    report['failure_windows']=windows()
+                    report['failure_capture']=snapshot('external-failure')
+                except Exception as diagnostic_error:
+                    report['diagnostic_error']=str(diagnostic_error)
                 raise
             finally:
                 (output/'external-shell-validation.json').write_text(json.dumps(report,indent=2)+'\n')

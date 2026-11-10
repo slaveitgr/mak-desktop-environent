@@ -65,6 +65,25 @@
         "stock-shell branding fixture lacked its intended configuration"
       ],
       "result": "Required release gate failed; ISO not assembled."
+    },
+    {
+      "kind": "rendered native Linux follow-up",
+      "commit": "f7feeb155a162a87c2bb130b650f9b535e0ba41b",
+      "run": 42856750722,
+      "artifact": 13782869914,
+      "artifact_zip_sha256": "cf076b75d18686b6c8dab6d731059f802c8acfce53100b59e1bdb34f2d955e0f",
+      "passed": [
+        "Popup no longer disconnects the trusted shell",
+        "Software template icon rendering",
+        "Terminal foreground interruption",
+        "All functional, UI, authorization and browser gates",
+        "20 native application startup clients"
+      ],
+      "failed": [
+        "Apps probe expected appId on xdg_popup, which has no set_app_id request",
+        "Branding fixture used XDG_CONFIG_HOME but pinned toolkit uses getpwuid(uid).pw_dir/.config"
+      ],
+      "result": "Required release gate failed; ISO not assembled."
     }
   ],
   "fullscreen_followup": {
@@ -93,6 +112,11 @@
   },
   "popup_protocol_followup": {
     "implementation": "Popup adapter requests surface blur only. C++ bridge also excludes Qt Popup/ToolTip from toplevel menu and window-hint protocols.",
-    "validation": "Local QML Apps/Control checks passed; actual Wayland popup test pending next Linux run."
+    "validation": "f7feeb native Linux log confirms popup surface glass attachment with no protocol disconnect; Apps probe needs peer process ownership instead of toplevel-only appId."
+  },
+  "fixture_followup": {
+    "popup_identity": "WindowDebug reports the actual Wayland peer process ID; require a newly created popup owned by the trusted shell with unchanged 844x576 bounds and native blur.",
+    "branding": "Only the disposable /home/makos-test account is temporarily configured at the actual pinned toolkit path; preserve and restore its original settings.",
+    "diagnostics": "On native failure retain current window inventory and actual compositor screenshot."
   }
 }

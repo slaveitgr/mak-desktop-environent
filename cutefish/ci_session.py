@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Headless integration with the pinned compositor and local branding patch."""
 import json
+from contextlib import contextmanager
 import os
 from pathlib import Path
+import pwd
 import signal
 import stat
 import subprocess
@@ -12,21 +14,34 @@ import time
 from PySide6.QtCore import QSettings
 
 
-def main():
-    root = Path(__file__).resolve().parents[1]
-    results = Path('/tmp/makos/results')
-    with tempfile.TemporaryDirectory(prefix='makos-cutefish-') as directory:
-        runtime = Path(directory); runtime.chmod(0o700)
-        # This fixture user is created before the compositor build, so later
-        # /etc/skel branding does not retroactively populate its home. Keep
-        # the protocol fixture's settings explicit and isolated instead.
-        settings_file=runtime/'config/cutefish/shell.conf'
-        settings_file.parent.mkdir(parents=True)
-        settings=QSettings(str(settings_file),QSettings.Format.IniFormat)
+@contextmanager
+def branded_fixture_settings(root):
+    # The pinned toolkit's base::paths::configHome uses getpwuid(uid), not
+    # XDG_CONFIG_HOME. Only touch the disposable chroot fixture account.
+    home=Path(pwd.getpwuid(os.getuid()).pw_dir)
+    if sys.platform!='linux' or root!=Path('/tmp/makos/source') or home!=Path('/home/makos-test'):
+        raise RuntimeError('Use the isolated Linux CI fixture account')
+    path=home/'.config/cutefish/shell.conf'
+    original=path.read_bytes() if path.is_file() else None
+    path.parent.mkdir(parents=True,exist_ok=True)
+    try:
+        settings=QSettings(str(path),QSettings.Format.IniFormat)
         settings.setValue('MenuBar/BrandIcon',str(root/'installer/branding/makos-ck-symbol.svg'))
         settings.sync()
         if settings.status()!=QSettings.Status.NoError:
             raise RuntimeError('Cannot prepare isolated compositor branding settings')
+        del settings
+        yield
+    finally:
+        if original is None:path.unlink(missing_ok=True)
+        else:path.write_bytes(original)
+
+
+def main():
+    root = Path(__file__).resolve().parents[1]
+    results = Path('/tmp/makos/results')
+    with tempfile.TemporaryDirectory(prefix='makos-cutefish-') as directory, branded_fixture_settings(root):
+        runtime = Path(directory); runtime.chmod(0o700)
         env = dict(os.environ, XDG_RUNTIME_DIR=directory, XDG_CURRENT_DESKTOP='Cutefish',
                    XDG_CONFIG_HOME=str(runtime/'config'),
                    LIBGL_ALWAYS_SOFTWARE='1', EGL_PLATFORM='surfaceless')
