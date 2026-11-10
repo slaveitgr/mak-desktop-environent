@@ -10,8 +10,15 @@
   },
   "linux_validation": {
     "target": "Ubuntu 26.10, x86_64, Python 3.14, PySide6 6.12.0",
-    "status": "CI in progress",
-    "run": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42784286525"
+    "status": "passed",
+    "run": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488",
+    "tested_commit": "7ce6f9e1dd09f82067a552af879e81edb143c3e4",
+    "unit_and_integration_tests": 136,
+    "all_apps_and_settings_qml_smoke": "passed",
+    "installed_package_session": "passed under isolated Xvfb: Openbox, native shell window, private control socket commands, duplicate-session refusal, clean exit and process cleanup",
+    "artifact": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488/artifacts/13750056972",
+    "artifact_zip_sha256": "dc21b0f95802a7dce89e8df3a686f9fc3d042b41f9c57bf1cbee72c376d996e6",
+    "environment_limits": "Container has no physical GDM, portal, audio daemon, camera or lock authentication; WebEngine sandbox disabled only in CI environment"
   },
   "unverified": [
     "Physical GDM login",
@@ -20,5 +27,6 @@
     "Multi-monitor graphics and acceleration",
     "Tahoe pixel/frame parity",
     "Treeland/DDE integration"
-  ]
+  ],
+  "installer_wrapper": "Bash syntax checked; installer uses apt --reinstall for repeated installs of the same development package version."
 }

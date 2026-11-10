@@ -18,6 +18,6 @@ sudo apt-get update
 sudo apt-get install --no-install-recommends python3-venv dpkg-dev
 python3 "$TAHOE_SOURCE/linux/build_deb.py"
 TAHOE_VERSION="$(python3 -c 'import sys; sys.path.insert(0,sys.argv[1]); from package_release import VERSION; print(VERSION)' "$TAHOE_SOURCE")"
-sudo apt-get install "$TAHOE_SOURCE/dist/tahoe-desktop_${TAHOE_VERSION}.0_amd64.deb"
+sudo apt-get install --reinstall "$TAHOE_SOURCE/dist/tahoe-desktop_${TAHOE_VERSION}.0_amd64.deb"
 /usr/bin/tahoe-session --check
 echo 'Installed. Log out, select your user, then choose Tahoe Desktop (Experimental) from the session menu and log in.'

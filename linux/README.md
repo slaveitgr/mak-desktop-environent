@@ -6,6 +6,14 @@ Target: **Ubuntu 26.10 (primary target), plus 22.04, 24.04 and 26.04, Intel/AMD 
 
 ## Install
 
+A [prebuilt Ubuntu 26.10 package ZIP](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488/artifacts/13750056972) is available from the [successful CI run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488). Sign in to GitHub if requested, unzip it and install from the directory containing the `.deb`:
+
+```sh
+sudo apt install --reinstall ./tahoe-desktop_0.7.0_amd64.deb
+```
+
+The CI artifact expires on 8 February 2027. To build directly from source instead:
+
 From an ordinary user account in your current Ubuntu desktop:
 
 ```sh
@@ -56,6 +64,8 @@ Session logs: `${XDG_STATE_HOME:-~/.local/state}/tahoe-desktop/session-*.log`. I
 - X11 session scaffolding is separate from the proposed future Treeland compositor. A login option is not evidence of compositor completeness or Tahoe 1:1 visual/animation parity.
 
 ## Validation
+
+The Ubuntu 26.10 CI run linked above passed package creation/installation, 136 unit/integration tests, all-app QML checks and the installed Xvfb session lifecycle on 10 November 2026. The CI-only WebEngine sandbox override is not set by the installed launchers.
 
 `python3 -m unittest discover -s tests` includes session environment/cleanup, disabled-preview safety, desktop-entry discovery and package-content checks. `linux/ci_session.py` exercises the **installed package** under a fresh Xvfb server, checking Openbox startup, the shell's X11 window, control-socket commands, socket routing and owned-process cleanup; separate Qt tests verify external-launch routing and logout cancellation/confirmation. GitHub Actions runs in an Ubuntu 26.10 container on an Ubuntu runner. Xvfb does not validate GDM's physical login screen, hardware acceleration, suspend, lock authentication or multiple monitors.
 

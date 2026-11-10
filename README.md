@@ -16,7 +16,7 @@ On Linux, use Python 3.10–3.15 with `venv`, then run:
 ./run.sh
 ```
 
-The launcher uses an existing environment or creates `.venv` and installs `requirements.txt`. Qt needs the platform's Wayland/X11 libraries and a working graphics driver. Linux execution has not yet been verified. Optional arguments:
+The launcher uses an existing environment or creates `.venv` and installs `requirements.txt`. Qt needs the platform's Wayland/X11 libraries and a working graphics driver. Ubuntu 26.10 package installation, application checks and the X11 session lifecycle passed in CI; physical login and hardware behavior remain unverified. Optional arguments:
 
 ```sh
 ./run.sh --fullscreen
@@ -136,11 +136,13 @@ python tests/verify_settings_appearance.py
 python tests/verify_menu_symbols.py
 ```
 
+**0.7 verification:** 136 tests passed on macOS and Ubuntu 26.10; all built-in apps and Settings loaded; the installed X11 session started and stopped cleanly under Xvfb. [Successful Ubuntu run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488); [ready-built Ubuntu package ZIP](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42788148488/artifacts/13750056972). See `reference/verification-0.7.json` for scope and limitations.
+
 Previous verification for 0.5 on 10 November 2026: **114 unit/integration tests passed**, including ten desktop mouse-gesture scenarios and eight animation/layout regressions. The complete QML app/Settings smoke check, Appearance controls and menu-symbol/material checks also passed without QML warnings. The rebuilt macOS launcher was reopened and the updated Apple/File menus were visually checked. The seven application verification scripts from 0.4 remain the previous application baseline.
 
 The suite covers persistent records and final-edit flushing, legal chess and asynchronous cancellation, safe calculator evaluation, reversible file operations, download publication, shell lifecycle, virtual-folder guards, menus, clock settings and full-screen transitions. QML checks load every built-in app and Settings category. Browser tests use localhost only. Photo Booth tests use synthetic images and never request a camera; media tests use a silent local WAV.
 
-After the Mac was unlocked, live native Finder and Appearance Settings were inspected. Finder grid/sidebar/toolbar spacing and Settings geometry/previews were revised from those observations. Live prototype checks also confirmed the real Desktop file and its context menu. Native menu capture did not expose every composited layer, and native Dock timings were not measured. Linux graphics, real camera permissions/capture, frame-time measurements and synchronized native animation comparison remain unverified. Functional checks do not establish 1:1 visual equivalence.
+After the Mac was unlocked, live native Finder and Appearance Settings were inspected. Finder grid/sidebar/toolbar spacing and Settings geometry/previews were revised from those observations. Live prototype checks also confirmed the real Desktop file and its context menu. Native menu capture did not expose every composited layer, and native Dock timings were not measured. Physical Linux graphics/login, real camera permissions/capture, frame-time measurements and synchronized native animation comparison remain unverified. Functional checks do not establish 1:1 visual equivalence.
 
 ## Implementation and next platform boundary
 
