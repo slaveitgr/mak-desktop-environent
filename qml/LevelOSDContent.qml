@@ -5,10 +5,12 @@ Item {
     required property var level
     required property var desktop
     property Item backdrop: null
+    property bool compositorGlass: false
     property real sampleX: 0
     property real sampleY: 0
     Glass {
         anchors.fill:parent
+        visible: !content.compositorGlass || content.desktop.reduceTransparency
         backdrop:content.backdrop;sampleX:content.sampleX;sampleY:content.sampleY;corner:31
         dark:content.desktop.dark;tint:dark?0.53:0.57;frost:0.98;refraction:3;shadowOpacity:0.14
         reducedTransparency:content.desktop.reduceTransparency

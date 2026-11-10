@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "audited_on": "2026-11-10",
+  "download_lifecycle_followup": "reference/browser-download-lifecycle-audit.json",
   "scope": "Safari shipped launcher/private-framework resource metadata and controlled native UI observations; official WebKit integration research; bounded implementation of QtWebEngine regular/private profiles, new-window commands and tab overview. No original source recovery, engine migration or host-browser data export.",
   "summary": {
     "recommended_route": "A gated WPE WebKit 2.54.2 Qt6/QML integration proof, followed by a C++ browser-services adapter and reconstructed Safari-style frontend.",

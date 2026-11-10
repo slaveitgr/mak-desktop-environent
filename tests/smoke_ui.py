@@ -26,7 +26,7 @@ with TemporaryDirectory() as folder:
     workspace = Path(folder) / 'workspace'
     (workspace / 'Documents').mkdir(parents=True)
     (workspace / 'Documents/example.txt').write_text('Example')
-    bridge = Bridge(Workspace(workspace))
+    bridge = Bridge(Workspace(workspace), terminal_auto_start=False)
     engine = QQmlApplicationEngine()
     warnings = []
     engine.warnings.connect(lambda errors: warnings.extend(str(e) for e in errors))
@@ -107,6 +107,9 @@ with TemporaryDirectory() as folder:
         target = windows[-1]
         assert target.property('appKind') == entry['id'], entry
         assert target.property('pageItem') is not None, entry
+        assert qml_boolean("JSON.parse(nativeMenuRows(windows[windows.length-1]))[0].label === windows[windows.length-1].windowTitle"), entry
+        if entry['id']=='appstore': assert qml_boolean("JSON.parse(nativeMenuRows(windows[windows.length-1])).some(menu=>menu.label==='Store')")
+        if entry['id']=='safari': assert qml_boolean("JSON.parse(nativeMenuRows(windows[windows.length-1])).some(menu=>menu.label==='Bookmarks')")
         if '--native-windows' in sys.argv:
             assert qml_boolean("windows[windows.length-1].nativeWindow !== windows[0].nativeWindow"), entry
             assert qml_boolean("windows[windows.length-1].nativeWindow.title === windows[windows.length-1].windowTitle"), entry

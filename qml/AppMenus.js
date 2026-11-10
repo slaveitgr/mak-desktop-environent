@@ -160,8 +160,8 @@ function rows(kind, name, host, desktop) {
         if (name === "View") return [disabled("Game Log"), disabled("Achievements"), separator(), fullscreen(host)];
     }
     if (kind === "terminal") {
-        if (name === "Shell") return [app("New Window", "new", cmd+"N", !!(p && p.session && !p.session.running)), disabled("New Tab", cmd+"T"), disabled("New Command…"), disabled("New Remote Connection…"), separator(), item("Close Window", "close", cmd+"W")];
-        if (name === "View") return [disabled("Show Tab Bar"), disabled("Bigger", cmd+"+"), disabled("Smaller", cmd+"−"), disabled("Default Font Size", cmd+"0"), separator(), fullscreen(host)];
+        if (name === "Shell") return [app("New Window", "newWindow", cmd+"N", !!p), app("New Tab", "newTab", cmd+"T", !!p), disabled("New Command…"), disabled("New Remote Connection…"), separator(), app("Close Tab", "closeTab", cmd+"W", !!p), item("Close Window", "close", "⇧"+cmd+"W")];
+        if (name === "View") return [app(p && p.alwaysShowTabs ? "Hide Tab Bar" : "Show Tab Bar", "showTabs", "⇧"+cmd+"T", !!p), app("Bigger", "bigger", cmd+"+", !!p), app("Smaller", "smaller", cmd+"−", !!p), app("Default Font Size", "defaultFont", cmd+"0", !!p), separator(), app("Clear Screen", "clearScreen", cmd+"K", !!p), app("Clear Scrollback", "clearScrollback", "", !!p), separator(), fullscreen(host)];
     }
     if (kind === "facetime" && name === "Video") return [disabled("FaceTime Video"), disabled("FaceTime Audio"), separator(), disabled("Mute"), disabled("Turn Camera Off"), separator(), fullscreen(host)];
     if (kind === "phone" && name === "View") return [app("Keypad", "keypad", "", !!p, p && p.page === "Keypad"), app("Contacts", "contacts", "", !!p, p && p.page === "Contacts"), app("Recents", "recents", "", !!p, p && p.page === "Recents"), separator(), fullscreen(host)];

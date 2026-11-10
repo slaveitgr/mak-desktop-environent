@@ -15,6 +15,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <cmath>
 #include "qwayland-cutefish-main-menu-v1.h"
 #include "qwayland-cutefish-surface-blur-v1.h"
 #include "qwayland-cutefish-window-hints-v1.h"
@@ -119,6 +120,8 @@ class CutefishWindow : public QObject {
     Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY changed)
     Q_PROPERTY(QString menus READ menus WRITE setMenus NOTIFY changed)
     Q_PROPERTY(QRect glassRect READ glassRect WRITE setGlassRect NOTIFY changed)
+    Q_PROPERTY(int glassRadius READ glassRadius WRITE setGlassRadius NOTIFY changed)
+    Q_PROPERTY(double glassTint READ glassTint WRITE setGlassTint NOTIFY changed)
     Q_PROPERTY(bool glassEnabled READ glassEnabled WRITE setGlassEnabled NOTIFY changed)
     Q_PROPERTY(bool dark READ dark WRITE setDark NOTIFY changed)
     Q_PROPERTY(bool active READ active NOTIFY changed)
@@ -136,6 +139,8 @@ public:
     QWindow *window() const { return m_window; }
     QString menus() const { return m_json; }
     QRect glassRect() const { return m_rect; }
+    int glassRadius() const { return m_radius; }
+    double glassTint() const { return m_tint; }
     bool glassEnabled() const { return m_enabled; }
     bool dark() const { return m_dark; }
     bool active() const { return m_bound && m_menus.isActive() && m_glass.isActive() && m_hints.isActive(); }
@@ -154,6 +159,8 @@ public:
     }
     void setMenus(const QString &v) { if (v != m_json) { m_json = v; updateMenus(); emit changed(); } }
     void setGlassRect(const QRect &v) { if (v != m_rect) { m_rect = v; schedule(); emit changed(); } }
+    void setGlassRadius(int v) { v=qBound(0,v,512);if(v!=m_radius){m_radius=v;schedule();emit changed();} }
+    void setGlassTint(double v) { if(std::isfinite(v)&&v>=0&&v<=1&&v!=m_tint){m_tint=v;schedule();emit changed();} }
     void setGlassEnabled(bool v) { if (v != m_enabled) { m_enabled = v; schedule(); emit changed(); } }
     void setDark(bool v) { if (v != m_dark) { m_dark = v; schedule(); emit changed(); } }
 signals:
@@ -200,12 +207,12 @@ private:
         }
         const QRect rect = m_rect.intersected(QRect(0, 0, m_window->width(), m_window->height()));
         if (m_enabled && rect.width() > 0 && rect.height() > 0) {
-            m_glass.set(s, rect.x(), rect.y(), rect.width(), rect.height(), 19);
+            m_glass.set(s, rect.x(), rect.y(), rect.width(), rect.height(), m_radius);
             m_glass.set_glass(s);
             m_glass.set_glass_material(s, wl_fixed_from_double(1.2), wl_fixed_from_double(19), wl_fixed_from_double(8),
                 wl_fixed_from_double(1.45), wl_fixed_from_double(4), wl_fixed_from_double(20), wl_fixed_from_double(0));
             const wl_fixed_t tone = wl_fixed_from_double(m_dark ? 0.13 : 1.0);
-            m_glass.set_glass_tint(s, tone, tone, tone, wl_fixed_from_double(m_dark ? 0.64 : 0.58));
+            m_glass.set_glass_tint(s, tone, tone, tone, wl_fixed_from_double(m_tint>=0 ? m_tint : m_dark ? 0.64 : 0.58));
         } else m_glass.unset(s);
         // Do not commit independently of Qt's buffer lifecycle. Ask Qt for a frame.
         m_window->requestUpdate();
@@ -219,7 +226,8 @@ private:
     QString m_json = "[]";
     QRect m_rect;
     bool m_enabled = true, m_dark = false, m_scheduled = false;
-    int m_offset = 0, m_duration = 200;
+    int m_offset = 0, m_duration = 200, m_radius = 19;
+    double m_tint = -1;
 };
 
 class CutefishPlugin : public QQmlExtensionPlugin {

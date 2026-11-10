@@ -5,6 +5,7 @@ Item {
     id: dock
     required property var desktop
     required property Item backdrop
+    property bool compositorGlass: false
     readonly property var minimizedWindows: desktop.dockWindows.filter(w => w.minimized && !w.closing)
     property var entries: []
     onMinimizedWindowsChanged: rebuildEntries()
@@ -128,6 +129,7 @@ Item {
     }
     Glass {
         anchors.fill: parent
+        visible: !dock.compositorGlass || desktop.reduceTransparency
         backdrop: dock.backdrop
         sampleX: dock.mapToItem(dock.backdrop, 0, 0).x
         sampleY: dock.mapToItem(dock.backdrop, 0, 0).y
@@ -138,6 +140,14 @@ Item {
         frost: 0.28
         shadowOpacity: 0.16
         reducedTransparency: desktop.reduceTransparency
+    }
+    Rectangle {
+        anchors.fill: parent
+        visible: dock.compositorGlass && !desktop.reduceTransparency
+        radius: 27
+        color: "transparent"
+        border.width: 1
+        border.color: desktop.dark ? "#42ffffff" : "#85ffffff"
     }
     Row {
         id: iconRow

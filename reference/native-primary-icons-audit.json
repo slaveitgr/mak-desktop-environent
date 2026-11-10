@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-11-10T15:34:51Z",
+  "host_os": "Version 26.7.2 (Build 25G332)",
+  "reference_screenshot": "/Users/mike/Desktop/Screenshot 2026-11-10 at 5.21.36 PM.png",
+  "reference_capture_kind": "user-supplied screenshot, visually inspected; no screenshot pixels copied into an icon",
+  "changed_assets": [
+    {
+      "appearance": "NSAppearanceNameAqua",
+      "build": "21624.5.1.11.3",
+      "bundle_id": "com.apple.Safari",
+      "caller_bundle": "/Applications/Safari.app",
+      "canonical_bundle": "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app",
+      "declared_icon": "AppIcon",
+      "file": "assets/safari.png",
+      "logical_size": [
+        32,
+        32
+      ],
+      "method": "workspace-canonical",
+      "pixels": [
+        128,
+        128
+      ],
+      "png_sha256": "4530b18e4e672c1a3bffdb71d8eab72da74a55a3983e9ac17517febe3cb8f889",
+      "source_sha256": {
+        "Assets.car": "6923867ba8fa2d1498d6ca90ef21a2e4978d9720937f3d45ec4d1caf5b38e9b8",
+        "ICNS": "3dd019e290d9402434ebecac8a1944168e27f3a9b0b53ad05150da2ea5066846",
+        "Info.plist": "11fda3f6ee27eb0d6dc1b56e76e76392c5ed243714d00c8c7385229348dd712a"
+      },
+      "version": "26.6.2",
+      "prior_sha256": "7f3fdd56a3452947762bf0fefe415943db52bfbbff6279df9c3f451e66306d41",
+      "verified": "Native canonical bundle icon has no alias-arrow badge; it visually agrees with the Safari artwork in the supplied Applications screenshot."
+    }
+  ],
+  "preserved_assets": {
+    "assets/settings.png": "All three native AppKit candidate methods show the same gear artwork. No distinct replacement established.",
+    "assets/calendar.png": "Static AppKit lookup returns red-header dots; the screenshot shows a dynamically rendered Tue 10. No frozen date icon or older red-header empty resource substituted.",
+    "assets/apps.png": "Existing colorful Apps Dock icon remains appropriate.",
+    "assets/symbols/applications.png": "Existing CoreTypes SidebarApplicationsFolder artwork remains the Applications header A glyph. Hover chevron is separate UI behavior."
+  },
+  "native_evidence": {
+    "settings_catalog": [
+      "ev_d3d050c152cb448fe3dafc4721e247451fabfcf7e494d35477bea32027a273ca",
+      "ev_7aba79523579131adc918039761415dfbce5a1b752163d7734a09f66845c0aae"
+    ],
+    "safari_catalog": "ev_aa33b2451d45d1e331094b95c5d605ef945c3b5eb3605ea3712147549fbdceca",
+    "apps_catalog": "ev_f47bbe5c58617dcdf82f476e157a97c77ec203c4d3435ed43dd368e00d21b8ca",
+    "calendar_catalog": [
+      "ev_0996bfd6aca04c5ed129f9113f0e381b865f386dbe5a910fe155271748efadbb",
+      "ev_7742b332c0cd61d2a92bec644b8dd8998204c0a798ed0942ee1a5cace9346b89"
+    ],
+    "calendar_dock_plugin": {
+      "path": "/System/Applications/Calendar.app/Contents/Resources/Calendar.docktileplugin/Contents/MacOS/Calendar",
+      "sha256": "6251bfced56131218bba2656a4b5da497b2f3af58011eae8c170bb66a7ce1e79",
+      "macho_evidence": "ev_49da1c9a516e1bf4dbd638d394074d7a9f93e2640fcd75e8c79c028d4758f724",
+      "observed_imports": [
+        "CUIKDockTileView",
+        "ISIcon",
+        "NSCalendarDayChangedNotification",
+        "NSWorkspaceIconAppearanceConfigurationDidChangeNotification"
+      ],
+      "observed_selectors": [
+        "initWithDate:calendar:format:",
+        "initWithISIcon:allowingPlaceholder:allowTranslucency:"
+      ],
+      "interpretation": "Dynamic date rendering is separate from the static icon asset. Imports and selectors alone do not establish its complete composition or runtime behavior."
+    }
+  },
+  "candidate_artifacts": [
+    "../../work/native-primary-icons-2026-11-10/provenance.json",
+    "../../work/native-primary-icons-128-2026-11-10/provenance.json"
+  ],
+  "limitations": [
+    "AppKit PNG rendering is not byte-identical catalog extraction.",
+    "Light/dark AppKit drawing appearances yielded byte-identical icons in this process; distinct icon appearance modes were not established.",
+    "No target executable or dock plugin was loaded or executed; no UI automation was used.",
+    "Calendar dynamic icon is unresolved; no 1:1 claim.",
+    "Native artwork provenance does not itself grant redistribution rights."
+  ],
+  "rea_sessions_closed": true,
+  "verified_existing_bytes": {
+    "settings_png_equals_fresh_128px_icns_render": "8ea336280c0c6bc41935891e5aa9de33693e6026de7e9aabc36ed9a58f7ef522",
+    "calendar_png_equals_fresh_128px_canonical_workspace_render": "b5f55f4372e30b5dafb3bf726ac3848dc87ab1d5654d9738d99c2b6218ee8732",
+    "apps_png_equals_fresh_128px_canonical_workspace_render": "86aa913ef6882c8684e665de7e9f5f88765b27d749d6e0d15775246cc4c45698"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-11-10",
+  "repository": "https://github.com/wimpysworld/sidra",
+  "commit": "be750fa4d1074df853e90b0c639856e0a4bb82d5",
+  "version": "1.3.0",
+  "purpose": "Apple Music and Apple Music Classical service-client candidate for makOS Music.",
+  "evidence_type": "Read-only upstream source inspection. No installed runtime, account sign-in, protected-stream playback, or Linux compositor test.",
+  "sources": [
+    {
+      "path": "package.json",
+      "evidence": "CastLabs Electron v45.2.1+wvcus, @holusion/dbus-next, Linux AppImage/deb/rpm/flatpak/snap targets, BlueOak-1.0.0.",
+      "url": "https://github.com/wimpysworld/sidra/blob/be750fa4d1074df853e90b0c639856e0a4bb82d5/package.json"
+    },
+    {
+      "path": "src/main.ts",
+      "lines": [
+        407,
+        433,
+        479,
+        498,
+        632,
+        638,
+        810,
+        818,
+        947
+      ],
+      "evidence": "Persistent isolated sidra session; components.whenReady waits for Widevine; sandboxed Electron window with nodeIntegration false and contextIsolation true; allowed-navigation filtering; Linux MPRIS adapter; Apple Music web navigation.",
+      "url": "https://github.com/wimpysworld/sidra/blob/be750fa4d1074df853e90b0c639856e0a4bb82d5/src/main.ts"
+    },
+    {
+      "path": "src/musicService.ts",
+      "lines": [
+        50,
+        51,
+        65,
+        66
+      ],
+      "evidence": "music.apple.com and classical.music.apple.com origins.",
+      "url": "https://github.com/wimpysworld/sidra/blob/be750fa4d1074df853e90b0c639856e0a4bb82d5/src/musicService.ts"
+    },
+    {
+      "path": "src/integrations/mpris/index.ts",
+      "lines": [
+        677,
+        729,
+        1427,
+        1457
+      ],
+      "evidence": "Media metadata, playback state and capability properties; Player and TrackList D-Bus interfaces; org.mpris.MediaPlayer2.<app name> bus ownership.",
+      "url": "https://github.com/wimpysworld/sidra/blob/be750fa4d1074df853e90b0c639856e0a4bb82d5/src/integrations/mpris/index.ts"
+    },
+    {
+      "path": "LICENSE",
+      "evidence": "Blue Oak Model License 1.0.0. Any redistributed portions must include license text or license link.",
+      "url": "https://github.com/wimpysworld/sidra/blob/be750fa4d1074df853e90b0c639856e0a4bb82d5/LICENSE"
+    }
+  ],
+  "assessment": {
+    "status": "source_candidate_not_integrated",
+    "useful_for": [
+      "Apple Music service rendering and authentication through Apple's web interface",
+      "Widevine-enabled web playback runtime",
+      "MPRIS integration with makOS Control Center Now Playing and media controls",
+      "Separate installed application with Wayland/X11 support and Linux package formats"
+    ],
+    "ui_fidelity": "Apple Music web UI. Does not reproduce the native macOS Tahoe Music application, toolbar, menus, local library, or animations by itself.",
+    "compatibility": "Electron service client, not a drop-in Qt/QML music backend. Keep separate from the current QtWebEngine profile and local-file player.",
+    "audio": "README advertises lossless on macOS and Windows; Linux lossless has not been established by this audit.",
+    "global_menu": "Current makOS global menus use a private Cutefish protocol. Sidra's Electron window requires separate menu/decorations integration and validation.",
+    "local_library": "Retain local playback separately; deepin-music remains a local-library candidate.",
+    "runtime_verified": false
+  },
+  "proposed_integration": [
+    "Build/package the pinned source as a distinct Linux application in an isolated environment.",
+    "Verify Wayland window identity, decorations, activation, minimize/restore and fullscreen under the actual makOS compositor.",
+    "Connect the shell's media view to the MPRIS interface, including metadata and confirmed playback state; preserve capability flags.",
+    "Test account sign-in and protected playback with an explicitly provided test account/session, without reusing host browser credentials.",
+    "Retain upstream DRM sandbox and authentication protections, plus required license notice.",
+    "Only then select whether Music opens the Sidra service client or the local-library view; do not label untested playback or native Tahoe fidelity as complete."
+  ]
+}

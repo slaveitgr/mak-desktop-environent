@@ -23,6 +23,13 @@ FocusScope {
     property int sidebarWidth: 222
     property int minimumWindowWidth: 600
     property int minimumWindowHeight: 420
+    property int titlebarHeight: 50
+    property real trafficLightsX: 18
+    property real trafficLightsY: 18
+    property real trafficLightSize: 13
+    property real windowCorner: 25
+    property color bodyColor: dark ? "#242b2e" : "#f6f6f7"
+    property color borderColor: dark ? "#596068" : "#b8bdc4"
     property bool minimized: false
     property bool appHidden: false
     property bool closing: false
@@ -162,7 +169,7 @@ FocusScope {
         Rectangle {
             id: shadow
             anchors.fill: parent
-            radius: win.isFullscreen ? 0 : 25
+            radius: win.isFullscreen ? 0 : win.windowCorner
             color: "black"
             visible: false
             layer.enabled: true
@@ -179,18 +186,18 @@ FocusScope {
         Rectangle {
             visible: !win.compositorGlass
             anchors.fill: parent
-            radius: win.isFullscreen ? 0 : 25
-            color: win.dark ? "#242b2e" : "#f6f6f7"
-            border.color: win.dark ? "#596068" : "#b8bdc4"
+            radius: win.isFullscreen ? 0 : win.windowCorner
+            color: win.bodyColor
+            border.color: win.borderColor
             border.width: win.isFullscreen ? 0 : 1
         }
         CompositorGlassFrame {
             visible: win.compositorGlass
             anchors.fill: parent
-            bodyColor: win.dark ? "#242b2e" : "#f6f6f7"
-            borderColor: win.dark ? "#596068" : "#b8bdc4"
+            bodyColor: win.bodyColor
+            borderColor: win.borderColor
             borderWidth: win.isFullscreen ? 0 : 1
-            corner: win.isFullscreen ? 0 : 25
+            corner: win.isFullscreen ? 0 : win.windowCorner
             glassRect: Qt.rect(8, 8, Math.max(0, win.sidebarWidth - 8), Math.max(0, height - 16))
         }
         Glass {
@@ -221,7 +228,7 @@ FocusScope {
             x: 0
             y: 0
             width: win.sidebarWidth > 0 ? win.sidebarWidth : win.width
-            height: 50
+            height: win.titlebarHeight
             property point start
             property point original
             onPressed: function (mouse) {
@@ -242,8 +249,8 @@ FocusScope {
                 win.zoom()
         }
         Row {
-            x: 18
-            y: 18
+            x: win.trafficLightsX
+            y: win.trafficLightsY
             spacing: 8
             visible: !win.isFullscreen || win.chromeRevealed
             Repeater {
@@ -251,9 +258,9 @@ FocusScope {
                 delegate: Rectangle {
                     required property string modelData
                     required property int index
-                    width: 13
-                    height: 13
-                    radius: 6.5
+                    width: win.trafficLightSize
+                    height: win.trafficLightSize
+                    radius: win.trafficLightSize / 2
                     color: (win.active || mouse.containsMouse) && !(index === 1 && win.isFullscreen) ? modelData : win.dark ? "#596065" : "#c4c8cd"
                     border.width: 0.6
                     border.color: Qt.darker(color, 1.12)

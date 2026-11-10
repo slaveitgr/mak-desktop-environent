@@ -40,7 +40,7 @@ app=QGuiApplication([]);app.setFont(QFont('.AppleSystemUIFont',13));app.setOrgan
 with TemporaryDirectory() as folder:
  QSettings.setDefaultFormat(QSettings.IniFormat);QSettings.setPath(QSettings.IniFormat,QSettings.UserScope,folder)
  workspace=Path(folder)/'workspace';(workspace/'Documents').mkdir(parents=True);(workspace/'Documents/safe.txt').write_text('do not change')
- bridge=Bridge(Workspace(workspace));engine=QQmlApplicationEngine();warnings=[]
+ bridge=Bridge(Workspace(workspace),terminal_auto_start=False);engine=QQmlApplicationEngine();warnings=[]
  engine.warnings.connect(lambda errors:warnings.extend(str(e) for e in errors))
  for name,value in {'Bridge':bridge,'startFullscreen':False,'comparisonMode':False,'startSettings':False}.items():engine.rootContext().setContextProperty(name,value)
  engine.load(QUrl.fromLocalFile(str(ROOT/'qml/Main.qml')));assert engine.rootObjects(),warnings
@@ -107,20 +107,22 @@ with TemporaryDirectory() as folder:
    mail=open_app('mail').property('pageItem');mail.newRecord('');mail.setField('recipient','reader@example.test');mail.setField('body','Exported through File menu');desktop.dispatch('app:export')
    assert len(list((workspace/'Documents'/'Mail Drafts').glob('*.eml')))==1
   elif case=='terminal-keys':
-   class FakeTerminal(QObject):
-    def __init__(self):super().__init__();self.writes=[];self.interrupts=0
-    @Property(str,constant=True)
-    def text(self):return 'Terminal selection'
+   from terminal_session import TerminalSession
+   class FakeTerminal(TerminalSession):
+    def __init__(self):
+     super().__init__(workspace,shell_command=['/bin/sh','-i']);self.writes=[];self.interrupts=0;self._text='Terminal selection';self._html=self._text
     @Property(bool,constant=True)
     def running(self):return True
+    @Slot(int,int)
+    def resize(self,columns,rows):pass
     @Slot(str)
     def write(self,text):self.writes.append(text)
     @Slot()
     def interrupt(self):self.interrupts+=1
     @Slot()
     def stop(self):pass
-   window=open_app('terminal');page=window.property('pageItem');fake=FakeTerminal();bridge.terminals.append(fake);page.setProperty('session',fake)
-   output=next(obj for obj in page.findChildren(QObject) if obj.property('readOnly') is True and obj.property('text')=='Terminal selection')
+   window=open_app('terminal');page=window.property('pageItem');original=page.property('session');fake=FakeTerminal();bridge.terminals.append(fake);page.setProperty('tabs',[{'id':1,'session':fake}]);bridge.releaseTerminal(original)
+   output=page.findChild(QObject,'terminalOutput');assert 'Terminal selection' in output.property('text')
    QMetaObject.invokeMethod(output,'forceActiveFocus');QTest.qWait(20)
    QTest.keyClick(root,Qt.Key_Return);QTest.keyClick(root,Qt.Key_Up)
    assert fake.writes==['\r','\x1b[A'], repr(fake.writes)

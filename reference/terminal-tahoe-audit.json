@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-10",
+  "scope": "Terminal startup, chrome, local PTY and system-information banner",
+  "references": [
+    {
+      "kind": "user-provided screenshot",
+      "name": "Screenshot 2026-11-10 at 5.02.24 PM.png",
+      "observations": {
+        "outer_size": [
+          877,
+          500
+        ],
+        "titlebar_height": 32,
+        "traffic_light_diameter": 12,
+        "content_inset_left": 10,
+        "single_tab_bar_visible": false,
+        "title": "working directory, shell, columns \u00d7 rows",
+        "content": "User-configured shell output, not reproduced host data"
+      },
+      "privacy": "Screenshot remains local; no personal output copied into repository"
+    },
+    {
+      "kind": "REA resource inspection",
+      "app": "/System/Applications/Utilities/Terminal.app",
+      "version": "2.15",
+      "build": "470.2",
+      "platform_version": "26.7.2",
+      "evidence": [
+        "ev_811a28b05d043edf588a663b4ae325d55d1a6403bbbe9d674f5e1204159dca4e",
+        "ev_62402a770e74e7f6ef1fef7b606c0a622e913a280ef9e373c29f8567c75fd2a9",
+        "ev_c897a826ca12c0bc1d7363588e541a86294c5e7d061f26d201fe7f7806e335c8",
+        "ev_4f583bca4f6fc9b759fc07a891e59ed860c6dfc34e4fd97c17be125db9cb8c3c"
+      ],
+      "main_menu_sha256": "1295ee8845235b1be3c22ea1dc2f80ba3a1bcf55a7d4e3e5100a3c28cc651261",
+      "confirmed_labels": [
+        "New Window",
+        "New Tab",
+        "New Command\u2026",
+        "Copy",
+        "Paste",
+        "Select All",
+        "Show Tab Bar",
+        "Smaller",
+        "Bigger",
+        "Default Font Size",
+        "Clear Screen",
+        "Clear Scrollback",
+        "Reset",
+        "Hard Reset",
+        "Split Pane",
+        "Close Split Pane"
+      ],
+      "limits": "Bounded 5000-node nib decode is partial; resource labels do not prove live menu ordering or runtime behavior."
+    },
+    {
+      "kind": "REA profile inspection",
+      "resource": "Contents/Resources/Initial Settings/Basic.terminal",
+      "evidence": "ev_bb2925028e6d1d0d9d040cf998f2b74d94b561855052bdf15a25ee84e21e3321",
+      "font": "SFMonoTerminal-Regular 11 pt",
+      "antialias": true,
+      "limit": "Basic profile is not proof of the custom dark profile in the screenshot."
+    },
+    {
+      "kind": "native runtime restriction",
+      "result": "CUA explicitly denied com.apple.Terminal; no window opened, command entered, session modified or bypass attempted."
+    },
+    {
+      "kind": "original Cutefish source",
+      "url": "https://github.com/cutefishos/terminal",
+      "iso_package": "cutefish-terminal 1.0~git20261105042911.f962a77-1",
+      "commit": "f962a776e11eacd4e126f5b4e86b934b7f1bfe72",
+      "paths": [
+        "src/terminalwindow.cpp",
+        "src/terminalpage.cpp",
+        "qmltermwidget/CMakeLists.txt"
+      ],
+      "finding": "openTab constructs a TerminalPage and immediately calls startShell. Backend wraps Konsole TerminalSession; toolkit UI is C++, not a drop-in QtQuick component.",
+      "license": "GPL-3.0",
+      "reuse": "Source behavior consulted; no Cutefish or Apple implementation copied into our Python PTY backend."
+    }
+  ],
+  "implemented": [
+    "Automatic interactive shell per window and tab; no Start Shell toolbar",
+    "32 px titlebar with working-directory label, shell title and actual PTY geometry",
+    "ANSI color rendering, bounded 2000-row scrollback, cursor, basic alternate screen and bracketed paste",
+    "Controlling TTY, real TIOCSWINSZ resize and foreground Ctrl-C",
+    "New Window, New Tab, Close Tab, Copy/Paste/Select All, font sizing and scrollback menu actions",
+    "Owned shell cleanup at tab/window/application close",
+    "makos-fetch command with original makOS ASCII and read-only system_info inventory; emitted directly before exec, never typed as a shell command",
+    "Normal startup uses real user environment; explicit test shell fixtures disable banner and user shell profiles",
+    "Live image stages /usr/bin/makos-fetch using /usr/bin/python3 and /opt/makos/makos_fetch.py"
+  ],
+  "validation": {
+    "backend": "8 tests passed in tests/test_terminal.py, including real banner-before-prompt and captured foreground cleanup ownership checks",
+    "qml": "tests/verify_terminal_ui.py passed with actual no-profile /bin/sh PTYs: automatic start, keyboard command, size, tabs, separate window, history, font resize, cleanup",
+    "shell_suite": "2 Terminal-specific tests passed; unrelated Finder sidebar shortcut failed in broad run and reported to root",
+    "broad_smoke": "tests/smoke_ui.py passed with shell startup suppressed",
+    "visual": "Offscreen software render of fixed fixture output inspected; native Wayland validation pending"
+  },
+  "remaining_limits": [
+    "No claim of full Apple Terminal or Konsole emulator parity: split panes, profiles editor, remote connection dialog, mouse reporting, advanced terminal protocols and complete control-sequence compatibility are unimplemented.",
+    "Directory title currently reflects initial working directory; OSC title is observed but no live shell cwd tracking or inherited-current-directory new-tab behavior.",
+    "Font fallback on Linux differs from Apple SF Mono; screenshot showed a custom profile, not stock Basic.",
+    "No fabricated Apple model, OS, uptime, disk or display values. Banner includes only fields available from shared system_info backend.",
+    "Interactive shell profiles are intentionally honored for normal user launches; verification never executes them.",
+    "Actual Linux native rendering and an installed-image Terminal launch require CI/VM checks."
+  ]
+}

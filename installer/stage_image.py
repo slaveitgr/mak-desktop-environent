@@ -32,6 +32,9 @@ def main():
     installed_helper.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(helper,installed_helper)
     installed_helper.chmod(0o755)
+    fetch=root/'usr/bin/makos-fetch'
+    fetch.write_text('#!/bin/sh\nexec /usr/bin/python3 /opt/makos/makos_fetch.py "$@"\n')
+    fetch.chmod(0o755)
     (root/'etc/makos').mkdir(exist_ok=True)
     original=(root/'usr/lib/os-release').read_text()
     (root/'etc/makos/base-os-release').write_text(original)

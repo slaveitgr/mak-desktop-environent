@@ -49,9 +49,10 @@ class CutefishInstance(QObject):
     def activate(self, payload):
         if not isinstance(payload, dict): return
         action=payload.get('action')
-        if action not in ('activate','open-folder','settings-page'): return
+        if action not in ('activate','open-folder','settings-page','terminal-new-window'): return
         if action=='open-folder' and self.kind!='finder': return
         if action=='settings-page' and self.kind!='settings': return
+        if action=='terminal-new-window' and self.kind!='terminal': return
         argument=payload.get('argument','')
         if not isinstance(argument,str) or len(argument)>2048 or '\0' in argument: return
         token = payload.get('token', '')

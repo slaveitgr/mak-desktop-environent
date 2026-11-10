@@ -64,5 +64,13 @@
     "mock_protocol_tests": 15,
     "physical_install_tested": false,
     "qt_dbus_wire_test": "tests/smoke_installer_dbus_wire.py; prepared for Linux private-bus CI, not executed on Mac host"
+  },
+  "transport_revision": {
+    "date": "2026-11-10",
+    "implementation": "Gio.DBusConnection with explicit GVariant request/reply signatures, Qt-driven bounded GLib context iteration",
+    "reason": "Linux CI 42841517513 found a fixture QVariant metatype error and a PySide 6.8.2 non-const QDBusArgument decode failure. The former Qt nested-map path was removed from product and fixture.",
+    "dependency": "python3-gi (already in pinned Cutefish ISO)",
+    "wire_test": "tests/smoke_installer_dbus_wire.py; rewritten; Linux execution pending next CI",
+    "local_validation": "15 controller tests and Python compile pass; no host installer/authentication operations"
   }
 }

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-11-10",
+  "scope": "QtWebEngine download lifecycle regression in the pinned Linux runtime; no Safari original-source claim or browser-engine migration.",
+  "linux_reproduction": {
+    "initial_runs": [42837758840, 42837758519],
+    "traced_run": 42841517601,
+    "revision": "d341a760e0df69a75715c71b525915acab8f4d9c",
+    "qt_version": "6.8.2",
+    "qtwebengine_version": "6.8.2",
+    "chromium_version": "122.0.6261.171",
+    "log": "../../work/native-ci-42841517601/browser-downloads.log",
+    "log_sha256": "6e1ad8270fb9ddc278a3783dcfa62539d0a2c3825e18eb4c5258eaff06694855",
+    "observed_sequence": [
+      "The real truncated HTTP response creates download ID 6 and the user confirms Save.",
+      "ID 6 enters DownloadInProgress.",
+      "A second truncated HTTP request is served; Chromium prints ERROR:check.cc(319) NOTREACHED.",
+      "Qt emits downloadRequested again for ID 6 in DownloadRequested state, before any observed DownloadInterrupted notification.",
+      "The previous implementation opens a second Save sheet. The test has already confirmed the original request, so the second nested confirmation loop reaches the watchdog."
+    ],
+    "interpretation": "The trace proves a duplicate-ID request and second confirmation hang. NOTREACHED did not terminate the process at that point. It does not establish the internal Chromium assertion's exact origin.",
+    "environment_limits": [
+      "Disposable CI chroot uses offscreen/software Qt rendering and disables the Chromium sandbox through its harness.",
+      "This run is not evidence of production graphics acceleration or sandbox enforcement."
+    ]
+  },
+  "primary_source_evidence": [
+    {
+      "url": "https://raw.githubusercontent.com/qt/qtwebengine/v6.8.2/src/webenginequick/api/qquickwebengineprofile.cpp",
+      "finding": "downloadRequested creates a new wrapper and inserts it into m_ongoingDownloads keyed by info.id; downloadUpdated uses that map. There is a debug Q_ASSERT against duplicate IDs. Destruction removes the lookup and delegates native download removal."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/qt/qtwebengine/v6.8.2/src/core/api/qwebenginedownloadrequest.cpp",
+      "finding": "The update method emits stateChanged before publishing byte counts and isFinished. cancel() invokes native cancellation only for DownloadInProgress; other states are changed in the Qt wrapper."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/qt/qtwebengine/v6.8.2/src/core/download_manager_delegate_qt.cpp",
+      "finding": "DetermineDownloadTarget invokes the profile downloadRequested callback, then accepts or cancels the target callback based on the returned request state. removeDownload delegates to DownloadItem::Remove."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/qt/qtwebengine-chromium/c8dcfa4891c8dcf733b0c6ecc6ddcfe781d4567d/chromium/components/download/internal/common/download_item_impl.cc",
+      "finding": "Native observer updates guard against nested updates; cancellation/removal can notify observers. This supports deferring terminal operations outside Qt notification frames, without proving it caused the traced duplicate request."
+    }
+  ],
+  "candidate_behavior": [
+    "A repeated ID is rejected without a second Save sheet, staging reservation or download-history entry, even if its source view has closed.",
+    "The original entry becomes failed with a retry message; partial staging is cleaned and both wrappers are released after the callback frame.",
+    "Terminal settlement runs on the next event-loop turn, after Qt has published byte counts and finished state.",
+    "Accepted request wrappers are explicitly released with deleteLater so native ownership ends after signal frames."
+  ],
+  "verification": {
+    "local_runtime": "macOS Qt/QtWebEngine 6.8.3; Chromium 122.0.6261.171",
+    "passed": [
+      "verify_web_downloads.py: real completed downloads, collision protection, UTF-8 names, active cancellation, real truncated responses, source-tab close, private-window cleanup and pending Save close.",
+      "Exact Qt field-order fixture: final byte counts are preserved and cancellation does not reenter the update frame.",
+      "Same-ID retry fixture: no second prompt or entry, original failure, no published partial file and empty staging.",
+      "verify_browser_profiles.py: shared regular-window cookies/download ownership, isolated private sessions, real process restart persistence and interactive tab overview.",
+      "verify_web_page.py: real local navigation/load, bookmarks, tabs and cleanup."
+    ],
+    "download_log": "../../work/browser-download-debug/local-duplicate-fix.log",
+    "download_log_sha256": "87cca7b15da98d91d655381d6b00c41629b84c17cf3def38ea9e4da899696272",
+    "linux_candidate_status": "passed focused pinned-runtime CI",
+    "linux_validation": {
+      "run_id": 42842835564,
+      "url": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42842835564",
+      "revision": "d895b24801509547af661789322381d0ba7bb4a9",
+      "conclusion": "success",
+      "completed_at": "2026-11-10T15:19:28Z",
+      "artifact_id": 13776464201,
+      "artifact_sha256": "79c2e7f73dc3b68149e0452d676d0f60e3919415efc82e0c33de2680a62e2a90",
+      "download_log": "../../work/native-ci-42842835564/browser-downloads.log",
+      "download_log_sha256": "7382f6f531a65e4af6394a5e02b1c53d385fb2e4e1370a6669a09ba5e560cddf",
+      "page_log_sha256": "b3cb57d6fc968892fe4412b0e4e2d86872b75002fa477217d6965d227bf9d7e4",
+      "profiles_log_sha256": "706491d81e3793ff68edfb7ea90f44e769a8348910a899385b1961d031c8f30a",
+      "observed": [
+        "The real broken-response fixture still reaches Chromium NOTREACHED and emits the duplicate ID 6.",
+        "The new duplicate-rejected and duplicate-finalized paths execute, and the test proves a failed entry with no published partial file or remaining staging.",
+        "All subsequent download-after-tab-close, shared/private profile and window-close cases pass.",
+        "The mandatory page and profile suites also pass, including regular-cookie persistence across a real process restart."
+      ]
+    },
+    "full_linux_build_status": "not established by these browser-only checks"
+  },
+  "remaining_limits": [
+    "The upstream Chromium NOTREACHED diagnostic remains; the application now handles the resulting duplicate request without hanging. No native Chromium patch is claimed.",
+    "Automatic resume of the duplicate request is not implemented. The failed entry directs the user to start a new download.",
+    "These tests do not establish native compositor rendering, hardware acceleration, production Chromium sandbox enforcement or Safari visual/animation parity."
+  ]
+}

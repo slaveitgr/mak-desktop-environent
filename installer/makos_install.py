@@ -38,76 +38,10 @@ def fingerprint(disk,layout):
     return hashlib.sha256(json.dumps({'disk':disk,'layout':layout},sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 
-def unwrap(value,depth=0):
-    """Bounded decoding of the daemon's aa{sv}/a{sv} QtDBus replies."""
-    from PySide6.QtDBus import QDBusArgument,QDBusVariant
-    if depth>12: raise ValueError('The installer service returned an excessively nested reply.')
-    if isinstance(value,QDBusVariant): return unwrap(value.variant(),depth+1)
-    if isinstance(value,QDBusArgument):
-        kind=value.currentType()
-        if kind==QDBusArgument.ElementType.ArrayType:
-            items=[];value.beginArray()
-            while not value.atEnd():
-                if len(items)>=4096: raise ValueError('The installer service returned too many devices.')
-                items.append(unwrap(value,depth+1))
-            value.endArray();return items
-        if kind==QDBusArgument.ElementType.MapType:
-            items={};value.beginMap()
-            while not value.atEnd():
-                if len(items)>=4096: raise ValueError('The installer service returned too many properties.')
-                value.beginMapEntry();key=unwrap(value,depth+1);item=unwrap(value,depth+1);value.endMapEntry()
-                if not isinstance(key,str): raise ValueError('Invalid installer property name.')
-                items[key]=item
-            value.endMap();return items
-        if kind in (QDBusArgument.ElementType.BasicType,QDBusArgument.ElementType.VariantType):
-            return unwrap(value.asVariant(),depth+1)
-        raise ValueError('The installer service returned an unsupported reply type.')
-    if isinstance(value,dict): return {str(key):unwrap(item,depth+1) for key,item in value.items()}
-    if isinstance(value,(tuple,list)): return [unwrap(item,depth+1) for item in value]
-    if value is None or type(value) in (str,int,float,bool): return value
-    raise ValueError('The installer service returned an unsupported value.')
-
-
-class InstallerTransport(QObject):
-    progress=Signal(str,float)
-    finished=Signal(bool,str)
-    lost=Signal(str)
-    def __init__(self,parent=None,*,bus=None):
-        super().__init__(parent)
-        from PySide6.QtDBus import QDBusConnection,QDBusServiceWatcher
-        self.bus=bus if bus is not None else QDBusConnection.systemBus();self._calls=set()
-        self.signals_connected=(self.bus.connect(SERVICE,OBJECT,SERVICE,'Progress',self,SLOT('receiveProgress(QString,double)'))
-            and self.bus.connect(SERVICE,OBJECT,SERVICE,'Finished',self,SLOT('receiveFinished(bool,QString)')))
-        self.watch=QDBusServiceWatcher(SERVICE,self.bus,QDBusServiceWatcher.WatchModeFlag.WatchForUnregistration,self)
-        self.watch.serviceUnregistered.connect(lambda _:self.lost.emit('The installer service disconnected.'))
-    @Slot(str,float)
-    def receiveProgress(self,stage,fraction): self.progress.emit(stage,fraction)
-    @Slot(bool,str)
-    def receiveFinished(self,success,error): self.finished.emit(success,error)
-    def call(self,method,arguments,done):
-        from PySide6.QtDBus import QDBusMessage,QDBusPendingCallWatcher
-        if method not in ('GetDisks','GetLayout','GetFileSystems','Running','Install'):
-            done(None,'Unsupported installer method.');return
-        if not self.bus.isConnected() or not self.signals_connected:
-            done(None,'The system installer service connection is unavailable.');return
-        if method=='Running':
-            request=QDBusMessage.createMethodCall(SERVICE,OBJECT,'org.freedesktop.DBus.Properties','Get')
-            request.setArguments([SERVICE,'Running'])
-        else:
-            request=QDBusMessage.createMethodCall(SERVICE,OBJECT,SERVICE,method)
-            request.setArguments(arguments)
-        watcher=QDBusPendingCallWatcher(self.bus.asyncCall(request,310000 if method=='Install' else 25000),self)
-        self._calls.add(watcher)
-        def complete(*_):
-            self._calls.discard(watcher)
-            try:
-                if watcher.isError(): done(None,watcher.error().name()+': '+watcher.error().message())
-                else:
-                    values=watcher.reply().arguments()
-                    done(unwrap(values[0]) if values else None,'')
-            except (ValueError,TypeError) as error: done(None,str(error))
-            finally: watcher.deleteLater()
-        watcher.finished.connect(complete)
+try:
+    from .installer_transport import InstallerTransport
+except ImportError:
+    from installer_transport import InstallerTransport
 
 
 class InstallController(QObject):

@@ -76,6 +76,8 @@ def main():
             try:
                 roles=wait_for(role_set,'one authoritative shell')
                 report['checks']['single_shell']=roles
+                dock_glass=wait_for(lambda:next((w for w in windows() if w['role']=='dock' and any(s.get('blur') for s in w.get('surfaces',[]))),None),'Dock uses compositor scene glass')
+                report['checks']['native_dock_glass']={'window':dock_glass['id'],'compositor_blur':True}
                 areas=wait_for(lambda:json.loads(call('WorkAreas')),'work areas')
                 bounds=areas[0]['bounds'];work=areas[0]['workArea']
                 assert work[1]>=bounds[1]+30 and work[1]+work[3]<bounds[1]+bounds[3],areas
@@ -116,6 +118,7 @@ def main():
                 assert call('RestoreWindow','t',identity)
                 restored=wait_for(lambda:next((w for w in finder_windows() if int(w['id'])==identity and w['state']=='normal' and w['visible']),None),'Finder restores')
                 report['checks']['minimize_restore']={'target_before_minimize':target,'minimized':minimized['state'],'restored':restored['state']}
+                time.sleep(.5)  # Capture the restored surface after its transition.
                 report['checks']['restored_capture']=snapshot('external-finder-restored')
                 assert call('SetWindowFullscreen','tb',identity,True)
                 wait_for(lambda:any(int(w['id'])==identity and w['state']=='fullscreen' for w in finder_windows()),'Finder fullscreen')
@@ -123,6 +126,9 @@ def main():
                 report['checks']['fullscreen_capture']=snapshot('external-finder-fullscreen')
                 assert call('SetWindowFullscreen','tb',identity,False)
                 wait_for(lambda:any(int(w['id'])==identity and w['state']=='normal' for w in finder_windows()),'Finder exits fullscreen')
+                # The shell observes state on its asynchronous 300 ms poll; do
+                # not click the menu while its fullscreen transition is ending.
+                time.sleep(.6)
                 controls=wait_for(lambda:json.loads(geometry.read_text()).get('controls') if geometry.is_file() else None,'QML control geometry')
                 for name in ('apple','control'):
                     control=controls[name]
@@ -149,6 +155,10 @@ def main():
                 key(125,False)
                 wait_for(launcher_visible,'lone Super opens Apps overlay')
                 assert {w['id'] for w in windows() if w['role']=='normal' and not w['popup']}==normal_before
+                apps_popup=wait_for(lambda:next((w for w in windows() if w['popup'] and w['appId']=='org.makos.Shell'
+                    and w['bounds'][2:]==[844,576] and any(s.get('blur') for s in w.get('surfaces',[]))),None),
+                    '844 by 576 Apps popup with compositor glass')
+                report['checks']['apps_native_glass']={'popup':apps_popup,'native_compositor_blur':True,'size':[844,576]}
                 report['checks']['apps_overlay_capture']=snapshot('external-apps-overlay')
                 key(125,True);key(125,False)
                 wait_for(lambda:not launcher_visible(),'second Super closes Apps overlay')
@@ -190,7 +200,7 @@ def main():
                     wait_for(lambda:any(int(w['id'])==identity and w['active'] for w in finder_windows()),'Finder focus before OSD')
                     time.sleep(.2)
                     level()
-                    osd=wait_for(lambda:next((w for w in windows() if w['role']=='osd' and w['visible']),None),'trusted native OSD surface')
+                    osd=wait_for(lambda:next((w for w in windows() if w['role']=='osd' and w['visible'] and any(s.get('blur') for s in w.get('surfaces',[]))),None),'trusted native OSD surface with compositor blur')
                     assert not osd['popup'] and not osd['active'] and osd['appId']=='org.makos.Shell',osd
                     assert osd['bounds'][2:]==[290,62],osd
                     assert any(int(w['id'])==identity and w['active'] for w in finder_windows()),'OSD stole keyboard focus'
@@ -199,7 +209,7 @@ def main():
                     assert call('PointerButton','ub',272,True);assert call('PointerButton','ub',272,False)
                     wait_for(lambda:any(int(w['id'])==settings_id and w['active'] for w in windows()),'pointer passes through OSD to Settings')
                     report['checks']['native_osd_focus']={'fixture_level_event':True,'hardware_test':False,'surface':osd,
-                                                         'no_focus_theft':True,'click_through':True}
+                                                         'no_focus_theft':True,'click_through':True,'native_compositor_blur':True}
                     level(available=False)
                     wait_for(lambda:not any(w['role']=='osd' and w['visible'] for w in windows()),'unavailable source dismisses native OSD')
                     assert call('CloseWindow','t',settings_id)

@@ -41,6 +41,7 @@ def discover_applications(data_dirs=None, desktop='X-Tahoe', which=shutil.which)
                 result.append(dict(id='xdg:' + identity, name=entry['Name'],
                                    path=str(path.resolve()), icon=entry.get('Icon', ''),
                                    description=entry.get('Comment', 'Installed Linux application'),
+                                   categories=[category for category in entry.get('Categories','').split(';') if category],
                                    provider='Linux', image='appstore.png'))
             except (OSError, UnicodeError, configparser.Error, KeyError, ValueError):
                 continue

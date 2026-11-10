@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-10",
+  "evidence": "User-supplied native screenshots at 17:01, 17:03 and 17:21, 1920x1080. No private desktop screenshot is bundled in this repository.",
+  "observed": {
+    "applications_panel": {"width": 844, "height": 576, "corner_radius_approx": 30, "header_height": 57, "category_separator_y": 102},
+    "layout": "Seven columns; visible icon faces approximately 61px, row pitch102px. Recent/suggested row above a separator. No window traffic lights, All Apps heading, footer count, or desktop dimming.",
+    "options": "Ellipsis-circle opens View content as / Grid / List. Search removes category row and recent header. Native screenshot shows grid search results after a previous List selection.",
+    "navigation": "Applications A glyph becomes a back chevron on hover; click returns to Spotlight. Spotlight has a search capsule plus Applications, Files, Actions, Clipboard round controls.",
+    "spotlight_scopes": "Files/Actions about640x544px; clipboard permission view about640x446px. All preserve the upper edge of Applications while changing width/height.",
+    "material": "Native glass derives color from actual content behind the surface, including the wallpaper and windows. The blue desktop screenshot and dark browser screenshot must not be compared as if their backdrops were identical."
+  },
+  "implemented": [
+    "Dedicated ApplicationsLauncher view, compact header/categories, seven columns, recent app row, Grid/List preference, filtered search grid, keyboard navigation and dismissal.",
+    "One modal overlay for Applications and Spotlight scopes; native app windows remain separate.",
+    "Background bounded file-name scan; excludes hidden data, symlinks and special files; shows partial-search notice when limited.",
+    "Memory-only text clipboard results after explicit Allow; disable and process exit clear history.",
+    "Actions create local Note/Calendar/draft records, open Settings, or open timer controls.",
+    "Native Apps/scoped popup scene-glass bridge, awaiting actual compositor probe."
+  ],
+  "validation": "Actual isolated QML pointer/key tests passed for geometry, Grid/List/query mode, Applications/Spotlight/Files/Clipboard/back, real fixture file lookup, clipboard permission behavior, Enter, Escape and outside clicks. Native-window broad app/menu smoke passed. File scanner fixtures passed.",
+  "limits": [
+    "No assertion of 1:1 pixel or animation parity; further native comparison required.",
+    "Category assignment and MRU ranking reconstructed from local app metadata, not Apple's usage-ranking algorithm.",
+    "Spotlight is not a complete system index: current root is the workspace/home root, scans are bounded and support file names rather than file contents.",
+    "Clipboard stores only text, up to20 entries/64KiB each, during this process session; Wayland clipboard history service integration remains unverified.",
+    "Actions do not send messages/mail or create remote calendar events; current apps own local drafts/records.",
+    "Spotlight's five separate capsules do not yet use a multi-region native blur surface."
+  ]
+}

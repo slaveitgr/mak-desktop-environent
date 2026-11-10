@@ -154,7 +154,10 @@ if let settings = NSImage(contentsOfFile: "/System/Applications/System Settings.
 let applicationIcons: [String:String] = ["apps": "/System/Applications/Apps.app", "calculator": "/System/Applications/Calculator.app", "chess": "/System/Applications/Chess.app", "photobooth": "/System/Applications/Photo Booth.app", "safari": "/Applications/Safari.app", "messages": "/System/Applications/Messages.app", "mail": "/System/Applications/Mail.app", "maps": "/System/Applications/Maps.app", "photos": "/System/Applications/Photos.app", "facetime": "/System/Applications/FaceTime.app", "phone": "/System/Applications/Phone.app", "calendar": "/System/Applications/Calendar.app", "reminders": "/System/Applications/Reminders.app", "notes": "/System/Applications/Notes.app", "contacts": "/System/Applications/Contacts.app", "music": "/System/Applications/Music.app", "games": "/System/Applications/Games.app", "appstore": "/System/Applications/App Store.app", "terminal": "/System/Applications/Utilities/Terminal.app"]
 for (key, appPath) in applicationIcons {
     if FileManager.default.fileExists(atPath: appPath) {
-        let icon = NSWorkspace.shared.icon(forFile: appPath)
+        // Safari's /Applications entry is a symlink into the Cryptex. Asking
+        // for its link icon adds a Finder alias badge that app launchers omit.
+        let canonicalPath = URL(fileURLWithPath: appPath).resolvingSymlinksInPath().path
+        let icon = NSWorkspace.shared.icon(forFile: canonicalPath)
         try writePNG(icon, output.deletingLastPathComponent().appendingPathComponent(key + ".png"), size: 128)
     }
 }

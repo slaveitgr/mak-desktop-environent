@@ -45,6 +45,24 @@ Main {
             exclusiveZone: shell.controller.dockAutoHide ? 0 : Math.ceil(shell.dockView.height + 18)
             position: Qt.point(Screen.virtualX + Math.round((shell.width-dockWindow.width)/2), Screen.virtualY+shell.height-dockWindow.height)
         }
+        CutefishWindow {
+            id: nativeDockGlass
+            objectName: "makOSDockGlass"
+            window: dockWindow
+            glassRect: {
+                // Track both the animated anchor position and magnified width.
+                const x = shell.dockView.x, y = shell.dockView.y;
+                const width = shell.dockView.width, height = shell.dockView.height;
+                const parent = shell.dockView.parent;
+                const r = parent ? parent.mapToItem(dockWindow.contentItem, x, y, width, height) : Qt.rect(x,y,width,height);
+                return Qt.rect(Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height));
+            }
+            glassRadius: 27
+            glassTint: shell.controller.glassTinted ? 0.65 : shell.controller.dark ? 0.18 : 0.14
+            glassEnabled: !shell.controller.reduceTransparency
+            dark: shell.controller.dark
+            menus: "[]"
+        }
         Item {
             id: dockBackdrop
             x: -Math.round((shell.width-dockWindow.width)/2)
@@ -75,12 +93,22 @@ Main {
             window: osdWindow; role: 3; exclusiveZone: 0
             position: Qt.point(Screen.virtualX + Math.max(8, shell.width-osdWindow.width-28), Screen.virtualY+41)
         }
-        LevelOSDContent { anchors.fill:parent;level:osdState;desktop:shell.controller }
+        CutefishWindow {
+            id: nativeOSDGlass
+            window: osdWindow
+            glassRect: Qt.rect(0, 0, osdWindow.width, osdWindow.height)
+            glassRadius: 31
+            glassEnabled: !shell.controller.reduceTransparency
+            dark: shell.controller.dark
+            menus: "[]"
+        }
+        LevelOSDContent { anchors.fill:parent;level:osdState;desktop:shell.controller;compositorGlass:nativeOSDGlass.active }
     }
     Component.onCompleted: {
         topbarView.parent=bar.contentItem;
         dockView.parent=dockWindow.contentItem;
         dockView.backdrop=dockBackdrop;
+        dockView.compositorGlass=Qt.binding(function(){return nativeDockGlass.active && !shell.controller.reduceTransparency;});
         controller.shellOverlay=bar.contentItem;
     }
     onShellClosing: { bar.close(); dockWindow.close(); osdWindow.dismiss(); }

@@ -45,7 +45,7 @@ class CutefishInstanceTest(unittest.TestCase):
 
     def test_second_launch_forwards_folder_and_settings_page_to_existing_owner(self):
         with tempfile.TemporaryDirectory(prefix='cf-',dir='/tmp') as directory, patch.dict(os.environ,{'XDG_RUNTIME_DIR':directory}):
-            for kind,action,argument in [('finder','open-folder','Downloads'),('settings','settings-page','Wi-Fi')]:
+            for kind,action,argument in [('finder','open-folder','Downloads'),('settings','settings-page','Wi-Fi'),('terminal','terminal-new-window','')]:
                 owner=CutefishInstance(self.app,kind,Path(directory));target=ActivationTarget()
                 self.assertTrue(owner.acquire())
                 second=CutefishInstance(self.app,kind,Path(directory),{'action':action,'argument':argument})
@@ -56,6 +56,9 @@ class CutefishInstanceTest(unittest.TestCase):
                 owner.activate({'action':action,'argument':'bad\0path'})
                 owner.activate({'action':'settings-page' if kind=='finder' else 'open-folder','argument':'unexpected'})
                 self.assertEqual(len(target.requests),1)
+                if kind != 'terminal':
+                    owner.activate({'action':'terminal-new-window'})
+                    self.assertEqual(len(target.requests),1)
                 second.deleteLater();owner.server.close();owner.lock.unlock();owner.deleteLater()
 
 
