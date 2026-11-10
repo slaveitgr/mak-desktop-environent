@@ -92,6 +92,11 @@ def main():
                 native_apps = json.loads((results / 'native-apps/native-app-startup.json').read_text())
                 passed['native_app_startup'] = {'result': 'passed', 'count': len(native_apps['applications']),
                                                'report': 'native-apps/native-app-startup.json'}
+                if os.environ.get('MAKOS_IMAGE_CHROOT') == '1':
+                    with (results/'installed-terminal-launcher.log').open('w') as terminal_log:
+                        subprocess.run([sys.executable,str(root/'tests/smoke_terminal_launcher.py')],
+                                       env=env,stdout=terminal_log,stderr=terminal_log,timeout=45,check=True)
+                    passed['system_terminal_alternative'] = {'result':'passed','native_window':True,'real_pty':True}
                 if Path('/etc/makos/compositor-branding.json').is_file():
                     log.flush()
                     trace = (results / 'compositor.log').read_text()

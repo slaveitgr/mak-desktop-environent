@@ -176,10 +176,11 @@ class Bridge(QObject):
     filesystemChanged = Signal()
     cameraPermissionResult = Signal(bool, str)
 
-    def __init__(self, workspace, session_mode=False, dde_mode=False, cutefish_mode=False, terminal_auto_start=True):
+    def __init__(self, workspace, session_mode=False, dde_mode=False, cutefish_mode=False, terminal_auto_start=True, terminal_command=None):
         super().__init__()
         self.workspace = workspace
         self._terminal_auto_start = terminal_auto_start
+        self._terminal_command = terminal_command
         self._spotlight = Spotlight(workspace.root, self)
         self.browsers = []
         self.launcher = ApplicationLauncher(native=cutefish_mode)
@@ -232,7 +233,8 @@ class Bridge(QObject):
 
     @Slot(result=QObject)
     def createTerminal(self):
-        terminal = TerminalSession(self.workspace.root, self)
+        command, self._terminal_command = self._terminal_command, None
+        terminal = TerminalSession(Path.cwd() if command else self.workspace.root, self, shell_command=command)
         self.terminals.append(terminal)
         QQmlEngine.setObjectOwnership(terminal, QQmlEngine.CppOwnership)
         return terminal
@@ -656,6 +658,7 @@ def main():
     parser.add_argument('--open-folder', help='Open a folder in the native Finder instance')
     parser.add_argument('--settings-page', help='Open a page in the native Settings instance')
     parser.add_argument('--new-window', action='store_true', help='Open a new native Terminal window')
+    parser.add_argument('--terminal-execute', nargs=argparse.REMAINDER, help='Run an argv directly in a new Terminal PTY')
     parser.add_argument('--cutefish-test', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--cutefish-shell', action='store_true', help='Trusted makOS desktop, menu bar and Dock session')
     parser.add_argument('--makos', action='store_true', help='makOS development mode: native windows and opt-in DDE service adapters on Linux')
@@ -667,6 +670,8 @@ def main():
     if args.open_folder is not None and args.cutefish_app != 'finder': parser.error('--open-folder requires --cutefish-app finder')
     if args.settings_page is not None and args.cutefish_app != 'settings': parser.error('--settings-page requires --cutefish-app settings')
     if args.new_window and args.cutefish_app != 'terminal': parser.error('--new-window requires --cutefish-app terminal')
+    if args.terminal_execute is not None and (args.cutefish_app != 'terminal' or not args.terminal_execute):
+        parser.error('--terminal-execute requires a command and --cutefish-app terminal')
     if args.cutefish_shell and (sys.platform != 'linux' or not os.environ.get('WAYLAND_SOCKET') or args.cutefish_app or args.session or args.wayland_shell):
         parser.error('--cutefish-shell must be started by the trusted makOS session supervisor')
     if args.cutefish_app and (sys.platform != 'linux' or not os.environ.get('WAYLAND_DISPLAY')):
@@ -707,8 +712,11 @@ def main():
         app.setApplicationName(NATIVE_APP_INFO[args.cutefish_app]['name'])
         app.setDesktopFileName(NATIVE_APP_INFO[args.cutefish_app]['desktop_id'])
         request={'action':'open-folder','argument':args.open_folder} if args.open_folder is not None else {'action':'settings-page','argument':args.settings_page} if args.settings_page is not None else {'action':'terminal-new-window'} if args.new_window else None
-        cutefish_instance = CutefishInstance(app, args.cutefish_app, root, request)
-        if not cutefish_instance.acquire(): return 0
+        # A command launch owns a fresh PTY and window. Do not turn it into an
+        # activation of an existing shell or transport command text over IPC.
+        if args.terminal_execute is None:
+            cutefish_instance = CutefishInstance(app, args.cutefish_app, root, request)
+            if not cutefish_instance.acquire(): return 0
     if args.session:
         app.setDesktopFileName('tahoe-desktop')
     font = QFont('.AppleSystemUIFont' if sys.platform == 'darwin' else 'Inter', 13)
@@ -716,7 +724,8 @@ def main():
     app.setFont(font)
     workspace = Workspace(root)
     bridge = Bridge(workspace, session_mode=args.session or args.cutefish_shell, dde_mode=args.makos or args.wayland_shell,
-                    cutefish_mode=bool(args.cutefish_app) or args.cutefish_shell, terminal_auto_start=not args.smoke_test)
+                    cutefish_mode=bool(args.cutefish_app) or args.cutefish_shell, terminal_auto_start=not args.smoke_test,
+                    terminal_command=args.terminal_execute)
     if args.cutefish_shell: bridge.session.refreshApplications()
     else: bridge.session.start()
     bridge.ddeAudio.start()

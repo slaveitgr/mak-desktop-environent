@@ -13,7 +13,9 @@ if pins is None:
     pins=['cutefish-filemanager','cutefish-terminal','chromium','cutefish-settings','cutefish-calculator','cutefish-debinstaller','cutefish-screenshot','cutefish-videoplayer']
 elif isinstance(pins,str):pins=[pins]
 if not isinstance(pins,list) or not all(isinstance(p,str) for p in pins):raise SystemExit('Unexpected Dock/Pinned type; refusing to replace existing configuration.')
-replacements={'cutefish-filemanager':'org.makos.Finder','cutefish-settings':'org.makos.Settings'}
+replacements={'cutefish-filemanager':'org.makos.Finder','cutefish-settings':'org.makos.Settings',
+              'cutefish-terminal':'org.makos.Terminal','cutefish-calculator':'org.makos.Calculator',
+              'cutefish-calendar':'org.makos.Calendar'}
 expected=[replacements.get(p,p) for p in pins]
 brand=Path('/opt/makos/installer/branding/makos-ck-symbol.svg')
 if not brand.is_file():raise SystemExit('Missing persistent native menu-bar SVG.')

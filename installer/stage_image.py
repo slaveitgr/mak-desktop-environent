@@ -51,6 +51,9 @@ def main():
     fetch=root/'usr/bin/makos-fetch'
     fetch.write_text('#!/bin/sh\nexec /usr/bin/python3 /opt/makos/makos_fetch.py "$@"\n')
     fetch.chmod(0o755)
+    terminal=root/'usr/bin/makos-terminal'
+    terminal.write_text('#!/bin/sh\nexec /opt/makos/cutefish/build/venv/bin/python /opt/makos/terminal_launcher.py "$@"\n')
+    terminal.chmod(0o755)
     (root/'etc/makos').mkdir(exist_ok=True)
     original=(root/'usr/lib/os-release').read_text()
     (root/'etc/makos/base-os-release').write_text(original)

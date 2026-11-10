@@ -125,6 +125,9 @@ def main():
         raise RuntimeError('Actual package removals differ from the validated plan')
     if after['cutefish-installer']['Version'] != version:
         raise RuntimeError('Backend-only installer package was not installed')
+    subprocess.run(['update-alternatives', '--install', '/usr/bin/x-terminal-emulator',
+                    'x-terminal-emulator', '/usr/bin/makos-terminal', '100'], check=True)
+    subprocess.run(['update-alternatives', '--set', 'x-terminal-emulator', '/usr/bin/makos-terminal'], check=True)
     absent_paths = ['/usr/bin/' + name for name in REPLACED - {'cutefish-desktop'}]
     absent_paths += ['/usr/bin/cutefish-installer', '/usr/share/cutefish-installer/logo.svg',
                      '/etc/xdg/autostart/cutefish-installer.desktop',
