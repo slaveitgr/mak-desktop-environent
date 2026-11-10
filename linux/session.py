@@ -17,7 +17,7 @@ REQUIRED = ('openbox', 'picom', 'wmctrl', 'dbus-run-session', 'xss-lock', 'i3loc
 
 def environment(base, socket_path):
     env = dict(base)
-    env.update(XDG_CURRENT_DESKTOP='Tahoe', XDG_SESSION_DESKTOP='tahoe',
+    env.update(XDG_CURRENT_DESKTOP='X-Tahoe', XDG_SESSION_DESKTOP='tahoe',
                DESKTOP_SESSION='tahoe', XDG_SESSION_TYPE='x11',
                QT_QPA_PLATFORM='xcb', QT_QUICK_CONTROLS_STYLE='Basic',
                TAHOE_SESSION_SOCKET=str(socket_path),

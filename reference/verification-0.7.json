@@ -1,0 +1,24 @@
+{
+  "version": "0.7",
+  "date": "2026-11-10",
+  "local_validation": {
+    "host": "macOS, Python 3.9, PySide6 6.8.3",
+    "unit_and_integration_tests": 136,
+    "result": "passed",
+    "all_apps_and_settings_qml_smoke": "passed without QML warnings",
+    "new_session_tests": 8
+  },
+  "linux_validation": {
+    "target": "Ubuntu 26.10, x86_64, Python 3.14, PySide6 6.12.0",
+    "status": "CI in progress",
+    "run": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42784286525"
+  },
+  "unverified": [
+    "Physical GDM login",
+    "Lock-screen authentication and suspend",
+    "Hardware networking/audio/brightness adapters",
+    "Multi-monitor graphics and acceleration",
+    "Tahoe pixel/frame parity",
+    "Treeland/DDE integration"
+  ]
+}

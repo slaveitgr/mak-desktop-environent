@@ -31,9 +31,9 @@ class DesktopEntryTests(unittest.TestCase):
             entry(system, 'masked'); entry(user, 'masked', 'Hidden=true\n')
             entry(system, 'invisible', 'NoDisplay=true\n')
             entry(system, 'gnome', 'OnlyShowIn=GNOME;\n')
-            entry(system, 'excluded', 'NotShowIn=Tahoe;\n')
+            entry(system, 'excluded', 'NotShowIn=X-Tahoe;\n')
             entry(system, 'missing', 'TryExec=missing-program\n')
-            entry(system, 'good', 'OnlyShowIn=Tahoe;GNOME;\nComment=100% local\n')
+            entry(system, 'good', 'OnlyShowIn=X-Tahoe;GNOME;\nComment=100% local\n')
             result = discover_applications([user, system], which=lambda _: None)
             self.assertEqual([a['id'] for a in result], ['xdg:good.desktop'])
             self.assertEqual(result[0]['description'], '100% local')
@@ -58,7 +58,7 @@ class SessionTests(unittest.TestCase):
         env = supervisor.environment(before, '/tmp/private/control.sock')
         self.assertEqual(before['QT_QPA_PLATFORM'], 'wayland')
         self.assertEqual(env['QT_QPA_PLATFORM'], 'xcb')
-        self.assertEqual(env['XDG_CURRENT_DESKTOP'], 'Tahoe')
+        self.assertEqual(env['XDG_CURRENT_DESKTOP'], 'X-Tahoe')
         self.assertEqual(env['HOME'], before['HOME'])
 
     def test_cleanup_terminates_only_owned_process_group(self):

@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 
 
-def discover_applications(data_dirs=None, desktop='Tahoe', which=shutil.which):
+def discover_applications(data_dirs=None, desktop='X-Tahoe', which=shutil.which):
     if data_dirs is None:
         data_dirs = [os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local/share'))]
         data_dirs += os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share').split(':')
