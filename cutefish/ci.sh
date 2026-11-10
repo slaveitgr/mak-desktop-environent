@@ -46,6 +46,8 @@ test -s /usr/share/keyrings/debian-archive-keyring.gpg
 printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d
 chmod 755 /usr/sbin/policy-rc.d
 echo 'deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] https://deb.debian.org/debian trixie main' > /tmp/makos/sources.list
+echo 'deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] https://deb.debian.org/debian trixie-updates main' >> /tmp/makos/sources.list
+echo 'deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] https://security.debian.org/debian-security trixie-security main' >> /tmp/makos/sources.list
 apt_args=(-o Dir::Etc::sourcelist=/tmp/makos/sources.list -o Dir::Etc::sourceparts=- -o APT::Update::Error-Mode=any)
 apt-get "${apt_args[@]}" update
 apt-get "${apt_args[@]}" install -y --no-install-recommends \
