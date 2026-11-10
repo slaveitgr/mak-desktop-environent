@@ -17,3 +17,6 @@ dist/
 *.iso.chunks/
 cutefish/build/
 ci-results/
+
+# Generated recovery image artifacts
+artifacts/

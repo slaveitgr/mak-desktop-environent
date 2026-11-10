@@ -58,15 +58,24 @@ not load or reproduce Reef.
 
 ## Validation and current limits
 
-Local regression: 144 tests pass, including four shell-adapter wire-contract
-checks. The existing native-window smoke test loads all 19 suite app pages,
+Local regression: 144 tests passed before the native integration checks; the
+six Cutefish tests (four shell wire contracts plus two single-instance activation
+checks) also pass on macOS and in the Linux ISO environment. The existing native-window smoke test loads all 19 suite app pages,
 Finder and 32 Settings categories. This branch's Cutefish entry points are
 specifically Finder and Settings.
 
 The CI workflow extracts the verified ISO into an isolated Linux rootfs,
 installs matching Debian build dependencies, builds the real native bridge and
-exercises the shipped compositor with a headless output. Protocol and behavior
-validation is in progress; a successful result must be recorded separately.
+exercises the shipped compositor with a headless output. The
+[successful run](https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42815195360)
+compiled the bridge and verified both app IDs, menus and glass protocol requests,
+server-side minimize/restore/fullscreen states, plus top-edge fullscreen reveal
+and hide events reaching both clients. Minimize targets were on the right of
+the 1920×1080 output. See [the recorded evidence](verification.json).
+
+The compositor restore test uses its window-management debug interface; it does
+not claim an automated click on the rendered Dock or menu items. The shell's
+missing-service failure path is tested explicitly in headless mode.
 
 Headless protocol acceptance cannot establish visual quality or GPU frame
 timings. No Cutefish session has been booted on the development Mac. The

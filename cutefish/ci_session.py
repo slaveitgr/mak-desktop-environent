@@ -47,6 +47,12 @@ def main():
                         raise RuntimeError(f'{kind}: exit={result.returncode}, missing={missing}, errors={errors}')
                     if compositor.poll() is not None: raise RuntimeError('Compositor exited during client checks')
                     passed[kind] = {'result':'passed', 'protocol_requests':{t:trace.count(t) for t in required[:-1]}}
+                with (results / 'recovery-native.log').open('w') as recovery_log:
+                    result = subprocess.run([sys.executable, str(root / 'installer/recovery.py'),
+                        '--native-shell', '--smoke-test'], env=env, stdout=recovery_log, stderr=recovery_log, timeout=20)
+                trace = (results / 'recovery-native.log').read_text()
+                assert result.returncode == 0 and '.set_main_menu(' in trace and 'PASS: makOS Recovery' in trace, trace[-2500:]
+                assert not any(token in trace for token in ('TypeError:', 'ReferenceError:', 'Expected token', 'FAIL:')), trace[-2500:]
                 (results / 'integration.json').write_text(json.dumps(passed, indent=2) + '\n')
                 print('PASS: Finder and Settings native windows, app menus, glass requests and minimize/fullscreen/restore on Cutefish.')
             finally:

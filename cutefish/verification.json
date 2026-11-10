@@ -1,0 +1,272 @@
+{
+  "date": "2026-11-10",
+  "tested_commit": "7b294a351d15f1293615149ee33ec95441126cd5",
+  "workflow_run": "https://github.com/slaveitgr/mak-desktop-environent/actions/runs/42815195360",
+  "artifact": {
+    "id": 13764440424,
+    "sha256": "8cd1e838f983ea42bc84b7a53fc088eb31d2f56ced680b80dcf07dcde8fa8c00"
+  },
+  "base": {
+    "base": {
+      "distribution": "Debian 13 / Cutefish 1.0 nightly",
+      "filename": "cutefish-1.0-nightly-20261108-2229-amd64.iso",
+      "bytes": 1563197440,
+      "sha256": "bedebb9260e9b413980fc62f192b72a9d2ddeca7c7bc98d6042c9dda7978e933",
+      "url": "https://download.cutefish.org/iso/nightly/cutefish-1.0-nightly-20261108-2229-amd64.iso"
+    },
+    "compositor_source": "0e709136bd7056136e74e981acffc4b88d659e0b",
+    "scope": "Experimental branch; no claim of visual parity or Reef support."
+  },
+  "runtime": {
+    "Qt": "6.8.2",
+    "PySide6": "6.8.2.1",
+    "mode": "shipped compositor --no-drm --no-xwayland in isolated ISO rootfs"
+  },
+  "protocols": {
+    "finder": {
+      "result": "passed",
+      "protocol_requests": {
+        ".get_toplevel(": 1,
+        ".set_main_menu(": 1,
+        ".set_glass(": 23,
+        ".set_fullscreen_bars(": 1,
+        ".set_minimized(": 1,
+        ".set_fullscreen(": 1,
+        ".unset_fullscreen(": 1,
+        ".fullscreen_reveal(": 2
+      }
+    },
+    "settings": {
+      "result": "passed",
+      "protocol_requests": {
+        ".get_toplevel(": 1,
+        ".set_main_menu(": 1,
+        ".set_glass(": 23,
+        ".set_fullscreen_bars(": 1,
+        ".set_minimized(": 1,
+        ".set_fullscreen(": 1,
+        ".unset_fullscreen(": 1,
+        ".fullscreen_reveal(": 2
+      }
+    }
+  },
+  "clients": {
+    "finder": {
+      "checks": [
+        "native client and protocol bridge",
+        "minimize request",
+        "compositor confirms minimized window",
+        "restore through compositor activation",
+        "compositor confirms restored window",
+        "fullscreen request",
+        "compositor confirms fullscreen window",
+        "pointer reaches fullscreen top edge",
+        "fullscreen chrome follows compositor reveal",
+        "pointer leaves fullscreen chrome",
+        "fullscreen chrome follows compositor hide",
+        "fullscreen exit request",
+        "compositor confirms windowed restore",
+        "menu model available",
+        "headless shell service absence reported without false success"
+      ],
+      "window_states": [
+        {
+          "appId": "org.makos.Finder",
+          "state": "normal",
+          "active": true,
+          "bounds": [
+            475,
+            215,
+            970,
+            590
+          ],
+          "minimizedGeometry": [
+            1202,
+            1015,
+            54,
+            34
+          ]
+        },
+        {
+          "appId": "org.makos.Finder",
+          "state": "minimized",
+          "active": false,
+          "bounds": [
+            475,
+            215,
+            970,
+            590
+          ],
+          "minimizedGeometry": [
+            1202,
+            1015,
+            54,
+            34
+          ]
+        },
+        {
+          "appId": "org.makos.Finder",
+          "state": "normal",
+          "active": true,
+          "bounds": [
+            475,
+            215,
+            970,
+            590
+          ],
+          "minimizedGeometry": [
+            1202,
+            1015,
+            54,
+            34
+          ]
+        },
+        {
+          "appId": "org.makos.Finder",
+          "state": "fullscreen",
+          "active": true,
+          "bounds": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "minimizedGeometry": [
+            1202,
+            1016,
+            54,
+            32
+          ]
+        },
+        {
+          "appId": "org.makos.Finder",
+          "state": "normal",
+          "active": true,
+          "bounds": [
+            475,
+            215,
+            970,
+            590
+          ],
+          "minimizedGeometry": [
+            1202,
+            1015,
+            54,
+            34
+          ]
+        }
+      ]
+    },
+    "settings": {
+      "checks": [
+        "native client and protocol bridge",
+        "minimize request",
+        "compositor confirms minimized window",
+        "restore through compositor activation",
+        "compositor confirms restored window",
+        "fullscreen request",
+        "compositor confirms fullscreen window",
+        "pointer reaches fullscreen top edge",
+        "fullscreen chrome follows compositor reveal",
+        "pointer leaves fullscreen chrome",
+        "fullscreen chrome follows compositor hide",
+        "fullscreen exit request",
+        "compositor confirms windowed restore",
+        "menu model available",
+        "headless shell service absence reported without false success"
+      ],
+      "window_states": [
+        {
+          "appId": "org.makos.Settings",
+          "state": "normal",
+          "active": true,
+          "bounds": [
+            598,
+            167,
+            723,
+            686
+          ],
+          "minimizedGeometry": [
+            1202,
+            1006,
+            54,
+            52
+          ]
+        },
+        {
+          "appId": "org.makos.Settings",
+          "state": "minimized",
+          "active": false,
+          "bounds": [
+            598,
+            167,
+            723,
+            686
+          ],
+          "minimizedGeometry": [
+            1202,
+            1006,
+            54,
+            52
+          ]
+        },
+        {
+          "appId": "org.makos.Settings",
+          "state": "normal",
+          "active": true,
+          "bounds": [
+            598,
+            167,
+            723,
+            686
+          ],
+          "minimizedGeometry": [
+            1202,
+            1006,
+            54,
+            52
+          ]
+        },
+        {
+          "appId": "org.makos.Settings",
+          "state": "fullscreen",
+          "active": true,
+          "bounds": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "minimizedGeometry": [
+            1202,
+            1016,
+            54,
+            32
+          ]
+        },
+        {
+          "appId": "org.makos.Settings",
+          "state": "normal",
+          "active": true,
+          "bounds": [
+            598,
+            167,
+            723,
+            686
+          ],
+          "minimizedGeometry": [
+            1202,
+            1006,
+            54,
+            52
+          ]
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Headless output does not validate rendered glass, pixel parity or GPU timing.",
+    "Dock/Statusbar D-Bus services are deliberately not exported by upstream headless mode; only missing-service handling and unit wire contracts tested.",
+    "No physical install, login, multi-monitor, external drag/drop or Reef execution verified."
+  ]
+}

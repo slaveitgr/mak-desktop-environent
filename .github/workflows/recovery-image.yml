@@ -1,0 +1,39 @@
+name: makOS Recovery development image
+on:
+  push:
+    branches: [makos-cutefish]
+    paths: ['installer/**', '.github/workflows/recovery-image.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recovery-image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MAKOS_BUILD_RECOVERY_ISO: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends squashfs-tools python3-venv xorriso
+          python3 -m venv "$RUNNER_TEMP/inspect"
+          "$RUNNER_TEMP/inspect/bin/pip" install pycdlib==1.15.0
+      - name: Verify the pinned Cutefish base
+        run: python3 distro/fetch_base.py --manifest cutefish/base.json --output "$RUNNER_TEMP/base" --workers 4
+      - name: Build and validate native clients and Recovery
+        run: bash cutefish/ci.sh
+      - name: Assemble the development ISO
+        run: bash installer/remaster.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: makos-recovery-validation
+          path: ci-results/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: makOS-Recovery-0.1-amd64
+          path: artifacts/
+          compression-level: 0
+          retention-days: 3

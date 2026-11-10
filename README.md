@@ -24,6 +24,24 @@ The setup uses distribution Qt/PySide6 and builds the native plugin locally.
 The commands below refer to the shared standalone Qt preview and its earlier
 verification history, not a makOS installer or completed Cutefish desktop.
 
+## Recovery / installer
+
+The development image starts a four-option Recovery chooser: restore a backup,
+install makOS, open the web browser, or open Disk Utility. It uses the real
+Cutefish menu bar in a live session and includes a standalone visual preview:
+
+```sh
+./installer/run --preview
+```
+
+See [Recovery behavior, image build and current limits](installer/README.md).
+
+Application direction: prefer original Mac application binaries where a tested
+compatibility runtime supports them; otherwise rebuild their appearance and
+behavior using suitable Deepin application services. Neither Reef nor Darling
+is included or validated in this image. Native Apple apps are not a current
+capability.
+
 ## Shared Qt preview
 
 On this Mac, open `Tahoe Desktop.app`, double-click `Launch.command`, or run `./run.sh`. The local `.app` contains the camera usage declaration for Photo Booth. It embeds the prepared Python environment and references this checkout; rebuild it with `python build_macos_launcher.py` after moving the project or environment. The source ZIP excludes this machine-specific launcher.
