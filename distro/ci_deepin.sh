@@ -41,7 +41,10 @@ sudo mkdir -p "$MAKOS_ROOTFS/dev/pts" "$MAKOS_ROOTFS/dev/shm"
 sudo mount -t devpts -o newinstance,ptmxmode=0666 devpts "$MAKOS_ROOTFS/dev/pts"
 sudo ln -s pts/ptmx "$MAKOS_ROOTFS/dev/ptmx"
 sudo mount -t tmpfs -o size=512m tmpfs "$MAKOS_ROOTFS/dev/shm"
-sudo chroot "$MAKOS_ROOTFS" /bin/bash -se <<'SH'
+# All service descendants belong to this PID namespace and are reaped when
+# its init shell exits. Its proc mount is private to the namespace.
+sudo unshare --mount --pid --fork --kill-child --mount-proc="$MAKOS_ROOTFS/proc" \
+  chroot "$MAKOS_ROOTFS" /bin/bash -se <<'SH'
 export DEBIAN_FRONTEND=noninteractive
 test -s /var/lib/dpkg/status
 test -s /usr/share/keyrings/deepin-archive-crimson-keyring.gpg
@@ -52,7 +55,7 @@ printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d
 chmod 755 /usr/sbin/policy-rc.d
 apt_args=(-o Dir::Etc::sourcelist=/tmp/makos/sources.list -o Dir::Etc::sourceparts=- -o Acquire::SmartMirrors::Enable=false -o APT::Update::Error-Mode=any)
 apt-get "${apt_args[@]}" update
-apt-get "${apt_args[@]}" install -y --no-install-recommends python3-venv dbus-x11 qml6-module-org-kde-layershell \
+apt-get "${apt_args[@]}" install -y --no-install-recommends python3-venv dbus-x11 libqt6test6 qml6-module-org-kde-layershell \
   libqt6webenginequick6 qml6-module-qtquick-effects qml6-module-qtquick-controls \
   qml6-module-qtmultimedia qml6-module-qtwebengine fonts-inter
 python3 -m venv /tmp/makos/venv
@@ -70,8 +73,21 @@ QT
 useradd --create-home --shell /bin/bash makos-test
 mkdir -p /tmp/makos/results
 chown -R makos-test:makos-test /tmp/makos
+# DConfig is a system-bus service, not provided by dbus-run-session. Use the
+# account, policy and service executable shipped in the verified image.
+id deepin-daemon
+install -d -m 755 /run/dbus
+install -d -m 700 -o deepin-daemon -g deepin-daemon /var/lib/dde-dconfig-daemon
+install -d -m 755 -o deepin-daemon -g deepin-daemon /var/log/deepin
+dbus-uuidgen --ensure=/etc/machine-id
+export DSG_DATA_DIRS=/usr/share/dsg:/var/lib/linglong/entries/share/dsg
+dbus-daemon --system --fork --nopidfile
+dbus-send --system --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus \
+  org.freedesktop.DBus.StartServiceByName string:org.desktopspec.ConfigManager uint32:0
 runuser -u makos-test -- /bin/bash -se <<'USER'
 cd /tmp/makos/source
+export XDG_RUNTIME_DIR=/tmp/makos/runtime
+mkdir -m 700 "$XDG_RUNTIME_DIR"
 export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
 export QML_IMPORT_PATH=/usr/lib/x86_64-linux-gnu/qt6/qml
 export QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt6/plugins
