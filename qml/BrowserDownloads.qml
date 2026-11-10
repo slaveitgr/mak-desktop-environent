@@ -65,6 +65,26 @@ Item {
         Bridge.resolveDownloadDecision(manager, save);
     }
     function requested(download) {
+        // Qt 6.8.2 can recreate a request with the same ID during an automatic
+        // retry of a truncated response. It has replaced its profile lookup,
+        // so the first wrapper will no longer receive terminal notifications.
+        // Reject that retry once; do not prompt again or reserve another file.
+        let existing = entries.find(item => item.uid === download.id);
+        if (existing) {
+            trace("duplicate-rejected", download);
+            download.cancel();
+            if (existing.finalized) {
+                Bridge.browserProfiles.releaseDownload(download);
+                return;
+            }
+            existing.duplicateRequests = existing.duplicateRequests.concat([download]);
+            existing.rejectionMessage = "The transfer could not be continued. Try downloading the file again.";
+            if (existing === pendingEntry)
+                decide(false);
+            else
+                existing.settleSoon();
+            return;
+        }
         // A regular profile is shared between windows. Only the page that
         // originated the download may show its prompt or cancel the request.
         if (!owner.ownsWebView(download.view))
@@ -97,8 +117,10 @@ Item {
         if (!accepted || closing) {
             download.cancel();
             entry.request = null;
-            entry.status = "cancelled";
+            entry.status = entry.rejectionMessage ? "failed" : "cancelled";
+            entry.message = entry.rejectionMessage;
             entry.finalized = true;
+            releaseRequests(entry, download);
             return;
         }
         let destination = Bridge.suite.downloadDestination(fileName.text.trim());
@@ -108,6 +130,7 @@ Item {
             entry.status = "failed";
             entry.message = destination && destination.error ? destination.error : "The destination could not be prepared.";
             entry.finalized = true;
+            Bridge.browserProfiles.releaseDownload(download);
             showList();
             return;
         }
@@ -132,13 +155,38 @@ Item {
         }
         entry.received = request.receivedBytes;
         entry.total = request.totalBytes;
-        if (request.state === WebEngineDownloadRequest.DownloadCompleted) {
+        if (request.state === WebEngineDownloadRequest.DownloadCompleted || request.state === WebEngineDownloadRequest.DownloadCancelled || request.state === WebEngineDownloadRequest.DownloadInterrupted)
+            entry.settleSoon();
+    }
+    function settleEntry(entry) {
+        let request = entry.request;
+        if (!request || entry.finalized)
+            return;
+        // Qt publishes stateChanged before receivedBytes/isFinished, while
+        // Chromium is still notifying its observers. Finalize on the next turn
+        // so we see the complete update and do not cancel inside that frame.
+        entry.received = request.receivedBytes;
+        entry.total = request.totalBytes;
+        if (entry.rejectionMessage) {
+            entry.finalized = true;
+            if (!request.isFinished)
+                request.cancel();
+            if (entry.token)
+                Bridge.suite.cancelDownload(entry.token);
+            entry.token = "";
+            entry.request = null;
+            entry.status = "failed";
+            entry.message = entry.rejectionMessage;
+            releaseRequests(entry, request);
+            trace("duplicate-finalized", null);
+        } else if (request.state === WebEngineDownloadRequest.DownloadCompleted) {
             entry.finalized = true;
             let result = Bridge.suite.finishDownload(entry.token, true);
             if (!result || !result.url)
                 Bridge.suite.cancelDownload(entry.token);
             entry.token = "";
             entry.request = null;
+            Bridge.browserProfiles.releaseDownload(request);
             if (result && result.url) {
                 entry.savedUrl = result.url;
                 entry.name = result.name || entry.name;
@@ -162,8 +210,16 @@ Item {
                 Bridge.suite.cancelDownload(entry.token);
             entry.token = "";
             entry.request = null;
+            Bridge.browserProfiles.releaseDownload(request);
             trace("failure-finalized", null);
         }
+    }
+    function releaseRequests(entry, request) {
+        if (request)
+            Bridge.browserProfiles.releaseDownload(request);
+        for (let duplicate of entry.duplicateRequests)
+            Bridge.browserProfiles.releaseDownload(duplicate);
+        entry.duplicateRequests = [];
     }
     function cancelEntry(entry) {
         if (!entry || entry.finalized)
@@ -181,6 +237,7 @@ Item {
             Bridge.suite.cancelDownload(entry.token);
         entry.token = "";
         entry.request = null;
+        releaseRequests(entry, request);
         entry.finalized = true;
         entry.status = "cancelled";
         entry.message = "";
@@ -236,6 +293,14 @@ Item {
             property real total: -1
             property bool finalized: false
             property int lastTraceState: -1
+            property string rejectionMessage: ""
+            property var duplicateRequests: []
+            function settleSoon() { terminalUpdate.start(); }
+            Timer {
+                id: terminalUpdate
+                interval: 0
+                onTriggered: manager.settleEntry(entry)
+            }
             Connections {
                 target: entry.request
                 function onStateChanged() {

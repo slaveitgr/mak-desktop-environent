@@ -178,6 +178,85 @@ ApplicationWindow { width:1020;height:720;visible:false
         stage = self.root / '.desktop-data/downloads'
         return list(stage.iterdir()) if stage.exists() else []
 
+    def verify_signal_order(self):
+        # Qt6.8.2 QWebEngineDownloadRequestPrivate::update emits stateChanged
+        # before byte counts and isFinished. Drive that exact ordering through
+        # the real QML manager, including a resumable interrupt's cancel path.
+        component = QQmlComponent(self.engine)
+        component.setData(b'''import QtQuick
+QtObject {
+ id:request
+ required property var owner
+ property var view:owner.currentPage.webView
+ property int id:9000
+ property int state:0
+ property bool isFinished:false
+ property bool isSavePageDownload:false
+ property int interruptReason:0
+ property string interruptReasonString:""
+ property int receivedBytes:0
+ property int totalBytes:-1
+ property url url:"http://127.0.0.1/signal-order-fixture"
+ property string suggestedFileName:"sequenced.bin"
+ property string downloadDirectory:""
+ property string downloadFileName:""
+ property bool updating:false
+ property bool cancelDuringUpdate:false
+ function accept() { state=1; }
+ function cancel() { if(updating)cancelDuringUpdate=true;state=3;isFinished=true; }
+ function completeUpdate() { updating=true;state=2;receivedBytes=7;totalBytes=7;isFinished=true;updating=false; }
+ function interruptUpdate() { updating=true;interruptReason=20;interruptReasonString="Fixture network error";state=4;receivedBytes=3;totalBytes=7;updating=false; }
+}''', QUrl.fromLocalFile(str(ROOT / 'qml/DownloadUpdateFixture.qml')))
+        for scenario in ('complete', 'interrupt', 'duplicate'):
+            request_id = 9000 + ('complete', 'interrupt', 'duplicate').index(scenario)
+            request = component.createWithInitialProperties({'owner':self.page, 'id':request_id})
+            assert request, component.errors()
+            timer = QTimer()
+            timer.setInterval(10)
+            timer.timeout.connect(lambda: self.manager.decide(True) if self.manager.property('awaitingConfirmation') else None)
+            timer.start()
+            self.manager.requested(request)
+            timer.stop()
+            entry = entries(self.manager)[0]
+            stage = Path(request.property('downloadDirectory')) / request.property('downloadFileName')
+            stage.write_bytes(b'partial' if scenario == 'complete' else b'par')
+            duplicate = None
+            if scenario == 'duplicate':
+                count = len(entries(self.manager))
+                duplicate = component.createWithInitialProperties({'owner':self.page, 'id':request_id})
+                assert duplicate, component.errors()
+                # The same native item can retry after its source tab closes;
+                # ID ownership must win even when that new wrapper has no view.
+                duplicate.setProperty('view', None)
+                self.manager.requested(duplicate)
+                assert not self.manager.property('awaitingConfirmation')
+                assert len(entries(self.manager)) == count
+                assert duplicate.property('state') == 3
+            elif scenario == 'interrupt':
+                request.interruptUpdate()
+            else:
+                request.completeUpdate()
+            assert not entry.property('finalized'), 'Finalized inside Qt state notification before the remaining fields'
+            wait_for(lambda: entry.property('finalized'), 'deferred terminal update')
+            assert not request.property('cancelDuringUpdate'), 'Cancellation reentered the native update frame'
+            if scenario != 'duplicate':
+                assert entry.property('received') == (3 if scenario == 'interrupt' else 7)
+                assert entry.property('total') == 7
+            assert entry.property('status') == ('complete' if scenario == 'complete' else 'failed')
+            if scenario == 'complete':
+                assert Path(QUrl(entry.property('savedUrl')).toLocalFile()).read_bytes() == b'partial'
+            else:
+                assert not stage.exists()
+            if duplicate:
+                assert request.property('state') == 3
+                assert not entry.property('savedUrl')
+                assert entry.property('message')
+                duplicate.deleteLater()
+            self.assert_clean()
+            request.deleteLater()
+            QTest.qWait(20)
+        print('PASS: terminal state waits for complete fields; same-ID retry fails once without a second Save sheet', flush=True)
+
     def assert_clean(self):
         assert not self.bridge.suite._downloads._pending
         assert not self.stage_files(), self.stage_files()
@@ -254,6 +333,9 @@ def main():
             assert not (downloads / 'slow.bin').exists()
             harness.assert_clean()
             print('PASS: progress and cancellation remove owned partial files', flush=True)
+
+            harness.navigate('/signal-order-page')
+            harness.verify_signal_order()
 
             print('CASE: truncated response before or during Save confirmation', flush=True)
             entry = harness.start_download(True, '/download-broken', rename='broken.bin')

@@ -49,3 +49,10 @@ class BrowserProfiles(QObject):
         if profile in self._private:
             self._private.remove(profile)
             profile.deleteLater()
+
+    @Slot(QObject)
+    def releaseDownload(self, request):
+        # Qt owns the request and forwards its destruction to Chromium's
+        # DownloadItem::Remove. Defer destruction beyond download signal frames.
+        if request is not None and request.inherits('QWebEngineDownloadRequest'):
+            request.deleteLater()
