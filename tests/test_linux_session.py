@@ -21,6 +21,15 @@ def load_file(name, path):
 
 
 class DesktopEntryTests(unittest.TestCase):
+    def test_composite_desktop_honors_environment_and_base_app_exclusions(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base=Path(folder);applications=base/'applications';applications.mkdir()
+            for name,extra in [('base-files','NotShowIn=makOS;'),('integration','OnlyShowIn=Cutefish;'),('finder','OnlyShowIn=makOS;')]:
+                (applications/(name+'.desktop')).write_text('[Desktop Entry]\nType=Application\nName='+name+'\nExec=example\n'+extra+'\n')
+            with patch.dict(os.environ,{'XDG_CURRENT_DESKTOP':'makOS:Cutefish'}):
+                self.assertEqual([a['name'] for a in discover_applications([base])],['finder','integration'])
+                self.assertEqual([a['name'] for a in discover_applications([base],desktop='Cutefish')],['base-files','integration'])
+
     def test_user_hidden_masks_system_and_filter_rules(self):
         with tempfile.TemporaryDirectory() as folder:
             user, system = Path(folder) / 'user', Path(folder) / 'system'

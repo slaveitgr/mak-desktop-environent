@@ -43,6 +43,28 @@
       "kind": "local general UI regression",
       "test": "tests/smoke_ui.py --native-windows",
       "result": "18 suite windows, Apps overlay, 32 Settings categories and fullscreen/minimize/close behavior passed on software/offscreen Qt; not the Linux compositor."
+    },
+    {
+      "kind": "actual rendered native Linux run",
+      "commit": "b45c0debdd7922d4ef288869f07a8c72999610d0",
+      "run": 42850879689,
+      "artifact": 13781072608,
+      "artifact_zip_sha256": "3665fd9e3a755f14493e0c1c0e9b78d705e4c255143aca96d09729b2b925eb87",
+      "passed": [
+        "EGL llvmpipe composition and real native screenshots",
+        "single shell, Dock blur, work area",
+        "Finder native menu actions, minimize/restore and fullscreen edge reveal",
+        "Apple and Control Center popups",
+        "authorization protocol/session/dialog fixtures",
+        "all 20 native application startup clients",
+        "browser page/download/profile integrations"
+      ],
+      "failed": [
+        "Apps popup incorrectly attached a toplevel menu and disconnected the shell",
+        "terminal interruption fixture assumed shell-specific command-list continuation",
+        "stock-shell branding fixture lacked its intended configuration"
+      ],
+      "result": "Required release gate failed; ISO not assembled."
     }
   ],
   "fullscreen_followup": {
@@ -66,7 +88,11 @@
       "src/display/display_runtime.cpp render callbacks upload textures, render scene and notify capture"
     ],
     "implementation": "Explicit --no-drm --headless-render option constructs the actual EGL renderer and Pbuffer target, advances frameStarted, uploads client buffers, renders the scene and completes capture only after glFinish. No DRM seat or display is acquired.",
-    "validation": "Patch applies with zero fuzz to the pinned source plus the three existing patches. Native compile and rendered integration test pending.",
+    "validation": "Compiled and rendered actual surfaces in b45c native run42850879689. Screenshots and fullscreen transitions passed; later Apps popup protocol error failed the complete gate.",
     "probe": "Requires uploaded surface textures and on-screen scene positions before capturing; keeps capture stdout/stderr in artifacts. A render/capture failure still fails the required release gate."
+  },
+  "popup_protocol_followup": {
+    "implementation": "Popup adapter requests surface blur only. C++ bridge also excludes Qt Popup/ToolTip from toplevel menu and window-hint protocols.",
+    "validation": "Local QML Apps/Control checks passed; actual Wayland popup test pending next Linux run."
   }
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Stage makOS into the workflow's extracted ISO, never the running host."""
 import argparse
+import configparser
 import json
 import os
 from pathlib import Path
@@ -38,9 +39,28 @@ def main():
     installed_auth=target/'cutefish/build/auth/makos-polkit-agent'
     installed_auth.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(auth,installed_auth);installed_auth.chmod(0o755)
+    # The compositor recognizes this exact system-dialog executable. Every
+    # installed path component must remain outside ordinary users' control.
+    for component in (installed_auth, *installed_auth.parents):
+        if component == root:
+            break
+        if component.is_symlink() or component.stat().st_uid != 0 or component.stat().st_mode & 0o022:
+            raise SystemExit('The installed authentication path is not root-owned and protected: '+str(component))
     auth_icon=root/'usr/share/icons/hicolor/scalable/apps/org.makos.Authentication.svg'
     auth_icon.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(source/'cutefish/auth/authentication.svg',auth_icon)
+    # Keep base packages for their services and the optional Cutefish session,
+    # but show one launcher for each replaced application in makOS.
+    for name in ('filemanager', 'settings', 'terminal', 'calculator', 'calendar'):
+        entry_path=root/('usr/share/applications/cutefish-'+name+'.desktop')
+        if not entry_path.is_file():
+            raise SystemExit('The pinned base application entry is missing: '+str(entry_path))
+        entry=configparser.ConfigParser(interpolation=None);entry.optionxform=str
+        entry.read(entry_path)
+        excluded=entry['Desktop Entry'].get('NotShowIn','').split(';')
+        excluded=[value for value in excluded if value and value!='makOS']+['makOS']
+        entry['Desktop Entry']['NotShowIn']=';'.join(excluded)+';'
+        with entry_path.open('w') as stream:entry.write(stream,space_around_delimiters=False)
     fetch=root/'usr/bin/makos-fetch'
     fetch.write_text('#!/bin/sh\nexec /usr/bin/python3 /opt/makos/makos_fetch.py "$@"\n')
     fetch.chmod(0o755)

@@ -123,6 +123,7 @@ class CutefishWindow : public QObject {
     Q_PROPERTY(int glassRadius READ glassRadius WRITE setGlassRadius NOTIFY changed)
     Q_PROPERTY(double glassTint READ glassTint WRITE setGlassTint NOTIFY changed)
     Q_PROPERTY(bool glassEnabled READ glassEnabled WRITE setGlassEnabled NOTIFY changed)
+    Q_PROPERTY(bool surfaceOnly READ surfaceOnly WRITE setSurfaceOnly NOTIFY changed)
     Q_PROPERTY(bool dark READ dark WRITE setDark NOTIFY changed)
     Q_PROPERTY(bool active READ active NOTIFY changed)
     Q_PROPERTY(int revealOffset READ revealOffset NOTIFY revealChanged)
@@ -142,8 +143,9 @@ public:
     int glassRadius() const { return m_radius; }
     double glassTint() const { return m_tint; }
     bool glassEnabled() const { return m_enabled; }
+    bool surfaceOnly() const { return m_surfaceOnly; }
     bool dark() const { return m_dark; }
-    bool active() const { return m_bound && m_menus.isActive() && m_glass.isActive() && m_hints.isActive(); }
+    bool active() const { return m_bound && m_glass.isActive() && (!usesWindowProtocols() || (m_menus.isActive() && m_hints.isActive())); }
     int revealOffset() const { return m_offset; }
     int revealDuration() const { return m_duration; }
     void setWindow(QWindow *value) {
@@ -162,6 +164,7 @@ public:
     void setGlassRadius(int v) { v=qBound(0,v,512);if(v!=m_radius){m_radius=v;schedule();emit changed();} }
     void setGlassTint(double v) { if(std::isfinite(v)&&v>=0&&v<=1&&v!=m_tint){m_tint=v;schedule();emit changed();} }
     void setGlassEnabled(bool v) { if (v != m_enabled) { m_enabled = v; schedule(); emit changed(); } }
+    void setSurfaceOnly(bool v) { if (v != m_surfaceOnly) { m_surfaceOnly = v; m_bound = nullptr; schedule(); emit changed(); } }
     void setDark(bool v) { if (v != m_dark) { m_dark = v; schedule(); emit changed(); } }
 signals:
     void changed();
@@ -176,6 +179,12 @@ protected:
         return false;
     }
 private:
+    bool usesWindowProtocols() const {
+        // xdg_popup supports surface blur, but main-menu and window-hints
+        // requests require an xdg_toplevel. Sending them terminates the whole
+        // trusted shell connection, not just the popup.
+        return !m_surfaceOnly && m_window && m_window->type() != Qt::Popup && m_window->type() != Qt::ToolTip;
+    }
     wl_surface *surface() const {
         if (!m_window || !m_window->handle() || QGuiApplication::platformName() != "wayland") return nullptr;
         return static_cast<wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", m_window));
@@ -192,17 +201,21 @@ private:
     }
     void apply() {
         auto s = surface();
-        if (!s || !m_window->isExposed() || !m_menus.isActive() || !m_glass.isActive() || !m_hints.isActive()) return;
-        if (!m_tree) {
+        const bool windowProtocols = usesWindowProtocols();
+        if (!s || !m_window->isExposed() || !m_glass.isActive()
+            || (windowProtocols && (!m_menus.isActive() || !m_hints.isActive()))) return;
+        if (windowProtocols && !m_tree) {
             m_tree = std::make_unique<MenuNode>(&m_menus, [this](QString command) { emit commandTriggered(command); }, [this] { emit refreshRequested(); });
             updateMenus();
         }
         if (m_bound != s) {
-            m_menus.set_main_menu(s, m_tree->object());
-            m_hints.set_server_resize(s, 1);
-            m_hints.set_fullscreen_bars(s, 50, 0);
+            if (windowProtocols) {
+                m_menus.set_main_menu(s, m_tree->object());
+                m_hints.set_server_resize(s, 1);
+                m_hints.set_fullscreen_bars(s, 50, 0);
+            }
             m_bound = s;
-            qInfo("MAKOS_CUTEFISH: menus, glass and fullscreen hints attached");
+            qInfo("MAKOS_CUTEFISH: %s", windowProtocols ? "menus, glass and fullscreen hints attached" : "popup surface glass attached");
             emit changed();
         }
         const QRect rect = m_rect.intersected(QRect(0, 0, m_window->width(), m_window->height()));
@@ -225,7 +238,7 @@ private:
     wl_surface *m_bound = nullptr;
     QString m_json = "[]";
     QRect m_rect;
-    bool m_enabled = true, m_dark = false, m_scheduled = false;
+    bool m_enabled = true, m_dark = false, m_scheduled = false, m_surfaceOnly = false;
     int m_offset = 0, m_duration = 200, m_radius = 19;
     double m_tint = -1;
 };

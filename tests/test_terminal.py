@@ -75,9 +75,15 @@ class TerminalTests(unittest.TestCase):
         self.wait_until(lambda:'30 120' in self.terminal.text)
         self.terminal.resize(92,26);self.terminal.write('stty size\r')
         self.wait_until(lambda:'26 92' in self.terminal.text)
-        self.terminal.write("sleep 30; printf 'after-%s\\n' interrupt\r")
-        self.wait_until(lambda:os.tcgetpgrp(self.terminal.fd)!=self.terminal.process.pid)
+        # Wait for output from this job, not a transient process group left by
+        # the preceding stty. Interactive dash and bash can discard the rest
+        # of a command list after Ctrl-C, so issue a new command at the prompt.
+        self.terminal.write('/bin/sh -c "printf \'foreground-%s\\\\n\' ready; exec sleep 30"\r')
+        self.wait_until(lambda:'foreground-ready' in self.terminal.text)
+        self.assertNotEqual(os.tcgetpgrp(self.terminal.fd),self.terminal.process.pid)
         self.terminal.interrupt()
+        self.wait_until(lambda:os.tcgetpgrp(self.terminal.fd)==self.terminal.process.pid)
+        self.terminal.write("printf 'after-%s\\n' interrupt\r")
         self.wait_until(lambda:'after-interrupt' in self.terminal.text)
         self.assertTrue(self.terminal.running)
         self.assertNotIn('no job control',self.terminal.text)

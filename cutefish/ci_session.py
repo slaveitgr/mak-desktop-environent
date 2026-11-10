@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from PySide6.QtCore import QSettings
 
 
 def main():
@@ -16,11 +17,22 @@ def main():
     results = Path('/tmp/makos/results')
     with tempfile.TemporaryDirectory(prefix='makos-cutefish-') as directory:
         runtime = Path(directory); runtime.chmod(0o700)
+        # This fixture user is created before the compositor build, so later
+        # /etc/skel branding does not retroactively populate its home. Keep
+        # the protocol fixture's settings explicit and isolated instead.
+        settings_file=runtime/'config/cutefish/shell.conf'
+        settings_file.parent.mkdir(parents=True)
+        settings=QSettings(str(settings_file),QSettings.Format.IniFormat)
+        settings.setValue('MenuBar/BrandIcon',str(root/'installer/branding/makos-ck-symbol.svg'))
+        settings.sync()
+        if settings.status()!=QSettings.Status.NoError:
+            raise RuntimeError('Cannot prepare isolated compositor branding settings')
         env = dict(os.environ, XDG_RUNTIME_DIR=directory, XDG_CURRENT_DESKTOP='Cutefish',
+                   XDG_CONFIG_HOME=str(runtime/'config'),
                    LIBGL_ALWAYS_SOFTWARE='1', EGL_PLATFORM='surfaceless')
         env.pop('DISPLAY', None); env.pop('WAYLAND_DISPLAY', None)
         with (results / 'compositor.log').open('w') as log:
-            compositor = subprocess.Popen(['cutefish-compositor', '--no-drm', '--no-xwayland',
+            compositor = subprocess.Popen(['cutefish-compositor', '--no-drm', '--headless-render', '--no-xwayland',
                                             '--socket', 'makos-test'], env=env, stdout=log,
                                            stderr=log, start_new_session=True)
             try:

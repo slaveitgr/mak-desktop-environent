@@ -140,6 +140,7 @@ run_required recovery-tests.log python3 -m unittest discover -s tests -p 'test_r
 run_required finder-tests.log python3 -m unittest discover -s tests -p 'test_finder*.py' -v
 run_required functional-contract-tests.log python3 -m unittest -v tests.test_browser tests.test_linux_settings tests.test_native_applications tests.test_linux_session tests.test_makos_installer tests.test_downloads tests.test_system_info tests.test_terminal tests.test_fullscreen
 run_required settings-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_linux_settings_ui.py
+run_required symbol-rendering.log python3 tests/verify_symbol_rendering.py /tmp/makos/results/symbol-software.png
 run_required control-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_control_linux.py
 run_required control-tahoe-ui-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_control_tahoe.py
 run_required apps-overlay-fixtures.log env QT_QUICK_BACKEND=software python3 tests/verify_apps_overlay.py

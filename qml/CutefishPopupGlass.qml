@@ -11,6 +11,7 @@ Item {
     readonly property bool ready:glass.active&&glass.glassEnabled
     CutefishWindow {
         id:glass
+        surfaceOnly:true
         window:adapter.surfaceWindow!==adapter.parentWindow?adapter.surfaceWindow:null
         glassEnabled:!!(adapter.popup&&adapter.popup.visible&&adapter.popup.popupType===Popup.Window&&adapter.popup.mode!=="spotlight"&&!adapter.popup.desktop.reduceTransparency&&adapter.surfaceWindow&&Math.abs(adapter.surfaceWindow.width-adapter.popup.width)<2&&Math.abs(adapter.surfaceWindow.height-adapter.popup.height)<2)
         glassRect:adapter.surfaceWindow?Qt.rect(0,0,adapter.surfaceWindow.width,adapter.surfaceWindow.height):Qt.rect(0,0,0,0)

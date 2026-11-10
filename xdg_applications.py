@@ -5,7 +5,8 @@ from pathlib import Path
 import shutil
 
 
-def discover_applications(data_dirs=None, desktop='X-Tahoe', which=shutil.which):
+def discover_applications(data_dirs=None, desktop=None, which=shutil.which):
+    desktops = set(filter(None, (desktop if desktop is not None else os.environ.get('XDG_CURRENT_DESKTOP', 'X-Tahoe')).split(':')))
     if data_dirs is None:
         data_dirs = [os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local/share'))]
         data_dirs += os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share').split(':')
@@ -31,7 +32,7 @@ def discover_applications(data_dirs=None, desktop='X-Tahoe', which=shutil.which)
                 if any(entry.getboolean(key, False) for key in ('Hidden', 'NoDisplay')):
                     continue
                 only, exclude = entry.get('OnlyShowIn', ''), entry.get('NotShowIn', '')
-                if (only and desktop not in only.split(';')) or desktop in exclude.split(';'):
+                if (only and not desktops.intersection(only.split(';'))) or desktops.intersection(exclude.split(';')):
                     continue
                 executable = entry.get('TryExec', '')
                 if executable and not which(executable):

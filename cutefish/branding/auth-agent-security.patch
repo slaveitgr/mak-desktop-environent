@@ -1,0 +1,12 @@
+--- a/src/core/compositor_shell.cpp
++++ b/src/core/compositor_shell.cpp
+@@ -873,7 +873,8 @@
+             captureExecutables(m_options),
+             // Permission prompts and authentication dialogs.
+             std::vector<std::string> {"/usr/bin/cutefish-services",
+-                                      "/usr/bin/cutefish-polkit-agent"},
++                                      "/usr/bin/cutefish-polkit-agent",
++                                      "/opt/makos/cutefish/build/auth/makos-polkit-agent"},
+             !m_options.noDrm,
+             withExecutables({"/usr/bin/cutefish-computer-use"}, m_options.computerControlClients),
+             // The compatibility runtime, whose programs place their windows.
