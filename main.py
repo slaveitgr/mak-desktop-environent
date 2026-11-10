@@ -519,6 +519,15 @@ class Bridge(QObject):
             return {}
 
 
+def finish_session(app, window):
+    """A supervisor stop must bypass the interactive window-close confirmation."""
+    desktop = window.findChild(QObject, 'desktop')
+    if desktop is not None:
+        desktop.setProperty('sessionEnding', True)
+    window.flushApplications()
+    app.quit()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, help='Explicit folder to browse and modify; default: demo-home next to this script')
@@ -560,13 +569,14 @@ def main():
     if args.session:
         import signal
         # Permit the supervisor to flush drafts on logout/service failure.
-        signal.signal(signal.SIGTERM, lambda *_: app.quit())
-        signal.signal(signal.SIGINT, lambda *_: app.quit())
+        signal.signal(signal.SIGTERM, lambda *_: finish_session(app, engine.rootObjects()[0]))
+        signal.signal(signal.SIGINT, lambda *_: finish_session(app, engine.rootObjects()[0]))
         signal_timer = QTimer(app)
         signal_timer.timeout.connect(lambda: None)
         signal_timer.start(200)
     if args.smoke_test:
-        QTimer.singleShot(8000 if args.session else 1600, app.quit)
+        QTimer.singleShot(8000 if args.session else 1600,
+                          lambda: finish_session(app, engine.rootObjects()[0]) if args.session else app.quit())
     return app.exec()
 
 

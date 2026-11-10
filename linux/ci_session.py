@@ -62,6 +62,8 @@ def main():
                 assert not any(message in text for message in ('QQmlApplicationEngine failed', 'Traceback (most recent call last)', 'Binding loop detected', 'TypeError:', 'ReferenceError:')), text
             print('PASS: installed session, Openbox, native shell window, hotkeys, duplicate-session guard and cleanup')
         finally:
+            for log in (home / '.local/state/tahoe-desktop').glob('session-*.log'):
+                print('Session diagnostics:', log.read_text(), flush=True)
             os.close(rfd)
             if session and session.poll() is None:
                 session.terminate()

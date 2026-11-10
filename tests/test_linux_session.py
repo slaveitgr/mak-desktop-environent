@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -113,14 +113,14 @@ class SessionTests(unittest.TestCase):
         script = r'''
 import sys,tempfile
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from PySide6.QtCore import QObject,QSettings,QUrl
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtTest import QTest
 import shiboken6
 sys.path.insert(0,sys.argv[1])
-from main import Bridge
+from main import Bridge,finish_session
 from filesystem import Workspace
 app=QGuiApplication([]);app.setOrganizationName('SessionQA');app.setApplicationName('Isolated')
 with tempfile.TemporaryDirectory() as folder:
@@ -138,6 +138,8 @@ with tempfile.TemporaryDirectory() as folder:
  with patch.object(bridge.session,'perform') as perform:
   desktop.requestSessionAction('logout');QTest.qWait(30);assert dialog.property('visible')
   dialog.reject();QTest.qWait(30);perform.assert_not_called();assert not desktop.property('sessionEnding')
+  fake_app=Mock();finish_session(fake_app,root);fake_app.quit.assert_called_once()
+  assert desktop.property('sessionEnding');desktop.setProperty('sessionEnding',False)
   desktop.requestSessionAction('logout');QTest.qWait(30);dialog.accept();QTest.qWait(30)
   perform.assert_called_once_with('logout');assert desktop.property('sessionEnding')
   assert bridge.suite.records('notes')[0]['body']=='Save before session exit'
