@@ -205,7 +205,10 @@ Column {
                         Accessible.name: modelData + " Liquid Glass"
                         Accessible.role: Accessible.RadioButton
                         Accessible.checked: chosen
-                        onClicked: desktop.glassTinted = modelData === "Tinted"
+                        onClicked: {
+                            desktop.glassTinted = modelData === "Tinted";
+                            if (desktop.cutefishMode) Bridge.cutefishShell.setDockGlassTint(desktop.glassTinted ? 1 : 0.5);
+                        }
                         background: Item {}
                         contentItem: Item {
                             Image {

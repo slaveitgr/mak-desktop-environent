@@ -2,4 +2,4 @@
 set -eu
 MAKOS_SOURCE=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 export QT_QUICK_CONTROLS_STYLE=Basic
-exec /usr/bin/python3 "$MAKOS_SOURCE/main.py" --cutefish-app "$@"
+exec "$MAKOS_SOURCE/cutefish/build/venv/bin/python" "$MAKOS_SOURCE/main.py" --cutefish-app "$@"

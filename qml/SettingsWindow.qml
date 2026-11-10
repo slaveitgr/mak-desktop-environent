@@ -374,6 +374,7 @@ DesktopWindow {
                     dark: win.dark
                     reducedMotion: desktop.reduceMotion
                     label: "Magnification"
+                    enabled: !desktop.cutefishMode
                     checked: desktop.dockMagnification
                     onToggled: function (value) {
                         desktop.dockMagnification = value;
@@ -386,12 +387,14 @@ DesktopWindow {
                     checked: desktop.dockAutoHide
                     onToggled: function (value) {
                         desktop.dockAutoHide = value;
+                        if (desktop.cutefishMode) Bridge.cutefishShell.setDockAutoHide(value);
                     }
                 }
                 SettingsToggle {
                     dark: win.dark
                     reducedMotion: desktop.reduceMotion
                     label: "Show indicators for open applications"
+                    enabled: !desktop.cutefishMode
                     checked: desktop.dockIndicators
                     onToggled: function (value) {
                         desktop.dockIndicators = value;
@@ -401,6 +404,7 @@ DesktopWindow {
                     dark: win.dark
                     reducedMotion: desktop.reduceMotion
                     label: "Animate opening applications"
+                    enabled: !desktop.cutefishMode
                     checked: desktop.dockLaunchAnimation
                     onToggled: function (value) {
                         desktop.dockLaunchAnimation = value;

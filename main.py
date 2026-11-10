@@ -18,6 +18,7 @@ from suite import Suite, ChessGame
 from terminal_session import TerminalSession
 from linux_session import LinuxSession
 from dde_services import DdeAudio
+from cutefish_services import CutefishShell
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -167,7 +168,7 @@ class Bridge(QObject):
     filesystemChanged = Signal()
     cameraPermissionResult = Signal(bool, str)
 
-    def __init__(self, workspace, session_mode=False, dde_mode=False):
+    def __init__(self, workspace, session_mode=False, dde_mode=False, cutefish_mode=False):
         super().__init__()
         self.workspace = workspace
         self.browsers = []
@@ -178,6 +179,9 @@ class Bridge(QObject):
         self._session.error.connect(self.error)
         self._suite = Suite(workspace.root, self)
         self._suite.error.connect(self.error)
+        self._cutefish_shell = CutefishShell(cutefish_mode, self)
+        self._cutefish_shell.error.connect(self.error)
+        self._suite.preferenceChanged.connect(self._cutefish_shell.preferenceChanged)
         self._chess = ChessGame(self._suite, self)
         self.terminals = []
         self._download_decisions = {}
@@ -217,12 +221,16 @@ class Bridge(QObject):
         if app_id in ('finder', 'settings'):
             QProcess.startDetached(sys.executable, [str(APP_DIR / 'main.py'), '--cutefish-app', app_id, '--root', str(self.workspace.root)])
 
+    @Property(QObject, constant=True)
+    def cutefishShell(self): return self._cutefish_shell
+
     @Slot()
     def shutdown(self):
         if self._shutting_down: return
         self._shutting_down = True
         self._session.stop()
         self._dde_audio.stop()
+        self._cutefish_shell.stop()
         for decision in list(self._download_decisions.values()): decision['loop'].quit()
         self._chess.shutdown()
         try:
@@ -596,7 +604,8 @@ def main():
     font.setStyleStrategy(QFont.PreferAntialias)
     app.setFont(font)
     workspace = Workspace(root)
-    bridge = Bridge(workspace, session_mode=args.session, dde_mode=args.makos or args.wayland_shell)
+    bridge = Bridge(workspace, session_mode=args.session, dde_mode=args.makos or args.wayland_shell,
+                    cutefish_mode=bool(args.cutefish_app))
     bridge.session.start()
     bridge.ddeAudio.start()
     engine = QQmlApplicationEngine()

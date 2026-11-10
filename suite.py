@@ -29,6 +29,7 @@ def calculate(expression):
 
 class Suite(QObject):
     changed = Signal()
+    preferenceChanged = Signal(str, str)
     error = Signal(str)
     def __init__(self, root, parent=None):
         super().__init__(parent)
@@ -102,6 +103,7 @@ class Suite(QObject):
         if len(value) > 100000 or self.preference(key, '\0') == value: return
         with self.db: self.db.execute('INSERT INTO preferences VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', (key, value))
         self.notify()
+        self.preferenceChanged.emit(key, value)
 
     @Slot(str, result='QVariantMap')
     def evaluate(self, expression):

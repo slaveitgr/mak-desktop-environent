@@ -53,7 +53,7 @@ apt-get "${apt_args[@]}" install -y --no-install-recommends \
   qt6-declarative-dev qt6-wayland-dev qt6-wayland-dev-tools qt6-wayland \
   python3-pyside6.qtcore python3-pyside6.qtgui python3-pyside6.qtqml python3-pyside6.qtquick \
   python3-pyside6.qtmultimedia python3-pyside6.qtwebenginequick python3-pyside6.qttest \
-  python3-pyside6.qtdbus python3-chess python3-pyte dbus-x11 fonts-inter \
+  python3-pyside6.qtdbus python3-venv python3-pyte dbus-x11 fonts-inter \
   qml6-module-qtcore qml6-module-qtqml qml6-module-qtqml-models qml6-module-qtqml-workerscript \
   qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtquick-layouts \
   qml6-module-qtquick-dialogs qml6-module-qtquick-effects qml6-module-qtquick-controls \
@@ -70,6 +70,9 @@ mkdir -m 700 "$XDG_RUNTIME_DIR"
 export QTWEBENGINE_DISABLE_SANDBOX=1 QT_QUICK_CONTROLS_STYLE=Basic
 cmake -S cutefish -B cutefish/build -G Ninja -DCMAKE_BUILD_TYPE=Debug > /tmp/makos/results/build.log 2>&1
 cmake --build cutefish/build -j2 >> /tmp/makos/results/build.log 2>&1
+python3 -m venv --system-site-packages cutefish/build/venv
+cutefish/build/venv/bin/pip install chess==1.11.2
+export PATH="/tmp/makos/source/cutefish/build/venv/bin:$PATH"
 python3 cutefish/install_preview.py
 python3 distro/probe.py > /tmp/makos/results/readiness.json
 QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software python3 tests/smoke_ui.py --native-windows > /tmp/makos/results/native-apps.log 2>&1
