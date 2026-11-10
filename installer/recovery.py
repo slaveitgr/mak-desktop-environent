@@ -17,7 +17,7 @@ TOOLS = {
     'restore': ('deja-dup', ['--restore']),
     'browser': ('chromium', []),
     'disks': ('gnome-disks', []),
-    'terminal': ('cutefish-terminal', []),
+    'terminal': (str(ROOT / 'cutefish/run-app'), ['terminal']),
 }
 CHOICES = [
     {'id':'restore', 'title':'Restore from Backup', 'description':'Restore your files from a compatible backup.', 'icon':'assets/original/time-machine.png'},

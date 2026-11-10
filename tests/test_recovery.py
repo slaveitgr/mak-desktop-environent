@@ -17,8 +17,8 @@ class RecoveryTests(unittest.TestCase):
         messages=[];opened=[]
         c=RecoveryController(False, process_factory=FakeProcess)
         c.message.connect(lambda *args:messages.append(args));c.openDisks.connect(lambda:opened.append(True))
-        for kind in ('restore','browser','disks'):c.launch(kind)
-        self.assertEqual(len(messages),2);self.assertEqual(opened,[True]);self.assertIsNone(c._process)
+        for kind in ('restore','browser','terminal','disks'):c.launch(kind)
+        self.assertEqual(len(messages),3);self.assertEqual(opened,[True]);self.assertIsNone(c._process)
         c.launch('install')
         self.assertEqual(c._process.command,(sys.executable,[str(ROOT/'installer/makos_install.py'),'--native-shell','--preview']))
         self.assertFalse(c.externalActive)
@@ -29,6 +29,11 @@ class RecoveryTests(unittest.TestCase):
         p.started.emit(); self.assertTrue(c.externalActive)
         c.launch('disks'); self.assertIs(c._process,p)
         p.finished.emit(0,0); self.assertFalse(c.externalActive); self.assertIsNone(c._process)
+    def test_live_terminal_uses_native_makos_launcher(self):
+        c=RecoveryController(True, resolver=lambda name:name, process_factory=FakeProcess)
+        c.launch('terminal')
+        self.assertEqual(c._process.command,(str(ROOT/'cutefish/run-app'),['terminal']))
+
     def test_unknown_action_and_missing_program_do_not_start(self):
         messages=[];c=RecoveryController(True,resolver=lambda _:None,process_factory=FakeProcess)
         c.message.connect(lambda *args:messages.append(args))

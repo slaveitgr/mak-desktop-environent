@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Stage makOS into the workflow's extracted ISO, never the running host."""
 import argparse
-import configparser
 import json
 import os
 from pathlib import Path
@@ -49,18 +48,6 @@ def main():
     auth_icon=root/'usr/share/icons/hicolor/scalable/apps/org.makos.Authentication.svg'
     auth_icon.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(source/'cutefish/auth/authentication.svg',auth_icon)
-    # Keep base packages for their services and the optional Cutefish session,
-    # but show one launcher for each replaced application in makOS.
-    for name in ('filemanager', 'settings', 'terminal', 'calculator', 'calendar'):
-        entry_path=root/('usr/share/applications/cutefish-'+name+'.desktop')
-        if not entry_path.is_file():
-            raise SystemExit('The pinned base application entry is missing: '+str(entry_path))
-        entry=configparser.ConfigParser(interpolation=None);entry.optionxform=str
-        entry.read(entry_path)
-        excluded=entry['Desktop Entry'].get('NotShowIn','').split(';')
-        excluded=[value for value in excluded if value and value!='makOS']+['makOS']
-        entry['Desktop Entry']['NotShowIn']=';'.join(excluded)+';'
-        with entry_path.open('w') as stream:entry.write(stream,space_around_delimiters=False)
     fetch=root/'usr/bin/makos-fetch'
     fetch.write_text('#!/bin/sh\nexec /usr/bin/python3 /opt/makos/makos_fetch.py "$@"\n')
     fetch.chmod(0o755)
@@ -73,7 +60,7 @@ def main():
     release=root/'etc/os-release';release.unlink(missing_ok=True);release.symlink_to('../usr/lib/os-release')
     commit=subprocess.check_output(['git','-c','safe.directory='+str(source),'-C',str(source),'rev-parse','HEAD'],text=True).strip()
     (root/'etc/makos/live.json').write_text(json.dumps({'version':'0.1-development','source_commit':commit,'base':json.loads((source/'cutefish/base.json').read_text())},indent=2)+'\n')
-    (root/'etc/xdg/autostart/cutefish-installer.desktop').write_text('''[Desktop Entry]
+    (root/'etc/xdg/autostart/org.makos.Recovery.desktop').write_text('''[Desktop Entry]
 Type=Application
 Name=makOS Recovery
 Exec=/opt/makos/installer/run --autostart
@@ -89,18 +76,6 @@ Icon=/opt/makos/installer/assets/install.svg
 Terminal=false
 Categories=System;
 ''')
-    # Keep the installed package/daemon for its privileged backend, but never
-    # expose its old graphical wizard in the application launcher.
-    (root/'usr/share/applications/cutefish-installer.desktop').write_text("""[Desktop Entry]
-Type=Application
-Name=Install makOS
-Exec=/opt/makos/cutefish/build/venv/bin/python /opt/makos/installer/makos_install.py --native-shell
-Icon=/opt/makos/installer/assets/install.svg
-Hidden=true
-NoDisplay=true
-Terminal=false
-Categories=System;
-""")
     (root/'usr/share/applications/org.makos.Installer.desktop').write_text("""[Desktop Entry]
 Type=Application
 Name=Install makOS
