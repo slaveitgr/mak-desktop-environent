@@ -13,6 +13,11 @@ XDG_DATA_HOME=/usr/share python3 /opt/makos/cutefish/install_preview.py
 apt-get clean
 userdel --remove makos-test
 rm -rf /tmp/makos
+# ci.sh's private PID namespace has stopped its temporary system bus. Do not
+# carry that daemon's stale socket into the image's otherwise static /run.
+if [[ -S /run/dbus/system_bus_socket ]]; then
+  rm -f /run/dbus/system_bus_socket
+fi
 rm -f /usr/sbin/policy-rc.d /etc/machine-id /var/lib/dbus/machine-id
 : > /etc/machine-id
 : > /etc/resolv.conf
@@ -31,4 +36,5 @@ xorriso -indev "$MAKOS_BASE" -outdev artifacts/makOS-Recovery-0.1-amd64.iso \
   -map "$MAKOS_IMAGE_DIR/grub.cfg" /boot/grub/grub.cfg \
   -map "$MAKOS_IMAGE_DIR/sha256sum.txt" /sha256sum.txt -commit -end
 xorriso -indev artifacts/makOS-Recovery-0.1-amd64.iso -report_el_torito plain > artifacts/boot-layout.txt 2>&1
-sha256sum artifacts/makOS-Recovery-0.1-amd64.iso > artifacts/SHA256SUMS
+(cd artifacts && sha256sum makOS-Recovery-0.1-amd64.iso) > artifacts/SHA256SUMS
+cat artifacts/SHA256SUMS artifacts/boot-layout.txt

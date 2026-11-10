@@ -46,7 +46,7 @@ ApplicationWindow {
                 required property var modelData
                 width:devices.width;height:32;radius:5;color:disk.selectedPath===modelData.path?"#0966d5":"transparent"
                 Row { x:10+(disk.allDevices?modelData.depth*16:0);height:parent.height;spacing:8
-                    Image { width:17;height:19;anchors.verticalCenter:parent.verticalCenter;source:"assets/drive.svg";fillMode:Image.PreserveAspectFit }
+                    Image { width:17;height:19;anchors.verticalCenter:parent.verticalCenter;source:modelData.category==="External"?"assets/original/sidebar-external-dark.png":"assets/original/sidebar-internal-dark.png";fillMode:Image.PreserveAspectFit }
                     Text { width:devices.width-parent.x-40;elide:Text.ElideRight;anchors.verticalCenter:parent.verticalCenter;text:modelData.title;color:"#eee";font.pixelSize:13 }
                 }
                 MouseArea { anchors.fill:parent;onClicked:disk.selectedPath=modelData.path }
@@ -58,14 +58,14 @@ ApplicationWindow {
     Rectangle {
         id:toolbar; x:sidebar.width; width:parent.width-x;height:62;color:"#28282a"
         MouseArea { anchors.fill:parent;onPressed:disk.startSystemMove() }
-        Button { id:viewButton; x:12;y:9;width:44;height:43; onClicked:viewMenu.open();contentItem:Column{spacing:3;Image{anchors.horizontalCenter:parent.horizontalCenter;width:19;height:19;source:"assets/view.svg"}Text{anchors.horizontalCenter:parent.horizontalCenter;text:"View";color:"#aaaab0";font.pixelSize:10}} background:Rectangle{color:parent.hovered?"#414145":"transparent";radius:5} }
+        Button { id:viewButton; x:12;y:9;width:44;height:43; onClicked:viewMenu.open();contentItem:Column{spacing:3;Image{anchors.horizontalCenter:parent.horizontalCenter;width:19;height:19;source:"assets/original/view-dark.png"}Text{anchors.horizontalCenter:parent.horizontalCenter;text:"View";color:"#aaaab0";font.pixelSize:10}} background:Rectangle{color:parent.hovered?"#414145":"transparent";radius:5} }
         Text { x:68;y:20;text:"Disk Utility";color:"#eee";font.pixelSize:17;font.weight:Font.DemiBold }
         Row {
             anchors.right:parent.right;anchors.rightMargin:12;y:7;spacing:5
             Repeater {
-                model:[{label:"Volume",symbol:"volume"},{label:"First Aid",symbol:"first-aid"},{label:"Partition",symbol:"partition"},{label:"Erase",symbol:"erase"},{label:"Restore",symbol:"restore"},{label:"Mount",symbol:"mount"},{label:"Info",symbol:"info"}]
+                model:[{label:"Volume",symbol:"volume"},{label:"First Aid",symbol:"first-aid"},{label:"Partition",symbol:"partition"},{label:"Erase",symbol:"erase"},{label:"Restore",symbol:"restore"},{label:disk.selected.mount && disk.selected.mount!=="Not mounted"?"Unmount":"Mount",symbol:"mount"},{label:"Info",symbol:"info"}]
                 delegate:Button { required property var modelData; width:52;height:48;enabled:disk.selectedPath!=="";onClicked:disk.requestAction(modelData.label)
-                    contentItem:Column { spacing:3;Image{anchors.horizontalCenter:parent.horizontalCenter;source:"assets/"+modelData.symbol+".svg";width:22;height:22;opacity:parent.parent.enabled?1:0.4}Text{anchors.horizontalCenter:parent.horizontalCenter;text:modelData.label;color:"#aaaab0";font.pixelSize:10} }
+                    contentItem:Column { spacing:3;Image{anchors.horizontalCenter:parent.horizontalCenter;source:modelData.symbol==="volume"?"assets/volume.svg":"assets/original/"+modelData.symbol+"-dark.png";width:22;height:22;opacity:parent.parent.enabled?1:0.4}Text{anchors.horizontalCenter:parent.horizontalCenter;text:modelData.label;color:"#aaaab0";font.pixelSize:10} }
                     background:Rectangle{color:parent.hovered?"#414145":"transparent";radius:5}
                 }
             }
@@ -74,7 +74,7 @@ ApplicationWindow {
     }
     Item {
         x:sidebar.width+34;y:94;width:parent.width-x-34;height:parent.height-y-35;visible:disk.selectedPath!==""
-        Image { x:0;y:0;width:76;height:86;source:"assets/drive.svg";fillMode:Image.PreserveAspectFit }
+        Image { x:0;y:0;width:76;height:86;source:disk.selected.category==="External"?"assets/original/drive-external.png":"assets/original/drive-internal.png";fillMode:Image.PreserveAspectFit }
         Text { x:96;y:8;width:parent.width-250;elide:Text.ElideRight;text:disk.selected.title||"";color:"#ececee";font.pixelSize:26;font.weight:Font.Bold }
         Text { x:96;y:46;width:parent.width-100;elide:Text.ElideRight;text:disk.selected.subtitle||"";color:"#aaaab0";font.pixelSize:13 }
         Rectangle { anchors.right:parent.right;y:13;width:130;height:39;radius:4;color:"transparent";border.color:"#77777c"; Text { anchors.centerIn:parent;text:disk.selected.capacity||"";color:"#ccc";font.pixelSize:18 } }
@@ -116,7 +116,7 @@ ApplicationWindow {
         id:operation;modal:true;anchors.centerIn:parent;width:540;padding:24;title:disk.actionTitle==="Erase"?'Erase “'+(disk.selected.title||'')+'”?':disk.actionTitle
         background:Rectangle{color:"#29292c";radius:14;border.color:"#606066"}
         contentItem:Column { spacing:18
-            Row { spacing:18;Image{width:64;height:72;source:"assets/drive.svg";fillMode:Image.PreserveAspectFit}Text{width:400;wrapMode:Text.WordWrap;color:"#eee";font.pixelSize:13;text:disk.actionTitle==="Erase"?"Erasing this device permanently removes its data. Choose its name, format and partition map in Disk Tools, then review the final confirmation there.":disk.actionTitle==="Info"?(disk.selected.subtitle+"\n"+disk.selected.path):"Open the selected device in Disk Tools to manage its volumes, partitions, filesystem or disk images."} }
+            Row { spacing:18;Image{width:64;height:72;source:disk.selected.category==="External"?"assets/original/drive-external.png":"assets/original/drive-internal.png";fillMode:Image.PreserveAspectFit}Text{width:400;wrapMode:Text.WordWrap;color:"#eee";font.pixelSize:13;text:disk.actionTitle==="Erase"?"Erasing this device permanently removes its data. Choose its name, format and partition map in Disk Tools, then review the final confirmation there.":disk.actionTitle==="Info"?(disk.selected.subtitle+"\n"+disk.selected.path):"Open the selected device in Disk Tools to manage its volumes, partitions, filesystem or disk images."} }
             Text { width:parent.width;text:(disk.selected.title||'')+" · "+(disk.selected.path||'');color:"#aaaab0";font.pixelSize:12;elide:Text.ElideMiddle }
             Row { anchors.right:parent.right;spacing:12;Button{text:"Cancel";onClicked:operation.close()}Button{text:disk.actionTitle==="Info"?"Done":"Open Disk Tools…";onClicked:{operation.close();if(disk.actionTitle!=="Info")DiskBackend.openDiskTools(disk.selectedPath);}} }
         }

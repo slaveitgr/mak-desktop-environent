@@ -1,0 +1,638 @@
+{
+  "assets" : [
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "disk-utility.png",
+      "output_sha256" : "e4e270972cfe40dfd4386fc6838f81daa6dd7bf64148b7bf0ed7f36c71b3452c",
+      "pixels" : [
+        256,
+        256
+      ],
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/AppIcon.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        128,
+        128
+      ],
+      "source_sha256" : "7b6b2e661383dec0f83ac61616a35cfd0e399b0a3c4fd9f33cfa05a97b2aa6ed",
+      "template_tint" : "none"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "time-machine.png",
+      "output_sha256" : "c1992f56cd111d5611e9dc8521d7bca4d92833565b7ab90d9115773821e792bd",
+      "pixels" : [
+        256,
+        256
+      ],
+      "source" : "\/System\/Applications\/Time Machine.app\/Contents\/Resources\/AppIcon.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        128,
+        128
+      ],
+      "source_sha256" : "b4c2063beda608fb9fdea2822ffa856cb5032c7dde4f76a395f6f3dfcd0706ae",
+      "template_tint" : "none"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "safari.png",
+      "output_sha256" : "e408e2b7c48eaef1d18d04b63e4434ea67f9f7f314279e7cb64475b75a5f5c10",
+      "pixels" : [
+        256,
+        256
+      ],
+      "source" : "\/Applications\/Safari.app\/Contents\/Resources\/AppIcon.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        128,
+        128
+      ],
+      "source_sha256" : "3dd019e290d9402434ebecac8a1944168e27f3a9b0b53ad05150da2ea5066846",
+      "template_tint" : "none"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "drive-internal.png",
+      "output_sha256" : "05889e1a3e05508c7073d3b1a71d4939c25ba0b8977cc2ee75a2d43fabb05632",
+      "pixels" : [
+        256,
+        256
+      ],
+      "source" : "\/System\/Library\/Extensions\/IOStorageFamily.kext\/Contents\/Resources\/Internal.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        512,
+        512
+      ],
+      "source_sha256" : "134b7a903332b4f76262ab048efc70aa9ee9ba5617751c07039eb1eb52071f81",
+      "template_tint" : "none"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "drive-external.png",
+      "output_sha256" : "97e0828b5ca4298dc44af68c03b1b16a842583d9a1a80a984c75763c0912dcd4",
+      "pixels" : [
+        256,
+        256
+      ],
+      "source" : "\/System\/Library\/Extensions\/IOStorageFamily.kext\/Contents\/Resources\/External.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        512,
+        512
+      ],
+      "source_sha256" : "b7c43f81e95ef50d395547988504200c1df0a8285050c1c9c6b80c04e73e6e70",
+      "template_tint" : "none"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "drive-removable.png",
+      "output_sha256" : "ff53602dac78fc22fb38676ab741bf01af608a5bd050a26e4f51cd7d2d52e1e0",
+      "pixels" : [
+        256,
+        256
+      ],
+      "source" : "\/System\/Library\/Extensions\/IOStorageFamily.kext\/Contents\/Resources\/Removable.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        512,
+        512
+      ],
+      "source_sha256" : "15d9511eab4c80b0b5142e549d143c6d2a24597db1e3f4d7aacc9f4005bb2b7a",
+      "template_tint" : "none"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "sidebar-internal.png",
+      "output_sha256" : "ab128a3c23d68ee88ba6ac17a52b450135b93dc105d31a22fcf5045938e05e71",
+      "pixels" : [
+        72,
+        72
+      ],
+      "source" : "\/System\/Library\/CoreServices\/CoreTypes.bundle\/Contents\/Resources\/SidebarInternalDisk.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        32,
+        32
+      ],
+      "source_sha256" : "6a20a5ab1c3d00667ec92adf71c8c7ecd6dfe1473eb5f4db69d4374a3b620f97",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "sidebar-internal-dark.png",
+      "output_sha256" : "81ceddb0e7878d6eacd9fe2c5b541428b8716276f4fe18130a42b7baf36e87a2",
+      "pixels" : [
+        72,
+        72
+      ],
+      "source" : "\/System\/Library\/CoreServices\/CoreTypes.bundle\/Contents\/Resources\/SidebarInternalDisk.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        32,
+        32
+      ],
+      "source_sha256" : "6a20a5ab1c3d00667ec92adf71c8c7ecd6dfe1473eb5f4db69d4374a3b620f97",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "sidebar-external.png",
+      "output_sha256" : "e81282725193067b9e7f530c45cf1999885e42dd82ef98dc6c04d46179b6500f",
+      "pixels" : [
+        72,
+        72
+      ],
+      "source" : "\/System\/Library\/CoreServices\/CoreTypes.bundle\/Contents\/Resources\/SidebarExternalDisk.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        32,
+        32
+      ],
+      "source_sha256" : "aa2f9b51dbc13ea9bdbcbfb4673032d9157c6b6964643aed2838da97ba380c99",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "sidebar-external-dark.png",
+      "output_sha256" : "24753344aa641b4ee3b3edc92f90ef24d368d87dab3c4e99448ddfd7f2222032",
+      "pixels" : [
+        72,
+        72
+      ],
+      "source" : "\/System\/Library\/CoreServices\/CoreTypes.bundle\/Contents\/Resources\/SidebarExternalDisk.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        32,
+        32
+      ],
+      "source_sha256" : "aa2f9b51dbc13ea9bdbcbfb4673032d9157c6b6964643aed2838da97ba380c99",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "sidebar-removable.png",
+      "output_sha256" : "5a9ee812b093ebb5cf2757a311b9f7b0ed068ae25aac8dd8f27439c24a44726c",
+      "pixels" : [
+        72,
+        72
+      ],
+      "source" : "\/System\/Library\/CoreServices\/CoreTypes.bundle\/Contents\/Resources\/SidebarRemovableDisk.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        32,
+        32
+      ],
+      "source_sha256" : "785e2c76caebf32d38f528935dd2054cb02a6b171a167e8c1414e841477092b9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "sidebar-removable-dark.png",
+      "output_sha256" : "561b37dc79949e6ac51588c40371fbb9fda319fed858ed2772f07fa607e9b1ff",
+      "pixels" : [
+        72,
+        72
+      ],
+      "source" : "\/System\/Library\/CoreServices\/CoreTypes.bundle\/Contents\/Resources\/SidebarRemovableDisk.icns",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        32,
+        32
+      ],
+      "source_sha256" : "785e2c76caebf32d38f528935dd2054cb02a6b171a167e8c1414e841477092b9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "erase-source.png",
+      "output_sha256" : "c0d0d647da1bfa228f0a35ac62fb70addd6c9449cd0e593893429ebdc079c7d1",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "erase_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "erase-light.png",
+      "output_sha256" : "c0d0d647da1bfa228f0a35ac62fb70addd6c9449cd0e593893429ebdc079c7d1",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "erase_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "erase-dark.png",
+      "output_sha256" : "b4f16eb78d34d818ece35153c4c1567a539dc2af5be3264f42b4e1796022ef73",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "erase_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "first-aid-source.png",
+      "output_sha256" : "eb20462a20ddb90c5f789f5c155ce1bceba3b412f6a710ef0fa9a155072a878e",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "firstaid_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "first-aid-light.png",
+      "output_sha256" : "eb20462a20ddb90c5f789f5c155ce1bceba3b412f6a710ef0fa9a155072a878e",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "firstaid_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "first-aid-dark.png",
+      "output_sha256" : "0ddae0cbf75d30471430bc55058e65cee6e343d04fa4b90e05ca88684d5a70d9",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "firstaid_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "partition-source.png",
+      "output_sha256" : "f92430571eedf86b6ccace99d4b3f3743eab758a61d84ea5ea251439cd18c057",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "partition_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "partition-light.png",
+      "output_sha256" : "f92430571eedf86b6ccace99d4b3f3743eab758a61d84ea5ea251439cd18c057",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "partition_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "partition-dark.png",
+      "output_sha256" : "6ea3c708190cbb4f886d6b6ab6639996cee8a3ec5f0144877ccee9d551aa1ad5",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "partition_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "restore-source.png",
+      "output_sha256" : "0ba8b59a0c2662a091849c013198cd6dcda6291a0fef593ae64a2a18a6ec0d5b",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "restore_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "restore-light.png",
+      "output_sha256" : "0ba8b59a0c2662a091849c013198cd6dcda6291a0fef593ae64a2a18a6ec0d5b",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "restore_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "restore-dark.png",
+      "output_sha256" : "745cd026b9f20970a71dcf88fb732a97fb23bedbb811e102f4db07c5c0b5776e",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "restore_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "mount-source.png",
+      "output_sha256" : "568ce38e87ffaf899c83e4fb9676223713c3eee1f5c3a4f8df60c2931c73d66e",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "mountUnmount_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "mount-light.png",
+      "output_sha256" : "568ce38e87ffaf899c83e4fb9676223713c3eee1f5c3a4f8df60c2931c73d66e",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "mountUnmount_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "mount-dark.png",
+      "output_sha256" : "a1fe088aa57f862f241752d8864e87e39995ddf847ef37203ff3fd8ad8a3c1b7",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "mountUnmount_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "info-source.png",
+      "output_sha256" : "575f2d247d3a0158db03e07706d26a4fab6474b787d60a11e22c0e3df79b3dd2",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "info_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        16,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "info-light.png",
+      "output_sha256" : "575f2d247d3a0158db03e07706d26a4fab6474b787d60a11e22c0e3df79b3dd2",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "info_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        16,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "info-dark.png",
+      "output_sha256" : "9705b2b3867508835d0a1a9e1c8eeca43b51784e0cc5405f9d7cb26866e66988",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "info_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        16,
+        15
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "view-source.png",
+      "output_sha256" : "0ed9eb18a6295c2a7aec8248bda3a7d4c196013aac600a39c3a9dd10e65dba6b",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "sidebar_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        13
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "none"
+    },
+    {
+      "appearance" : "NSAppearanceNameAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "view-light.png",
+      "output_sha256" : "0ed9eb18a6295c2a7aec8248bda3a7d4c196013aac600a39c3a9dd10e65dba6b",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "sidebar_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        13
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "view-dark.png",
+      "output_sha256" : "00af3b49ac5e21806823d03d34e158045270c5020d3486be61bb8bbfd98b2d12",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "sidebar_enabled",
+      "source" : "\/System\/Applications\/Utilities\/Disk Utility.app\/Contents\/Resources\/Assets.car",
+      "source_kind" : "file",
+      "source_logical_size" : [
+        15,
+        13
+      ],
+      "source_sha256" : "bf5a8d5ba2a8a0242a7f773d4afeb3c3f119ef8e335df5556f3ebbd8425e6ed9",
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    },
+    {
+      "appearance" : "NSAppearanceNameDarkAqua",
+      "method" : "AppKit NSImage resource rendering; aspect ratio preserved",
+      "output" : "apple-logo-dark.png",
+      "output_sha256" : "d6301bc751aac422cd8f4d957822c742a1ab83e4fe6e93e6907b959f035b6c76",
+      "pixels" : [
+        72,
+        72
+      ],
+      "resource_name" : "apple.logo",
+      "source" : "system-symbol:apple.logo",
+      "source_identity_limit" : "Resolved by NSImage(systemSymbolName:) on the recorded host OS; no standalone source file or source-byte digest is asserted.",
+      "source_kind" : "AppKit system symbol",
+      "source_logical_size" : [
+        16,
+        20
+      ],
+      "template_tint" : "NSColor.controlTextColor in selected appearance"
+    }
+  ],
+  "disk_utility_build" : "2511.1",
+  "disk_utility_bundle_id" : "com.apple.DiskUtility",
+  "disk_utility_version" : "22.7",
+  "host_os" : "Version 26.7.2 (Build 25G332)",
+  "limitations" : [
+    "Rendered PNGs preserve original artwork but are rasterizations, not byte-identical copies of the source resources.",
+    "Toolbar source PNGs preserve catalog colors. Light\/dark variants explicitly tint the original monochrome coverage with AppKit controlTextColor; catalog NSImage.isTemplate was false. Runtime per-state visibility and toolbar sizing must be measured separately.",
+    "The Time Machine icon is visual reference artwork, not a claim of Time Machine backup support.",
+    "Only explicitly listed files and catalog resources are read; target application code is not executed."
+  ],
+  "missing" : [
+    {
+      "name" : "macos-installation",
+      "reason" : "No Install macOS application or OS-specific recovery installer icon was found in the inspected installed locations; package installer artwork is not substituted."
+    }
+  ]
+}

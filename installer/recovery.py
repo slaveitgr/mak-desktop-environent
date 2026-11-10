@@ -21,10 +21,10 @@ TOOLS = {
     'terminal': ('cutefish-terminal', []),
 }
 CHOICES = [
-    {'id':'restore', 'title':'Restore from Backup', 'description':'Restore your files from a compatible backup.', 'icon':'assets/backup.svg'},
+    {'id':'restore', 'title':'Restore from Backup', 'description':'Restore your files from a compatible backup.', 'icon':'assets/original/time-machine.png'},
     {'id':'install', 'title':'Install makOS', 'description':'Install a new copy of makOS on your computer.', 'icon':'assets/install.svg'},
-    {'id':'browser', 'title':'Web Browser', 'description':'Browse the web to get help with your computer.', 'icon':'../assets/safari.png'},
-    {'id':'disks', 'title':'Disk Utility', 'description':'Inspect, repair or erase a disk.', 'icon':'assets/disk.svg'},
+    {'id':'browser', 'title':'Web Browser', 'description':'Browse the web to get help with your computer.', 'icon':'assets/original/safari.png'},
+    {'id':'disks', 'title':'Disk Utility', 'description':'Inspect, repair or erase a disk.', 'icon':'assets/original/disk-utility.png'},
 ]
 
 

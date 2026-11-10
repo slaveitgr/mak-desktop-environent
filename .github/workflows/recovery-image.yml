@@ -27,6 +27,12 @@ jobs:
       - name: Assemble the development ISO
         run: bash installer/remaster.sh
       - uses: actions/upload-artifact@v4
+        with:
+          name: makos-recovery-metadata
+          path: |
+            artifacts/SHA256SUMS
+            artifacts/boot-layout.txt
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: makos-recovery-validation

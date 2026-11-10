@@ -1,0 +1,36 @@
+{
+  "app": "/System/Applications/Utilities/Disk Utility.app",
+  "bundle_id": "com.apple.DiskUtility",
+  "version": "22.7",
+  "build": "2511.1",
+  "host_macos": "26.7.2",
+  "evidence": {
+    "plist": "ev_dfb56cff41b9b21a69c4c3e3d2392b46a9c20c75ea122577ed4e497592014687",
+    "interface_builder": "ev_e5e97eb76567467a467ab68e6216c95f055b64a7cc189e546021f31532624ab0",
+    "menu_view": "ev_b42150f5df0d8bc84663a02b849a4a6743340358fce70ce341aac87ea0b12254",
+    "asset_catalog": "ev_81af56474d5f36da89fa0d1ce4c0f2955cd94bb115443e487bb31ebe8cc1ca38"
+  },
+  "observations": {
+    "compiled_ui_documents": 30,
+    "recognized_graph_nodes": 3924,
+    "recognized_graph_edges": 3347,
+    "catalog_records": 141,
+    "toolbar_resource_names": [
+      "erase_enabled",
+      "firstaid_enabled",
+      "partition_enabled",
+      "restore_enabled",
+      "mountUnmount_enabled",
+      "info_enabled",
+      "sidebar_enabled"
+    ],
+    "runtime_ui": "Accessibility inspection of the already-open Disk Utility observed View, separate add/delete Volume buttons, First Aid, Partition, Erase, Restore, Unmount and Info. Restore, Unmount and delete were disabled for the selected startup snapshot. No disk-changing action was invoked."
+  },
+  "limitations": [
+    "Resource-only analysis; no executable identity or decompilation claimed.",
+    "Compiled UI graph has partial coverage for unrecognized fields and hierarchy.",
+    "Static selector names do not prove implementation or runtime behavior.",
+    "Pixel geometry, animations and arbitrary disk operations were not measured."
+  ],
+  "local_evidence_bundle": "work/disk-utility-rea-resources-20261110.json"
+}

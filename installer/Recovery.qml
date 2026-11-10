@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
-import QtQuick.Effects
 
 ApplicationWindow {
     id: root
@@ -63,7 +62,7 @@ ApplicationWindow {
                     required property string modelData
                     width:modelData==="system"?34:menuLabel.implicitWidth+22; height:29; radius:4
                     color: root.openMenu===modelData && topMenu.opened ? "#424246" : "transparent"
-                    Image { visible:modelData==="system"; anchors.centerIn:parent; source:"../assets/symbols/apple.png"; width:16; height:19; fillMode:Image.PreserveAspectFit; layer.enabled:true; layer.effect:MultiEffect { colorization:1; colorizationColor:"#eeeeef" } }
+                    Image { visible:modelData==="system"; anchors.centerIn:parent; source:"assets/original/apple-logo-dark.png"; width:16; height:19; fillMode:Image.PreserveAspectFit }
                     Text { id:menuLabel; visible:modelData!=="system"; anchors.centerIn:parent; text:modelData; color:"#ededee"; font.pixelSize:13; font.weight:modelData==="Recovery"?Font.DemiBold:Font.Normal }
                     MouseArea { anchors.fill:parent; hoverEnabled:true; onClicked:root.showMenu(modelData,parent.mapToItem(root.contentItem,0,0).x); onEntered:if(topMenu.opened)root.showMenu(modelData,parent.mapToItem(root.contentItem,0,0).x) }
                 }

@@ -7,7 +7,7 @@ import pycdlib
 parser=argparse.ArgumentParser();parser.add_argument('--base',type=Path,required=True);parser.add_argument('--directory',type=Path,required=True)
 args=parser.parse_args();iso=pycdlib.PyCdlib();iso.open(str(args.base))
 with iso.open_file_from_iso(rr_path='/boot/grub/grub.cfg') as f: config=f.read().decode()
-config=config.replace('Live system (amd64)', 'makOS Recovery (amd64)').replace('Live system (amd64 fail-safe mode)', 'makOS Recovery (safe graphics)').replace('hostname=cutefish', 'hostname=makos')
+config=config.replace('Live system (amd64)', 'makOS Recovery (amd64)').replace('Live system (amd64 fail-safe mode)', 'makOS Recovery (compatibility mode)').replace('hostname=cutefish', 'hostname=makos')
 (args.directory/'grub.cfg').write_text(config)
 with iso.open_file_from_iso(rr_path='/sha256sum.txt') as f: checksums=f.read().decode()
 updates={'live/filesystem.squashfs':'filesystem.squashfs','live/filesystem.packages':'filesystem.packages','boot/grub/grub.cfg':'grub.cfg'}

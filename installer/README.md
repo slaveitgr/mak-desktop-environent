@@ -2,8 +2,10 @@
 
 The first screen follows the dark macOS Recovery references supplied by the user: a menu bar, a centered
 four-option utilities window, keyboard selection, double-click and Continue.
-The development preview uses original makOS vector artwork for three utility
-icons and the existing browser asset. It is not a verified pixel-identical copy.
+The preview uses original Mac resource renderings for Disk Utility, Time Machine,
+Safari, drive icons and seven toolbar symbols, with provenance hashes in
+`assets/original/provenance.json`. The OS installation icon remains makOS artwork;
+the corresponding macOS installer resource was not found on this machine. It is not a verified pixel-identical copy.
 
 ```sh
 ./installer/run --preview
@@ -83,7 +85,9 @@ branding and the two native makOS clients added.
 
 ## Verification boundaries
 
-The local chooser renders and its four launch routes have isolated tests.
+The chooser and Disk Utility render locally. Ten Recovery/disk unit checks cover
+launch isolation, inventory semantics and explicit disk-tool handoff. A real QML
+smoke test checks two Recovery/Disk Utility round trips and volume selection.
 Native menu integration is checked under the shipped headless compositor.
 An assembled image and valid boot metadata do not establish a successful boot
 or installation on hardware. The complete disk-install/restore flow and final
